@@ -3,6 +3,8 @@ openapi: 3.0.0
 servers:
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/haniot/haniot-analytics-service/1.0.0
+  - description: Local Host
+    url: http://localhost
 info:
   description: |
     This is the documentation of the RESTFul API of the microservice to perform the analysis of
@@ -17,13 +19,13 @@ info:
 tags:
   - name: evaluations
     description: Operations for the evaluations resource.
-  - name: nutritionals.evaluations
+  - name: nutritional.evaluations
     description: Operations for the nutritional avaliations resource.
   - name: dentistry.evaluations
     description: Operations for the dentistry avaliations resource. (GET)
-  - name: patients.nutritionals.evaluations
+  - name: patients.nutritional.evaluations
     description: Operations for the nutritional avaliations resource from a pilot study.
-  - name: pilotstudies.nutritionals.evaluations
+  - name: pilotstudies.nutritional.evaluations
     description: Operations for the nutritional avaliations resource from a pilot study.
 paths:
 
@@ -67,11 +69,11 @@ paths:
         '500':
           $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500
 
-  # nutritionals.evaluations
-  /nutritionals/evaluations:
+  # nutritional.evaluations
+  /nutritional/evaluations:
     get:
       tags:
-        - nutritionals.evaluations
+        - nutritional.evaluations
       summary: Recovers all nutrition evaluations.
       operationId: getAllNutritionEvaluations
       description: |
@@ -107,11 +109,11 @@ paths:
         '500':
           $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500
 
-  # patients.nutritionals.evaluations
-  /patients/{patient_id}/nutritionals/evaluations:
+  # patients.nutritional.evaluations
+  /patients/{patient_id}/nutritional/evaluations:
     post:
       tags:
-        - patients.nutritionals.evaluations
+        - patients.nutritional.evaluations
       summary: Register nutrition evaluation from patient.
       operationId: saveNutritionEvaluationFromPatient
       description: Register a new nutrition evaluation and associate it to a patient.
@@ -181,7 +183,7 @@ paths:
                   example: '5c86d00c2239a48ea20a0134'
     get:
       tags:
-        - patients.nutritionals.evaluations
+        - patients.nutritional.evaluations
       summary: Recovers all nutrition evaluations from patient..
       operationId: getAllNutritionEvaluationsFromPatient
       description: |
@@ -224,11 +226,11 @@ paths:
         '500':
           $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500
 
-    # pilotstudies.nutritionals.evaluations
-  /pilotstudies/{pilotstudy_id}/nutritionals/evaluations:
+    # pilotstudies.nutritional.evaluations
+  /pilotstudies/{pilotstudy_id}/nutritional/evaluations:
     get:
       tags:
-        - pilotstudies.nutritionals.evaluations
+        - pilotstudies.nutritional.evaluations
       summary: Recovers all nutrition evaluations from pilot study.
       operationId: getAllNutritionEvaluationsFromPilotStudy
       description: |
@@ -272,6 +274,9 @@ paths:
           $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500
 components:
   schemas:
+    ########################################################
+    ########### HANIot MHealth Service Schemas #############
+    ########################################################
     BloodGlucose:
       $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BloodGlucose'
     BloodPressure:
@@ -288,5 +293,12 @@ components:
       $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/WaistCircumference'
     Weight:
       $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Weight'
+    Patient:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Patient'
+
+    ########################################################
+    ############# HANIot EHR Service Schemas ###############
+    ########################################################
+
     NutritionEvaluation:
       $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/NutritionEvaluation'

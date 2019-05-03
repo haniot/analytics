@@ -18,6 +18,9 @@ import { NutritionEvaluationEntityMapper } from '../infrastructure/entity/mapper
 import { NutritionEvaluationRepoModel } from '../infrastructure/database/schema/nutrition.evaluation.schema'
 import { NutritionEvaluationService } from '../application/service/nutrition.evaluation.service'
 import { INutritionEvaluationService } from '../application/port/nutrition.evaluation.service.interface'
+import { EvaluationController } from '../ui/controllers/evaluation.controller'
+import { NutritionalEvaluationController } from '../ui/controllers/nutritional.evaluation.controller'
+import { PatientNutritionalEvaluationController } from '../ui/controllers/patient.nutritional.evaluation.controller'
 
 export class DI {
     private static instance: DI
@@ -65,6 +68,12 @@ export class DI {
         // Controllers
         this.container.bind<HomeController>(Identifier.HOME_CONTROLLER)
             .to(HomeController).inSingletonScope()
+        this.container.bind<EvaluationController>(Identifier.EVALUATION_CONTROLLER)
+            .to(EvaluationController).inSingletonScope()
+        this.container.bind<NutritionalEvaluationController>(Identifier.NUTRITIONAL_EVALUATION_CONTROLLER)
+            .to(NutritionalEvaluationController).inSingletonScope()
+        this.container.bind<PatientNutritionalEvaluationController>(Identifier.PATIENT_NUTRITIONAL_EVALUATION_CONTROLLER)
+            .to(PatientNutritionalEvaluationController).inSingletonScope()
 
         // Services
         this.container.bind<INutritionEvaluationService>

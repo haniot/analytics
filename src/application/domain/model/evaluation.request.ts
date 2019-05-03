@@ -90,11 +90,11 @@ export class EvaluationRequest implements IJSONSerializable, IJSONDeserializable
 
     public toJSON(): any {
         return {
-            patient: this.patient,
+            patient: this.patient ? this.patient.toJSON() : undefined,
             measurement: this.measurements ? this.measurements.map(item => item.toJSON()) : [],
-            physical_activity_habits: this.physical_activity_habits,
-            feeding_habits_record: this.feeding_habits_record,
-            medical_record: this.medical_record,
+            physical_activity_habits: this.physical_activity_habits ? this.physical_activity_habits.toJSON() : undefined,
+            feeding_habits_record: this.feeding_habits_record ? this.feeding_habits_record.toJSON() : undefined,
+            medical_record: this.medical_record ? this.medical_record.toJSON() : undefined,
             health_professional_id: this.health_professional_id,
             pilotstudy_id: this.pilotstudy_id
         }

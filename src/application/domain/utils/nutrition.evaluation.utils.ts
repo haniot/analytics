@@ -1,4 +1,3 @@
-import { OverweightClassificationTypes } from './overweight.classification.types'
 import { BmiPerAgeClassificationTypes } from './bmi.per.age.classification.types'
 import { EvaluationRequest } from '../model/evaluation.request'
 import { NutritionEvaluation } from '../model/nutrition.evaluation'
@@ -6,19 +5,20 @@ import { NutritionEvaluationStatusTypes } from './nutrition.evaluation.status.ty
 import { Height } from '../model/measurements/height'
 import { MeasurementTypes } from './measurement.types'
 import { Weight } from '../model/measurements/weight'
-import { WaistCircumference } from '../model/measurements/waist.circumference'
-import { NutritionalStatus } from '../model/nutritional.status'
-import { Patient } from '../model/patient'
 import { BmiPerAge } from './bmi.per.age'
+import { NutritionalStatus } from '../model/nutritional.status'
+import { WaistCircumference } from '../model/measurements/waist.circumference'
+import { OverweightClassificationTypes } from './overweight.classification.types'
+import { OverweightIndicator } from '../model/overweight.indicator'
 
 export class NutritionEvaluationUtils {
 
     private calculateBmi(weight: number, height: number): number {
-        return weight / Math.pow(height, 2)
+        return parseFloat((weight / Math.pow((height / 100), 2)).toFixed(1))
     }
 
-    private calculateWaistHeightRelation(waist: number, height: number): number {
-        return waist / height
+    private getWaistHeightRelation(waist: number, height: number): number {
+        return parseFloat((waist / height).toFixed(2))
     }
 
     private getAgeFromBirthDate(birthDate: string): string {
@@ -44,24 +44,41 @@ export class NutritionEvaluationUtils {
         else return BmiPerAgeClassificationTypes.SEVERE_OBESITY
     }
 
-    private getPercentileFromPatient(patient: Patient) {
-        return BmiPerAge.bmi_boys.filter(value => value.age === this.getAgeFromBirthDate(patient.birth_date!))
+    private getPercentileFromAge(age: string) {
+        return BmiPerAge.bmi_boys.filter(value => value.age === age)[0].percentile
     }
 
     public async generateEvaluation(item: EvaluationRequest): Promise<NutritionEvaluation> {
         try {
             const evaluation: NutritionEvaluation = new NutritionEvaluation()
+
+            /* Get evaluation request values to do the evaluation*/
             const height: Height = item.measurements!.filter(value => value.type === MeasurementTypes.HEIGHT)[0]
             const weight: Weight = item.measurements!.filter(value => value.type === MeasurementTypes.WEIGHT)[0]
             const waist: WaistCircumference =
                 item.measurements!.filter(value => value.type === MeasurementTypes.WAIST_CIRCUMFERENCE)[0]
+            const birth_date: string = item.patient && item.patient.birth_date ? item.patient.birth_date : ''
 
-            const bodyMassIndex = this.calculateBmi(weight.value!, height.value!)
-            const bmiPerAge = this.getBmiPerAgeClassification(bodyMassIndex, this.get)
+            const patientPercentile = this.getPercentileFromAge(this.getAgeFromBirthDate(birth_date))
+            const patientBmi = this.calculateBmi(weight.value!, height.value!)
+            const patientWaistHeightRelation = this.getWaistHeightRelation(waist.value!, height.value!)
 
+            /* Setting Evaluation values before save.*/
             evaluation.status = NutritionEvaluationStatusTypes.INCOMPLETE
+            evaluation.patient_id = item.patient && item.patient.id ? item.patient.id : undefined
+            evaluation.pilotstudy_id = item.pilotstudy_id ? item.pilotstudy_id : undefined
+            evaluation.health_professional_id = item.health_professional_id ? item.health_professional_id : undefined
             evaluation.patient_id = item.patient!.id
-
+            evaluation.nutritional_status = new NutritionalStatus().fromJSON({
+                bmi: patientBmi,
+                percentile: patientPercentile,
+                classification: this.getBmiPerAgeClassification(patientBmi, patientPercentile)
+            })
+            evaluation.overweight_indicator = new OverweightIndicator().fromJSON({
+                waist_height_relation: patientWaistHeightRelation,
+                classification: this.getOverweightIndicator(patientWaistHeightRelation)
+            })
+            console.log(evaluation.toJSON())
             return Promise.resolve(evaluation)
         } catch (err) {
             return Promise.reject(err)

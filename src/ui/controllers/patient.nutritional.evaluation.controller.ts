@@ -18,8 +18,8 @@ import { WaistCircumference } from '../../application/domain/model/measurements/
 import { Fat } from '../../application/domain/model/measurements/fat'
 import { EvaluationRequest } from '../../application/domain/model/evaluation.request'
 
-@controller('/patients/{patient_id}/nutritional/evaluations')
-export class PatientsNutritionEvaluationsController {
+@controller('/patients/:patient_id/nutritional/evaluations')
+export class PatientNutritionalEvaluationController {
     constructor(
         @inject(Identifier.NUTRITION_EVALUATION_SERVICE) private readonly _service: INutritionEvaluationService
     ) {
@@ -30,7 +30,10 @@ export class PatientsNutritionEvaluationsController {
         try {
             req.body.patient.id = req.params.patient_id
             const evaluation: EvaluationRequest = new EvaluationRequest().fromJSON(req.body)
-            evaluation.measurements = req.body.measurements.map(item => this.jsonToModel(item))
+            evaluation.measurements = req.body.measurements.map(item => {
+                item.user_id = req.params.patient_id
+                return this.jsonToModel(item)
+            })
             const result: NutritionEvaluation = await this._service.addEvaluation(evaluation)
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
         } catch (err) {

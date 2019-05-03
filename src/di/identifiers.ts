@@ -8,6 +8,9 @@ export abstract class Identifier {
 
     // Controllers
     public static readonly HOME_CONTROLLER: any = Symbol.for('HomeController')
+    public static readonly EVALUATION_CONTROLLER: any = Symbol.for('EvaluationController')
+    public static readonly NUTRITIONAL_EVALUATION_CONTROLLER: any = Symbol.for('NutritionalEvaluationController')
+    public static readonly PATIENT_NUTRITIONAL_EVALUATION_CONTROLLER: any = Symbol.for('PatientNutritionalEvaluationController')
 
     // Services
     public static readonly NUTRITION_EVALUATION_SERVICE: any = Symbol.for('NutritionEvaluationService')

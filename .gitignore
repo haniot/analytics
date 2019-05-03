@@ -61,5 +61,7 @@ typings/
 # next.js build output
 .next
 
+# Typescript
+dist
 # Webstorm IDE
 .idea
