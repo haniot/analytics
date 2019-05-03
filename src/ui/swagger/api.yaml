@@ -1,0 +1,292 @@
+openapi: 3.0.0
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/haniot/haniot-analytics-service/1.0.0
+info:
+  description: |
+    This is the documentation of the RESTFul API of the microservice to perform the analysis of
+    nutritional data in order to generate nutritional assessments.
+  version: "1.0.0"
+  title: HANIoT Analytics Service.
+  contact:
+    email: haniot@nutes.uepb.edu.br
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: evaluations
+    description: Operations for the evaluations resource.
+  - name: nutritionals.evaluations
+    description: Operations for the nutritional avaliations resource.
+  - name: dentistry.evaluations
+    description: Operations for the dentistry avaliations resource. (GET)
+  - name: patients.nutritionals.evaluations
+    description: Operations for the nutritional avaliations resource from a pilot study.
+  - name: pilotstudies.nutritionals.evaluations
+    description: Operations for the nutritional avaliations resource from a pilot study.
+paths:
+
+  # evaluations
+  /evaluations:
+    get:
+      tags:
+        - evaluations
+      summary: Recovers all evaluations.
+      operationId: getAllEvaluations
+      description: |
+        Returns list with all evaluations. The query supports Field Selection, Paging and Sorting.
+
+         This API supports filters in the query. Although Swagger does not support query filters,
+         you can get information about filter queries by visiting this
+         [link](https://github.com/nutes-uepb/query-strings-parser/wiki/3.4-Filtering).
+      parameters:
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/fieldsParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/pageParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/limitParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/sortParam
+      responses:
+        '200':
+          description: Successful requisition.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NutritionEvaluation'
+        '401':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401
+        '403':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403
+        '404':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/404
+        '406':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/406
+        '429':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/429
+        '500':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500
+
+  # nutritionals.evaluations
+  /nutritionals/evaluations:
+    get:
+      tags:
+        - nutritionals.evaluations
+      summary: Recovers all nutrition evaluations.
+      operationId: getAllNutritionEvaluations
+      description: |
+        Returns list with all nutrition evaluations. The query supports Field Selection, Paging and Sorting.
+
+         This API supports filters in the query. Although Swagger does not support query filters,
+         you can get information about filter queries by visiting this
+         [link](https://github.com/nutes-uepb/query-strings-parser/wiki/3.4-Filtering).
+      parameters:
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/fieldsParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/pageParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/limitParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/sortParam
+      responses:
+        '200':
+          description: Successful requisition.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NutritionEvaluation'
+        '401':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401
+        '403':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403
+        '404':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/404
+        '406':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/406
+        '429':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/429
+        '500':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500
+
+  # patients.nutritionals.evaluations
+  /patients/{patient_id}/nutritionals/evaluations:
+    post:
+      tags:
+        - patients.nutritionals.evaluations
+      summary: Register nutrition evaluation from patient.
+      operationId: saveNutritionEvaluationFromPatient
+      description: Register a new nutrition evaluation and associate it to a patient.
+      parameters:
+        - in: path
+          name: patient_id
+          required: true
+          description: Id of patient.
+          example: 5a62be07d6f33400146c9b61
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Nutrition Evaluation saved sucessfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NutritionEvaluation'
+        '400':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/400
+        '401':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401
+        '403':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403
+        '404':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/404
+        '406':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/406
+        '429':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/429
+        '500':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500
+      requestBody:
+        required: true
+        description: Nutrition Assessment to be insert
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patient:
+                  $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Patient
+                measurements:
+                  type: array
+                  description: A list of all measurements.
+                  items:
+                    oneOf:
+                      - $ref: '#/components/schemas/BloodGlucose'
+                      - $ref: '#/components/schemas/BloodPressure'
+                      - $ref: '#/components/schemas/BodyTemperature'
+                      - $ref: '#/components/schemas/Fat'
+                      - $ref: '#/components/schemas/HeartRate'
+                      - $ref: '#/components/schemas/Height'
+                      - $ref: '#/components/schemas/WaistCircumference'
+                      - $ref: '#/components/schemas/Weight'
+                physical_activity_habits:
+                  $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/PhysicalActivityHabits
+                feeding_habits_record:
+                  $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/FeedingHabitsRecord
+                medical_record:
+                  $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/MedicalRecord
+                health_professional_id:
+                  type: string
+                  example: '5c86d00cfc25e7036d51d652'
+                pilotstudy_id:
+                  type: string
+                  example: '5c86d00c2239a48ea20a0134'
+    get:
+      tags:
+        - patients.nutritionals.evaluations
+      summary: Recovers all nutrition evaluations from patient..
+      operationId: getAllNutritionEvaluationsFromPatient
+      description: |
+        Returns list with all nutrition evaluations from patient. The query supports Field Selection, Paging and Sorting.
+
+         This API supports filters in the query. Although Swagger does not support query filters,
+         you can get information about filter queries by visiting this
+         [link](https://github.com/nutes-uepb/query-strings-parser/wiki/3.4-Filtering).
+      parameters:
+        - in: path
+          name: patient_id
+          required: true
+          description: Id of patient.
+          example: '5a62be07d6f33400146c9b61'
+          schema:
+            type: string
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/fieldsParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/pageParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/limitParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/sortParam
+      responses:
+        '200':
+          description: Successful requisition.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NutritionEvaluation'
+        '401':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401
+        '403':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403
+        '404':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/404
+        '406':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/406
+        '429':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/429
+        '500':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500
+
+    # pilotstudies.nutritionals.evaluations
+  /pilotstudies/{pilotstudy_id}/nutritionals/evaluations:
+    get:
+      tags:
+        - pilotstudies.nutritionals.evaluations
+      summary: Recovers all nutrition evaluations from pilot study.
+      operationId: getAllNutritionEvaluationsFromPilotStudy
+      description: |
+        Returns list with all nutrition evaluations from pilot study. The query supports Field Selection, Paging and Sorting.
+
+         This API supports filters in the query. Although Swagger does not support query filters,
+         you can get information about filter queries by visiting this
+         [link](https://github.com/nutes-uepb/query-strings-parser/wiki/3.4-Filtering).
+      parameters:
+        - in: path
+          name: pilotstudy_id
+          required: true
+          description: Id of pilot study.
+          example: '5a62be07d6f33400146c9b61'
+          schema:
+            type: string
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/fieldsParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/pageParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/limitParam
+        - $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/sortParam
+      responses:
+        '200':
+          description: Successful requisition.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NutritionEvaluation'
+        '401':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401
+        '403':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403
+        '404':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/404
+        '406':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/406
+        '429':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/429
+        '500':
+          $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500
+components:
+  schemas:
+    BloodGlucose:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BloodGlucose'
+    BloodPressure:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BloodPressure'
+    BodyTemperature:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BodyTemperature'
+    Fat:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Fat'
+    HeartRate:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/HeartRate'
+    Height:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Height'
+    WaistCircumference:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/WaistCircumference'
+    Weight:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Weight'
+    NutritionEvaluation:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/NutritionEvaluation'
