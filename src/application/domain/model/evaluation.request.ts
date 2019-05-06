@@ -1,9 +1,9 @@
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { Patient } from './patient'
-import { PhysicalActivityHabits } from './questionnaires/physical.activity.habits'
-import { FeedingHabitsRecord } from './questionnaires/feeding.habits.record'
-import { MedicalRecord } from './questionnaires/medical.record'
+import { PhysicalActivityHabits } from './physical.activity.habits'
+import { FeedingHabitsRecord } from './feeding.habits.record'
+import { MedicalRecord } from './medical.record'
 import { JsonUtils } from '../utils/json.utils'
 
 export class EvaluationRequest implements IJSONSerializable, IJSONDeserializable<EvaluationRequest> {

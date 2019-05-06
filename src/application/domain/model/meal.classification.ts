@@ -36,7 +36,7 @@ export class MealClassification implements IJSONSerializable, IJSONDeserializabl
 
     public toJSON(): any {
         return {
-            good: this.good ? this.good.toJSON : undefined,
+            good: this.good ? this.good.toJSON() : undefined,
             great: this.great ? this.great.toJSON() : undefined
         }
     }

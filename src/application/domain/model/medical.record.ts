@@ -1,9 +1,10 @@
-import { JsonUtils } from '../../utils/json.utils'
-import { QuestionnaireTypes } from '../../utils/questionnaire.types'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
-import { QuestionnaireRecord } from './questionnaire.record'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+
 import { ChronicDisease } from './chronic.disease'
+import { JsonUtils } from '../utils/json.utils'
+import { QuestionnaireTypes } from '../utils/questionnaire.types'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
+import { QuestionnaireRecord } from './questionnaire.record'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
 export class MedicalRecord
     extends QuestionnaireRecord implements IJSONSerializable, IJSONDeserializable<MedicalRecord> {

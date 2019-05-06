@@ -1,16 +1,17 @@
 import { Measurement } from './measurement'
-import { MeasurementTypes } from '../../utils/measurement.types'
-import { JsonUtils } from '../../utils/json.utils'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+import { MeasurementTypes } from '../utils/measurement.types'
+import { JsonUtils } from '../utils/json.utils'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
-export class BodyTemperature extends Measurement implements IJSONSerializable, IJSONDeserializable<BodyTemperature> {
+export class WaistCircumferenceMeasurement extends Measurement
+    implements IJSONSerializable, IJSONDeserializable<WaistCircumferenceMeasurement> {
     private _value?: number
     private _timestamp?: string
 
     constructor() {
         super()
-        super.type = MeasurementTypes.BODY_TEMPERATURE
+        super.type = MeasurementTypes.WAIST_CIRCUMFERENCE
     }
 
     get value(): number | undefined {
@@ -29,7 +30,7 @@ export class BodyTemperature extends Measurement implements IJSONSerializable, I
         this._timestamp = value
     }
 
-    public fromJSON(json: any): BodyTemperature {
+    public fromJSON(json: any): WaistCircumferenceMeasurement {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

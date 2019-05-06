@@ -161,14 +161,14 @@ paths:
                   description: A list of all measurements.
                   items:
                     oneOf:
-                      - $ref: '#/components/schemas/BloodGlucose'
-                      - $ref: '#/components/schemas/BloodPressure'
-                      - $ref: '#/components/schemas/BodyTemperature'
-                      - $ref: '#/components/schemas/Fat'
-                      - $ref: '#/components/schemas/HeartRate'
-                      - $ref: '#/components/schemas/Height'
-                      - $ref: '#/components/schemas/WaistCircumference'
-                      - $ref: '#/components/schemas/Weight'
+                      - $ref: '#/components/schemas/BloodGlucoseMeasurement'
+                      - $ref: '#/components/schemas/BloodPressureMeasurement'
+                      - $ref: '#/components/schemas/BodyTemperatureMeasurement'
+                      - $ref: '#/components/schemas/FatMeasurement'
+                      - $ref: '#/components/schemas/HeartRateMeasurement'
+                      - $ref: '#/components/schemas/HeightMeasurement'
+                      - $ref: '#/components/schemas/WaistCircumferenceMeasurement'
+                      - $ref: '#/components/schemas/WeightMeasurement'
                 physical_activity_habits:
                   $ref: https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/PhysicalActivityHabits
                 feeding_habits_record:
@@ -278,21 +278,21 @@ components:
     ########### HANIot MHealth Service Schemas #############
     ########################################################
     BloodGlucose:
-      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BloodGlucose'
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BloodGlucoseMeasurement'
     BloodPressure:
-      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BloodPressure'
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BloodPressureMeasurement'
     BodyTemperature:
-      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BodyTemperature'
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/BodyTemperatureMeasurement'
     Fat:
-      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Fat'
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/FatMeasurement'
     HeartRate:
-      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/HeartRate'
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/HeartRateMeasurement'
     Height:
-      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Height'
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/HeightMeasurement'
     WaistCircumference:
-      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/WaistCircumference'
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/WaistCircumferenceMeasurement'
     Weight:
-      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Weight'
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/WeightMeasurement'
     Patient:
       $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/Patient'
 

@@ -1,8 +1,8 @@
-import { JsonUtils } from '../../utils/json.utils'
-import { QuestionnaireTypes } from '../../utils/questionnaire.types'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
+import { JsonUtils } from '../utils/json.utils'
+import { QuestionnaireTypes } from '../utils/questionnaire.types'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { QuestionnaireRecord } from './questionnaire.record'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
 export class PhysicalActivityHabits
     extends QuestionnaireRecord implements IJSONSerializable, IJSONDeserializable<PhysicalActivityHabits> {

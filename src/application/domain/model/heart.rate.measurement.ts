@@ -1,11 +1,11 @@
 import { Measurement } from './measurement'
-import { MeasurementTypes } from '../../utils/measurement.types'
-import { JsonUtils } from '../../utils/json.utils'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+import { MeasurementTypes } from '../utils/measurement.types'
+import { JsonUtils } from '../utils/json.utils'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { DataSetItem } from './data.set.item'
 
-export class HeartRate extends Measurement implements IJSONSerializable, IJSONDeserializable<HeartRate> {
+export class HeartRateMeasurement extends Measurement implements IJSONSerializable, IJSONDeserializable<HeartRateMeasurement> {
     private _dataset?: Array<DataSetItem>
 
     constructor() {
@@ -21,7 +21,7 @@ export class HeartRate extends Measurement implements IJSONSerializable, IJSONDe
         this._dataset = value
     }
 
-    public fromJSON(json: any): HeartRate {
+    public fromJSON(json: any): HeartRateMeasurement {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

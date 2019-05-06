@@ -92,21 +92,21 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
                     good: {
                         min: {
                             type: Number,
-                            required: 'Min value for good prepandial meal is required!'
+                            required: 'Min value for good preprandial meal is required!'
                         },
                         max: {
                             type: Number,
-                            required: 'Max value for good prepandial meal is required!'
+                            required: 'Max value for good preprandial meal is required!'
                         }
                     },
                     great: {
                         min: {
                             type: Number,
-                            required: 'Min value for great prepandial meal is required!'
+                            required: 'Min value for great preprandial meal is required!'
                         },
                         max: {
                             type: Number,
-                            required: 'Max value for great prepandial meal is required!'
+                            required: 'Max value for great preprandial meal is required!'
                         }
                     }
                 },

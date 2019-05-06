@@ -1,18 +1,16 @@
 import { Measurement } from './measurement'
-import { MeasurementTypes } from '../../utils/measurement.types'
-import { JsonUtils } from '../../utils/json.utils'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
-import { Fat } from './fat'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+import { MeasurementTypes } from '../utils/measurement.types'
+import { JsonUtils } from '../utils/json.utils'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
-export class Weight extends Measurement implements IJSONSerializable, IJSONDeserializable<Weight> {
+export class FatMeasurement extends Measurement implements IJSONSerializable, IJSONDeserializable<FatMeasurement> {
     private _value?: number
     private _timestamp?: string
-    private _fat?: Fat
 
     constructor() {
         super()
-        super.type = MeasurementTypes.WEIGHT
+        super.type = MeasurementTypes.FAT
     }
 
     get value(): number | undefined {
@@ -31,23 +29,15 @@ export class Weight extends Measurement implements IJSONSerializable, IJSONDeser
         this._timestamp = value
     }
 
-    get fat(): Fat | undefined {
-        return this._fat
-    }
-
-    set fat(value: Fat | undefined) {
-        this._fat = value
-    }
-
-    public fromJSON(json: any): Weight {
+    public fromJSON(json: any): FatMeasurement {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)
         }
+
         super.fromJSON(json)
         if (json.value !== undefined) this.value = json.value
         if (json.timestamp !== undefined) this.timestamp = json.timestamp
-        if (json.fat !== undefined) this.fat = new Fat().fromJSON(json.fat)
         return this
     }
 
@@ -56,8 +46,7 @@ export class Weight extends Measurement implements IJSONSerializable, IJSONDeser
             ...super.toJSON(),
             ...{
                 value: this.value,
-                timestamp: this.timestamp,
-                fat: this.fat ? { value: this.fat.value, unit: this.fat.unit } : undefined
+                timestamp: this.timestamp
             }
         }
     }

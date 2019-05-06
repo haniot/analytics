@@ -1,7 +1,7 @@
-import { JsonUtils } from '../../utils/json.utils'
-import { QuestionnaireTypes } from '../../utils/questionnaire.types'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+import { JsonUtils } from '../utils/json.utils'
+import { QuestionnaireTypes } from '../utils/questionnaire.types'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { WeeklyFoodRecord } from './weekly.food.record'
 import { QuestionnaireRecord } from './questionnaire.record'
 

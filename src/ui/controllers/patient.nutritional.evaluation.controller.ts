@@ -8,14 +8,14 @@ import { ApiExceptionManager } from '../exception/api.exception.manager'
 import { NutritionEvaluation } from '../../application/domain/model/nutrition.evaluation'
 import { Query } from '../../infrastructure/repository/query/query'
 import { MeasurementTypes } from '../../application/domain/utils/measurement.types'
-import { Height } from '../../application/domain/model/measurements/height'
-import { HeartRate } from '../../application/domain/model/measurements/heart.rate'
-import { BloodPressure } from '../../application/domain/model/measurements/blood.pressure'
-import { Weight } from '../../application/domain/model/measurements/weight'
-import { BloodGlucose } from '../../application/domain/model/measurements/blood.glucose'
-import { BodyTemperature } from '../../application/domain/model/measurements/body.temperature'
-import { WaistCircumference } from '../../application/domain/model/measurements/waist.circumference'
-import { Fat } from '../../application/domain/model/measurements/fat'
+import { HeightMeasurement } from '../../application/domain/model/height.measurement'
+import { HeartRateMeasurement } from '../../application/domain/model/heart.rate.measurement'
+import { BloodPressureMeasurement } from '../../application/domain/model/blood.pressure.measurement'
+import { WeightMeasurement } from '../../application/domain/model/weight.measurement'
+import { BloodGlucoseMeasurement } from '../../application/domain/model/blood.glucose.measurement'
+import { BodyTemperatureMeasurement } from '../../application/domain/model/body.temperature.measurement'
+import { WaistCircumferenceMeasurement } from '../../application/domain/model/waist.circumference.measurement'
+import { FatMeasurement } from '../../application/domain/model/fat.measurement'
 import { EvaluationRequest } from '../../application/domain/model/evaluation.request'
 
 @controller('/patients/:patient_id/nutritional/evaluations')
@@ -70,11 +70,11 @@ export class PatientNutritionalEvaluationController {
         if (item.type) {
             switch (item.type) {
                 case MeasurementTypes.HEIGHT:
-                    return new Height().fromJSON(item)
+                    return new HeightMeasurement().fromJSON(item)
                 case MeasurementTypes.HEART_RATE:
-                    return new HeartRate().fromJSON(item)
+                    return new HeartRateMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_PRESSURE:
-                    return new BloodPressure().fromJSON(item)
+                    return new BloodPressureMeasurement().fromJSON(item)
                 case MeasurementTypes.WEIGHT:
                     if (item.fat !== undefined) {
                         item.fat = {
@@ -86,15 +86,15 @@ export class PatientNutritionalEvaluationController {
                             }
                         }
                     }
-                    return new Weight().fromJSON(item)
+                    return new WeightMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_GLUCOSE:
-                    return new BloodGlucose().fromJSON(item)
+                    return new BloodGlucoseMeasurement().fromJSON(item)
                 case MeasurementTypes.BODY_TEMPERATURE:
-                    return new BodyTemperature().fromJSON(item)
+                    return new BodyTemperatureMeasurement().fromJSON(item)
                 case MeasurementTypes.WAIST_CIRCUMFERENCE:
-                    return new WaistCircumference().fromJSON(item)
+                    return new WaistCircumferenceMeasurement().fromJSON(item)
                 case MeasurementTypes.FAT:
-                    return new Fat().fromJSON(item)
+                    return new FatMeasurement().fromJSON(item)
                 default:
                     return item
             }

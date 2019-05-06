@@ -1,7 +1,7 @@
-import { Entity } from '../entity'
-import { JsonUtils } from '../../utils/json.utils'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+import { Entity } from './entity'
+import { JsonUtils } from '../utils/json.utils'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
 export class QuestionnaireRecord extends Entity implements IJSONSerializable, IJSONDeserializable<QuestionnaireRecord> {
     private _patient_id?: string

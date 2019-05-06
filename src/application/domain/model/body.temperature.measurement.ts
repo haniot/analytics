@@ -1,16 +1,17 @@
 import { Measurement } from './measurement'
-import { MeasurementTypes } from '../../utils/measurement.types'
-import { JsonUtils } from '../../utils/json.utils'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+import { MeasurementTypes } from '../utils/measurement.types'
+import { JsonUtils } from '../utils/json.utils'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
-export class Height extends Measurement implements IJSONSerializable, IJSONDeserializable<Height> {
+export class BodyTemperatureMeasurement extends Measurement
+    implements IJSONSerializable, IJSONDeserializable<BodyTemperatureMeasurement> {
     private _value?: number
     private _timestamp?: string
 
     constructor() {
         super()
-        super.type = MeasurementTypes.HEIGHT
+        super.type = MeasurementTypes.BODY_TEMPERATURE
     }
 
     get value(): number | undefined {
@@ -29,7 +30,7 @@ export class Height extends Measurement implements IJSONSerializable, IJSONDeser
         this._timestamp = value
     }
 
-    public fromJSON(json: any): Height {
+    public fromJSON(json: any): BodyTemperatureMeasurement {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

@@ -1,10 +1,11 @@
 import { Measurement } from './measurement'
-import { MeasurementTypes } from '../../utils/measurement.types'
-import { JsonUtils } from '../../utils/json.utils'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+import { MeasurementTypes } from '../utils/measurement.types'
+import { JsonUtils } from '../utils/json.utils'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
-export class BloodGlucose extends Measurement implements IJSONSerializable, IJSONDeserializable<BloodGlucose> {
+export class BloodGlucoseMeasurement extends Measurement
+    implements IJSONSerializable, IJSONDeserializable<BloodGlucoseMeasurement> {
     private _value?: number
     private _timestamp?: string
     private _meal?: string
@@ -38,7 +39,7 @@ export class BloodGlucose extends Measurement implements IJSONSerializable, IJSO
         this._meal = value
     }
 
-    public fromJSON(json: any): BloodGlucose {
+    public fromJSON(json: any): BloodGlucoseMeasurement {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

@@ -1,10 +1,11 @@
 import { Measurement } from './measurement'
-import { MeasurementTypes } from '../../utils/measurement.types'
-import { JsonUtils } from '../../utils/json.utils'
-import { IJSONSerializable } from '../../utils/json.serializable.interface'
-import { IJSONDeserializable } from '../../utils/json.deserializable.interface'
+import { MeasurementTypes } from '../utils/measurement.types'
+import { JsonUtils } from '../utils/json.utils'
+import { IJSONSerializable } from '../utils/json.serializable.interface'
+import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
-export class BloodPressure extends Measurement implements IJSONSerializable, IJSONDeserializable<BloodPressure> {
+export class BloodPressureMeasurement extends Measurement
+    implements IJSONSerializable, IJSONDeserializable<BloodPressureMeasurement> {
     private _systolic?: number
     private _diastolic?: number
     private _pulse?: number
@@ -47,7 +48,7 @@ export class BloodPressure extends Measurement implements IJSONSerializable, IJS
         this._timestamp = value
     }
 
-    public fromJSON(json: any): BloodPressure {
+    public fromJSON(json: any): BloodPressureMeasurement {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)
