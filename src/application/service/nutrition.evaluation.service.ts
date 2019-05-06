@@ -37,7 +37,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     public update(item: NutritionEvaluation): Promise<NutritionEvaluation> {
-        throw Error('Not implemented!')
+        return this._repo.update(item)
     }
 
     public async addEvaluation(item: EvaluationRequest): Promise<NutritionEvaluation> {
