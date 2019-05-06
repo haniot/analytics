@@ -25,4 +25,10 @@ export abstract class Strings {
         NOT_MAPPED: 'Value not mapped for ',
         NOT_MAPPED_DESC: 'The mapped values are: '
     }
+
+    public static readonly NUTRITION_EVALUATION: any = {
+        NOT_FOUND: 'Nutrition evaluation record not found!',
+        NOT_FOUND_DESCRIPTION: 'Nutrition evaluation record not found or already removed.' +
+            ' A new operation for the same resource is required.'
+    }
 }
