@@ -16,6 +16,8 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (json.id !== undefined) result.id = json.id
         if (json.status !== undefined) result.status = json.status
         if (json.created_at !== undefined) result.created_at = json.created_at
+        if (json.type !== undefined) result.type = json.type
+        if (json.patient_id !== undefined) result.patient_id = json.patient_id
         if (json.patient_id !== undefined) result.patient_id = json.patient_id
         if (json.pilotstudy_id !== undefined) result.pilotstudy_id = json.pilotstudy_id
         if (json.health_professional_id !== undefined) result.health_professional_id = json.health_professional_id
@@ -40,6 +42,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (item.id !== undefined) result.id = item.id
         if (item.status !== undefined) result.status = item.status
         if (item.created_at !== undefined) result.created_at = item.created_at
+        if (item.type !== undefined) result.type = item.type
         if (item.patient_id !== undefined) result.patient_id = item.patient_id
         if (item.pilotstudy_id !== undefined) result.pilotstudy_id = item.pilotstudy_id
         if (item.health_professional_id !== undefined) result.health_professional_id = item.health_professional_id

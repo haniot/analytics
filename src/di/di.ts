@@ -21,6 +21,8 @@ import { INutritionEvaluationService } from '../application/port/nutrition.evalu
 import { EvaluationController } from '../ui/controllers/evaluation.controller'
 import { NutritionalEvaluationController } from '../ui/controllers/nutritional.evaluation.controller'
 import { PatientNutritionalEvaluationController } from '../ui/controllers/patient.nutritional.evaluation.controller'
+import { PilotStudyNutritionalEvaluationController } from '../ui/controllers/pilot.study.nutritional.evaluation.controller'
+import { HealthNutritionalEvaluationController } from '../ui/controllers/health.nutritional.evaluation.controller'
 
 export class DI {
     private static instance: DI
@@ -70,6 +72,10 @@ export class DI {
             .to(HomeController).inSingletonScope()
         this.container.bind<EvaluationController>(Identifier.EVALUATION_CONTROLLER)
             .to(EvaluationController).inSingletonScope()
+        this.container.bind<PilotStudyNutritionalEvaluationController>(Identifier.PILOT_STUDY_NUTRITIONAL_EVALUATION_CONTROLLER)
+            .to(PilotStudyNutritionalEvaluationController).inSingletonScope()
+        this.container.bind<HealthNutritionalEvaluationController>(Identifier.HEALTH_NUTRITIONAL_EVALUATION_CONTROLLER)
+            .to(HealthNutritionalEvaluationController).inSingletonScope()
         this.container.bind<NutritionalEvaluationController>(Identifier.NUTRITIONAL_EVALUATION_CONTROLLER)
             .to(NutritionalEvaluationController).inSingletonScope()
         this.container.bind<PatientNutritionalEvaluationController>(Identifier.PATIENT_NUTRITIONAL_EVALUATION_CONTROLLER)

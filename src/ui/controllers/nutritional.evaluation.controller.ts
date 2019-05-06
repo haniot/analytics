@@ -32,6 +32,10 @@ export class NutritionalEvaluationController {
     }
 
     private toJSONView(evaluations: Array<any>): object {
-        return evaluations.map(evaluation => evaluation.toJSON())
+        return evaluations.map(evaluation => {
+            evaluation.health_professional_id = undefined
+            evaluation.pilotstudy_id = undefined
+            return evaluation.toJSON()
+        })
     }
 }

@@ -99,8 +99,9 @@ export class NutritionEvaluationUtils {
      * @param age the age of patient
      * @return the percentile classifications based on age
      */
-    private getPercentileFromAge(age: string) {
-        return BmiPerAge.bmi_boys.filter(value => value.age === age)[0].percentile
+    private getPercentileFromAge(age: string, gender: string) {
+        if (gender === 'male') return BmiPerAge.bmi_boys.filter(value => value.age === age)[0].percentile
+        return BmiPerAge.bmi_girls.filter(value => value.age === age)[0].percentile
     }
 
     /**
@@ -164,7 +165,9 @@ export class NutritionEvaluationUtils {
             /* Calculate patient data based on the measurements */
             const patientBmi = this.calculateBmi(weight.value!, height.value!)
             const patientPercentile =
-                this.getBmiPerAgeClassification(patientBmi, this.getPercentileFromAge(this.getAgeFromBirthDate(birthDate)))
+                this.getBmiPerAgeClassification(
+                    patientBmi,
+                    this.getPercentileFromAge(this.getAgeFromBirthDate(birthDate), item.patient!.gender!))
             const patientWaistHeightRelation = this.getWaistHeightRelation(waist.value!, height.value!)
             const patientDataSetGoals = this.getDataSetGoals(heartRate.dataset!)
 
