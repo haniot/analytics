@@ -18,7 +18,7 @@ import { Zone } from '../model/zone'
 import { BloodGlucoseZones } from './blood.glucose.zones'
 import { BloodGlucoseClassificationTypes } from './blood.glucose.classification.types'
 
-export class NutritionEvaluationUtils {
+export class EvaluationUtils {
 
     /**
      * Calculate the BMI from patient.
@@ -100,8 +100,9 @@ export class NutritionEvaluationUtils {
      * @return the percentile classifications based on age
      */
     private getPercentileFromAge(age: string, gender: string) {
-        if (gender === 'male') return BmiPerAge.bmi_boys.filter(value => value.age === age)[0].percentile
-        return BmiPerAge.bmi_girls.filter(value => value.age === age)[0].percentile
+
+        if (gender === 'male') return BmiPerAge.getInstance().bmi_boys_list!.filter(value => value.age === age)[0].percentile
+        return BmiPerAge.getInstance().bmi_girls_list!.filter(value => value.age === age)[0].percentile
     }
 
     /**

@@ -6,16 +6,16 @@ import { Identifier } from '../../di/identifiers'
 import { INutritionEvaluationRepository } from '../port/nutrition.evaluation.repository.interface'
 import { EvaluationTypes } from '../domain/utils/evaluation.types'
 import { EvaluationRequest } from '../domain/model/evaluation.request'
-import { NutritionEvaluationUtils } from '../domain/utils/nutrition.evaluation.utils'
+import { EvaluationUtils } from '../domain/utils/evaluation.utils'
 
 @injectable()
 export class NutritionEvaluationService implements INutritionEvaluationService {
-    private _nutritionEvaluationUtils: NutritionEvaluationUtils
+    private _nutritionEvaluationUtils: EvaluationUtils
 
     constructor(
         @inject(Identifier.NUTRITION_EVALUATION_REPOSITORY) private readonly _repo: INutritionEvaluationRepository
     ) {
-        this._nutritionEvaluationUtils = new NutritionEvaluationUtils()
+        this._nutritionEvaluationUtils = new EvaluationUtils()
     }
 
     public add(item: any): Promise<NutritionEvaluation> {
