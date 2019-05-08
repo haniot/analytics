@@ -1,68 +1,55 @@
 import csv from 'csvtojson'
 
-const bmiPerAgeBoysCsvPath = './files/bmi-per-age-boys.csv'
-const bmiPerAgeGirlsCsvPath = './files/bmi-per-age-girls.csv'
-
 export class BmiPerAge {
-    private static instance: BmiPerAge
-    private _bmi_boys_list: Array<any> | undefined
-    private _bmi_girls_list: Array<any> | undefined
+    private bmi_per_age_boys_path: string
+    private bmi_per_age_girls_path: string
+    private _bmi_per_age_boys: Array<any> | undefined
+    private _bmi_per_age_girls: Array<any> | undefined
 
-    private constructor() {
-        this.convertCsvToJson()
+    constructor() {
+        this.bmi_per_age_boys_path = __dirname.concat(`${process.env.BMI_PER_AGE_BOYS}`)
+        this.bmi_per_age_girls_path = __dirname.concat(`${process.env.BMI_PER_AGE_GIRLS}`)
     }
 
-    public static getInstance() {
-        if (!this.instance) this.instance = new BmiPerAge()
-        return this.instance
+    get bmi_per_age_boys(): Array<any> | undefined {
+        return this._bmi_per_age_boys
     }
 
-    get bmi_boys_list(): Array<any> | undefined {
-        return this._bmi_boys_list
+    set bmi_per_age_boys(value: Array<any> | undefined) {
+        this._bmi_per_age_boys = value
     }
 
-    set bmi_boys_list(value: Array<any> | undefined) {
-        this._bmi_boys_list = value
+    get bmi_per_age_girls(): Array<any> | undefined {
+        return this._bmi_per_age_girls
     }
 
-    get bmi_girls_list(): Array<any> | undefined {
-        return this._bmi_girls_list
+    set bmi_per_age_girls(value: Array<any> | undefined) {
+        this._bmi_per_age_girls = value
     }
 
-    set bmi_girls_list(value: Array<any> | undefined) {
-        this._bmi_girls_list = value
-    }
+    public async toJSON(): Promise<any> {
+        this.bmi_per_age_boys = await this.csvToJson(this.bmi_per_age_boys_path)
+        this.bmi_per_age_girls = await this.csvToJson(this.bmi_per_age_girls_path)
 
-    private async convertCsvToJson(): Promise<void> {
-        this.bmi_boys_list = await this.csvToJson(bmiPerAgeBoysCsvPath)
-        this.bmi_girls_list = await this.csvToJson(bmiPerAgeGirlsCsvPath)
+        return {
+            bmi_per_age_boys: this.bmi_per_age_boys ? this.bmi_per_age_boys : [],
+            bmi_per_age_girls: this.bmi_per_age_girls ? this.bmi_per_age_girls : []
+        }
     }
 
     private async csvToJson(csvPath: string): Promise<any> {
         try {
             const bmiPerAgeJson = await csv().fromFile(csvPath)
-            for (let i = 0; i < bmiPerAgeJson.length; i++) {
-                bmiPerAgeJson[i].p01 = parseFloat(bmiPerAgeJson[i].p01)
-                bmiPerAgeJson[i].p3 = parseFloat(bmiPerAgeJson[i].p3)
-                bmiPerAgeJson[i].p85 = parseFloat(bmiPerAgeJson[i].p85)
-                bmiPerAgeJson[i].p97 = parseFloat(bmiPerAgeJson[i].p97)
-                bmiPerAgeJson[i].p999 = parseFloat(bmiPerAgeJson[i].p999)
-                bmiPerAgeJson[i] = this.buildBmiPerAgeObject(bmiPerAgeJson[i])
+            for (const item of bmiPerAgeJson) {
+                item.p01 = parseFloat(item.p01)
+                item.p3 = parseFloat(item.p3)
+                item.p85 = parseFloat(item.p85)
+                item.p97 = parseFloat(item.p97)
+                item.p999 = parseFloat(item.p999)
             }
             return Promise.resolve(bmiPerAgeJson)
         } catch (err) {
-            console.log('err', err)
             return Promise.reject(err)
         }
-    }
-
-    private buildBmiPerAgeObject(object: any): any {
-        const result = {
-            age: object.age,
-            percentile: undefined
-        }
-        delete object.age
-        result.percentile = object
-        return result
     }
 }

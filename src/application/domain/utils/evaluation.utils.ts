@@ -97,12 +97,13 @@ export class EvaluationUtils {
     /**
      * Get the percentile based on patient age.
      * @param age the age of patient
+     * @param gender the gender of the patient
      * @return the percentile classifications based on age
      */
-    private getPercentileFromAge(age: string, gender: string) {
-
-        if (gender === 'male') return BmiPerAge.getInstance().bmi_boys_list!.filter(value => value.age === age)[0].percentile
-        return BmiPerAge.getInstance().bmi_girls_list!.filter(value => value.age === age)[0].percentile
+    private async getPercentileFromAge(age: string, gender: string) {
+        const bmiPerAge = await new BmiPerAge().toJSON()
+        if (gender === 'male') return bmiPerAge.bmi_per_age_boys.filter(value => value.age === age)[0]
+        return bmiPerAge.bmi_per_age_girls.filter(value => value.age === age)[0]
     }
 
     /**
