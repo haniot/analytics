@@ -5,4 +5,5 @@ export class NutritionEvaluationEntity extends EvaluationEntity {
     public overweight_indicator?: any
     public heart_rate?: any
     public blood_glucose?: any
+    public blood_pressure?: any
 }

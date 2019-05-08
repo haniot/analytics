@@ -6,6 +6,7 @@ import { NutritionalStatus } from '../../../application/domain/model/nutritional
 import { OverweightIndicator } from '../../../application/domain/model/overweight.indicator'
 import { HeartRate } from '../../../application/domain/model/heart.rate'
 import { BloodGlucose } from '../../../application/domain/model/blood.glucose'
+import { BloodPressure } from '../../../application/domain/model/blood.pressure'
 
 @injectable()
 export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionEvaluation, NutritionEvaluationEntity> {
@@ -29,6 +30,8 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
             result.heart_rate = new HeartRate().fromJSON(json.heart_rate)
         if (json.blood_glucose !== undefined)
             result.blood_glucose = new BloodGlucose().fromJSON(json.blood_glucose)
+        if (json.blood_pressure !== undefined)
+            result.blood_pressure = new BloodPressure().fromJSON(json.blood_pressure)
         return result
     }
 
@@ -50,6 +53,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (item.overweight_indicator !== undefined) result.overweight_indicator = item.overweight_indicator.toJSON()
         if (item.heart_rate !== undefined) result.heart_rate = item.heart_rate.toJSON()
         if (item.blood_glucose !== undefined) result.blood_glucose = item.blood_glucose.toJSON()
+        if (item.blood_pressure !== undefined) result.blood_pressure = item.blood_pressure.toJSON()
         return result
     }
 

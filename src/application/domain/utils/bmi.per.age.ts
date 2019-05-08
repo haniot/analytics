@@ -40,16 +40,22 @@ export class BmiPerAge {
     private async csvToJson(csvPath: string): Promise<any> {
         try {
             const bmiPerAgeJson = await csv().fromFile(csvPath)
-            for (const item of bmiPerAgeJson) {
-                item.p01 = parseFloat(item.p01)
-                item.p3 = parseFloat(item.p3)
-                item.p85 = parseFloat(item.p85)
-                item.p97 = parseFloat(item.p97)
-                item.p999 = parseFloat(item.p999)
-            }
-            return Promise.resolve(bmiPerAgeJson)
+            return Promise.resolve(bmiPerAgeJson.map(item => this.jsonToModel(item)))
         } catch (err) {
             return Promise.reject(err)
+        }
+    }
+
+    private jsonToModel(item: any): any {
+        return {
+            age: item.age,
+            percentile: {
+                p01: parseFloat(item.p01),
+                p3: parseFloat(item.p3),
+                p85: parseFloat(item.p85),
+                p97: parseFloat(item.p97),
+                p999: parseFloat(item.p999)
+            }
         }
     }
 }

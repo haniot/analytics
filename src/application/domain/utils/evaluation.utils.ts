@@ -100,10 +100,10 @@ export class EvaluationUtils {
      * @param gender the gender of the patient
      * @return the percentile classifications based on age
      */
-    private async getPercentileFromAge(age: string, gender: string) {
+    private async getBmiPercentileFromAge(age: string, gender: string) {
         const bmiPerAge = await new BmiPerAge().toJSON()
-        if (gender === 'male') return bmiPerAge.bmi_per_age_boys.filter(value => value.age === age)[0]
-        return bmiPerAge.bmi_per_age_girls.filter(value => value.age === age)[0]
+        if (gender === 'male') return await bmiPerAge.bmi_per_age_boys.filter(value => value.age === age)[0].percentile
+        return await bmiPerAge.bmi_per_age_girls.filter(value => value.age === age)[0].percentile
     }
 
     /**
@@ -166,10 +166,9 @@ export class EvaluationUtils {
 
             /* Calculate patient data based on the measurements */
             const patientBmi = this.calculateBmi(weight.value!, height.value!)
-            const patientPercentile =
+            const patientBmiPercentile =
                 this.getBmiPerAgeClassification(
-                    patientBmi,
-                    this.getPercentileFromAge(this.getAgeFromBirthDate(birthDate), item.patient!.gender!))
+                    patientBmi, await this.getBmiPercentileFromAge(this.getAgeFromBirthDate(birthDate), item.patient!.gender!))
             const patientWaistHeightRelation = this.getWaistHeightRelation(waist.value!, height.value!)
             const patientDataSetGoals = this.getDataSetGoals(heartRate.dataset!)
 
@@ -181,8 +180,8 @@ export class EvaluationUtils {
             evaluation.patient_id = item.patient!.id
             evaluation.nutritional_status = new NutritionalStatus().fromJSON({
                 bmi: patientBmi,
-                percentile: patientPercentile.percentile,
-                classification: patientPercentile.result
+                percentile: patientBmiPercentile.percentile,
+                classification: patientBmiPercentile.result
             })
             evaluation.overweight_indicator = new OverweightIndicator().fromJSON({
                 waist_height_relation: patientWaistHeightRelation,
@@ -195,7 +194,6 @@ export class EvaluationUtils {
                 classification: this.getBloodGlucoseClassification(bloodGlucose),
                 zones: [new Zone().fromJSON(BloodGlucoseZones.zones)]
             })
-
             /* Return the complete evaluation */
             return Promise.resolve(evaluation)
         } catch (err) {

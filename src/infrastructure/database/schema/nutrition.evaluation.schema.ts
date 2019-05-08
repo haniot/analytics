@@ -131,8 +131,78 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
                             required: 'Max value for great postprandial meal is required!'
                         }
                     }
+                },
+                before_sleep: {
+                    good: {
+                        min: {
+                            type: Number,
+                            required: 'Min value for good before sleep is required!'
+                        },
+                        max: {
+                            type: Number,
+                            required: 'Max value for good before sleep is required!'
+                        }
+                    },
+                    great: {
+                        min: {
+                            type: Number,
+                            required: 'Min value for great before sleep is required!'
+                        },
+                        max: {
+                            type: Number,
+                            required: 'Max value for great before sleep is required!'
+                        }
+                    }
+                },
+                glycated_hemoglobin: {
+                    good: {
+                        min: {
+                            type: Number,
+                            required: 'Min value for good glycated hemoglobin is required!'
+                        },
+                        max: {
+                            type: Number,
+                            required: 'Max value for good glycated hemoglobin is required!'
+                        }
+                    },
+                    great: {
+                        min: {
+                            type: Number,
+                            required: 'Min value for glycated hemoglobin meal is required!'
+                        },
+                        max: {
+                            type: Number,
+                            required: 'Max value for glycated hemoglobin meal is required!'
+                        }
+                    }
                 }
             }]
+        },
+        blood_pressure: {
+            value: {
+                type: Number,
+                required: 'Value of blood pressure is required!'
+            },
+            systolic: {
+                type: Number,
+                required: 'Value of systolic blood pressure is required!'
+            },
+            diastolic: {
+                type: Number,
+                required: 'Value of diastolic blood pressure is required!'
+            },
+            systolic_percentile: {
+                type: String,
+                required: 'Systolic blood pressure classification is required!'
+            },
+            diastolic_percentile: {
+                type: String,
+                required: 'Diastolic blood pressure classification is required!'
+            },
+            classification: {
+                type: String,
+                required: 'Classification of blood pressure is required!'
+            },
         }
     },
     {

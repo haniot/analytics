@@ -7,12 +7,14 @@ import { BloodGlucose } from './blood.glucose'
 import { JsonUtils } from '../utils/json.utils'
 import { Evaluation } from './evaluation'
 import { EvaluationTypes } from '../utils/evaluation.types'
+import { BloodPressure } from './blood.pressure'
 
 export class NutritionEvaluation extends Evaluation implements IJSONSerializable, IJSONDeserializable<NutritionEvaluation> {
     private _nutritional_status?: NutritionalStatus
     private _overweight_indicator?: OverweightIndicator
     private _heart_rate?: HeartRate
     private _blood_glucose?: BloodGlucose
+    private _blood_pressure?: BloodPressure
 
     constructor() {
         super()
@@ -51,6 +53,14 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         this._blood_glucose = value
     }
 
+    get blood_pressure(): BloodPressure | undefined {
+        return this._blood_pressure
+    }
+
+    set blood_pressure(value: BloodPressure | undefined) {
+        this._blood_pressure = value
+    }
+
     public fromJSON(json: any): NutritionEvaluation {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
@@ -66,6 +76,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
             this.overweight_indicator = new OverweightIndicator().fromJSON(json.overweight_indicator)
         if (json.heart_rate !== undefined) this.heart_rate = new HeartRate().fromJSON(json.heart_rate)
         if (json.blood_glucose !== undefined) this.blood_glucose = new BloodGlucose().fromJSON(json.blood_glucose)
+        if (json.blood_pressure !== undefined) this.blood_pressure = new BloodPressure().fromJSON(json.blood_pressure)
         return this
     }
 
@@ -76,7 +87,8 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
                 nutritional_status: this.nutritional_status ? this.nutritional_status.toJSON() : undefined,
                 overweight_indicator: this.overweight_indicator ? this.overweight_indicator.toJSON() : undefined,
                 heart_rate: this.heart_rate ? this.heart_rate.toJSON() : undefined,
-                blood_glucose: this.blood_glucose ? this.blood_glucose.toJSON() : undefined
+                blood_glucose: this.blood_glucose ? this.blood_glucose.toJSON() : undefined,
+                blood_pressure: this.blood_pressure ? this.blood_pressure.toJSON() : undefined
             }
         }
     }
