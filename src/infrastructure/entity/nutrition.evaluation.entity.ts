@@ -6,4 +6,5 @@ export class NutritionEvaluationEntity extends EvaluationEntity {
     public heart_rate?: any
     public blood_glucose?: any
     public blood_pressure?: any
+    public counseling?: string
 }

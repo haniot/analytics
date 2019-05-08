@@ -32,6 +32,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
             result.blood_glucose = new BloodGlucose().fromJSON(json.blood_glucose)
         if (json.blood_pressure !== undefined)
             result.blood_pressure = new BloodPressure().fromJSON(json.blood_pressure)
+        if (json.counseling !== undefined) result.counseling = json.counseling
         return result
     }
 
@@ -54,6 +55,8 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (item.heart_rate !== undefined) result.heart_rate = item.heart_rate.toJSON()
         if (item.blood_glucose !== undefined) result.blood_glucose = item.blood_glucose.toJSON()
         if (item.blood_pressure !== undefined) result.blood_pressure = item.blood_pressure.toJSON()
+        if (item.counseling !== undefined) result.counseling = item.counseling
+
         return result
     }
 

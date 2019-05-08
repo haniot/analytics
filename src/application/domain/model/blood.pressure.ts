@@ -3,20 +3,11 @@ import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { JsonUtils } from '../utils/json.utils'
 
 export class BloodPressure implements IJSONSerializable, IJSONDeserializable<BloodPressure> {
-    private _value?: number
     private _systolic?: number
     private _diastolic?: number
     private _systolic_percentile?: string
     private _diastolic_percentile?: string
     private _classification?: string
-
-    get value(): number | undefined {
-        return this._value
-    }
-
-    set value(value: number | undefined) {
-        this._value = value
-    }
 
     get systolic(): number | undefined {
         return this._systolic
@@ -64,18 +55,16 @@ export class BloodPressure implements IJSONSerializable, IJSONDeserializable<Blo
             json = JSON.parse(json)
         }
 
-        if (json.value !== undefined) this.value = json.value
         if (json.systolic !== undefined) this.systolic = json.systolic
         if (json.diastolic !== undefined) this.diastolic = json.diastolic
         if (json.systolic_percentile !== undefined) this.systolic_percentile = json.systolic_percentile
         if (json.diastolic_percentile !== undefined) this.diastolic_percentile = json.diastolic_percentile
-        if (json.classification !== undefined) this.value = json.classification
+        if (json.classification !== undefined) this.classification = json.classification
         return this
     }
 
     public toJSON(): any {
         return {
-            value: this.value,
             systolic: this.systolic,
             diastolic: this.diastolic,
             systolic_percentile: this.systolic_percentile,

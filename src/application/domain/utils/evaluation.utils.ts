@@ -17,6 +17,8 @@ import { BloodGlucoseMeasurement } from '../model/blood.glucose.measurement'
 import { Zone } from '../model/zone'
 import { BloodGlucoseZones } from './blood.glucose.zones'
 import { BloodGlucoseClassificationTypes } from './blood.glucose.classification.types'
+import { NutritionCounseling } from './nutrition.counseling'
+import { BloodPressure } from '../model/blood.pressure'
 
 export class EvaluationUtils {
 
@@ -194,6 +196,23 @@ export class EvaluationUtils {
                 classification: this.getBloodGlucoseClassification(bloodGlucose),
                 zones: [new Zone().fromJSON(BloodGlucoseZones.zones)]
             })
+
+            // TODO Blood pressure logic
+            evaluation.blood_pressure = new BloodPressure().fromJSON({
+                systolic: 80,
+                diastolic: 60,
+                systolic_percentile: 'PAS5',
+                diastolic_percentile: 'PAD5',
+                classification: 'normal'
+            })
+
+            if (evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.OVERWEIGHT ||
+                evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.OBESITY ||
+                evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.SEVERE_OBESITY ||
+                evaluation.overweight_indicator.classification === OverweightClassificationTypes.OVERWEIGHT_OBESITY_RISK) {
+                evaluation.counseling = NutritionCounseling.overweight_obesity.join(' ')
+            }
+
             /* Return the complete evaluation */
             return Promise.resolve(evaluation)
         } catch (err) {

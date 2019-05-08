@@ -15,6 +15,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
     private _heart_rate?: HeartRate
     private _blood_glucose?: BloodGlucose
     private _blood_pressure?: BloodPressure
+    private _counseling?: string
 
     constructor() {
         super()
@@ -61,6 +62,14 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         this._blood_pressure = value
     }
 
+    get counseling(): string | undefined {
+        return this._counseling
+    }
+
+    set counseling(value: string | undefined) {
+        this._counseling = value
+    }
+
     public fromJSON(json: any): NutritionEvaluation {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
@@ -77,6 +86,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         if (json.heart_rate !== undefined) this.heart_rate = new HeartRate().fromJSON(json.heart_rate)
         if (json.blood_glucose !== undefined) this.blood_glucose = new BloodGlucose().fromJSON(json.blood_glucose)
         if (json.blood_pressure !== undefined) this.blood_pressure = new BloodPressure().fromJSON(json.blood_pressure)
+        if (json.counseling !== undefined) this.counseling = json.counseling
         return this
     }
 
@@ -88,7 +98,8 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
                 overweight_indicator: this.overweight_indicator ? this.overweight_indicator.toJSON() : undefined,
                 heart_rate: this.heart_rate ? this.heart_rate.toJSON() : undefined,
                 blood_glucose: this.blood_glucose ? this.blood_glucose.toJSON() : undefined,
-                blood_pressure: this.blood_pressure ? this.blood_pressure.toJSON() : undefined
+                blood_pressure: this.blood_pressure ? this.blood_pressure.toJSON() : undefined,
+                counseling: this.counseling
             }
         }
     }

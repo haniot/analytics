@@ -179,10 +179,6 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
             }]
         },
         blood_pressure: {
-            value: {
-                type: Number,
-                required: 'Value of blood pressure is required!'
-            },
             systolic: {
                 type: Number,
                 required: 'Value of systolic blood pressure is required!'
@@ -202,7 +198,11 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
             classification: {
                 type: String,
                 required: 'Classification of blood pressure is required!'
-            },
+            }
+        },
+        counseling: {
+            type: String,
+            required: 'Counseling of nutritional evaluation is required!'
         }
     },
     {
