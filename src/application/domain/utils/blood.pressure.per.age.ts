@@ -1,14 +1,14 @@
 import csv from 'csvtojson'
 
 export class BloodPressurePerAge {
-    private blood_pressure_per_age_boys_path: string
-    private blood_pressure_per_age_girls_path: string
+    private _blood_pressure_per_age_boys_path: string
+    private _blood_pressure_per_age_girls_path: string
     private _blood_pressure_per_age_boys: Array<any> | undefined
     private _blood_pressure_per_age_girls: Array<any> | undefined
 
     constructor() {
-        this.blood_pressure_per_age_boys_path = __dirname.concat(`${process.env.BLOOD_PRESSURE_PER_AGE_BOYS}`)
-        this.blood_pressure_per_age_girls_path = __dirname.concat(`${process.env.BLOOD_PRESSURE_PER_AGE_GIRLS}`)
+        this._blood_pressure_per_age_boys_path = __dirname.concat(`${process.env.BLOOD_PRESSURE_PER_AGE_BOYS}`)
+        this._blood_pressure_per_age_girls_path = __dirname.concat(`${process.env.BLOOD_PRESSURE_PER_AGE_GIRLS}`)
     }
 
     get blood_pressure_per_age_boys(): Array<any> | undefined {
@@ -28,8 +28,8 @@ export class BloodPressurePerAge {
     }
 
     public async toJSON(): Promise<any> {
-        this.blood_pressure_per_age_boys = await this.csvToJson(this.blood_pressure_per_age_boys_path)
-        this.blood_pressure_per_age_girls = await this.csvToJson(this.blood_pressure_per_age_girls_path)
+        this.blood_pressure_per_age_boys = await this.csvToJson(this._blood_pressure_per_age_boys_path)
+        this.blood_pressure_per_age_girls = await this.csvToJson(this._blood_pressure_per_age_girls_path)
 
         return {
             blood_pressure_per_age_boys: this.blood_pressure_per_age_boys ? this.blood_pressure_per_age_boys : [],

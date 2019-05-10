@@ -181,28 +181,28 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
         blood_pressure: {
             systolic: {
                 type: Number,
-                required: 'Value of systolic blood pressure is required!'
+                // required: 'Value of systolic blood pressure is required!'
             },
             diastolic: {
                 type: Number,
-                required: 'Value of diastolic blood pressure is required!'
+                // required: 'Value of diastolic blood pressure is required!'
             },
             systolic_percentile: {
                 type: String,
-                required: 'Systolic blood pressure classification is required!'
+                // required: 'Systolic blood pressure classification is required!'
             },
             diastolic_percentile: {
                 type: String,
-                required: 'Diastolic blood pressure classification is required!'
+                // required: 'Diastolic blood pressure classification is required!'
             },
             classification: {
                 type: String,
-                required: 'Classification of blood pressure is required!'
+                // required: 'Classification of blood pressure is required!'
             }
         },
         counseling: {
             type: String,
-            required: 'Counseling of nutritional evaluation is required!'
+            // required: 'Counseling of nutritional evaluation is required!'
         }
     },
     {

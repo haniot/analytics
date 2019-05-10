@@ -206,11 +206,13 @@ export class EvaluationUtils {
                 classification: 'normal'
             })
 
+            const counselings = await new NutritionCounseling().toJSON()
+
             if (evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.OVERWEIGHT ||
                 evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.OBESITY ||
                 evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.SEVERE_OBESITY ||
                 evaluation.overweight_indicator.classification === OverweightClassificationTypes.OVERWEIGHT_OBESITY_RISK) {
-                evaluation.counseling = NutritionCounseling.overweight_obesity.join(' ')
+                evaluation.counseling = counselings.overweight_obesity_counseling
             }
 
             /* Return the complete evaluation */

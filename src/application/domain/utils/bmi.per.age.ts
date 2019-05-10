@@ -1,14 +1,14 @@
 import csv from 'csvtojson'
 
 export class BmiPerAge {
-    private bmi_per_age_boys_path: string
-    private bmi_per_age_girls_path: string
+    private _bmi_per_age_boys_path: string
+    private _bmi_per_age_girls_path: string
     private _bmi_per_age_boys: Array<any> | undefined
     private _bmi_per_age_girls: Array<any> | undefined
 
     constructor() {
-        this.bmi_per_age_boys_path = __dirname.concat(`${process.env.BMI_PER_AGE_BOYS}`)
-        this.bmi_per_age_girls_path = __dirname.concat(`${process.env.BMI_PER_AGE_GIRLS}`)
+        this._bmi_per_age_boys_path = __dirname.concat(`${process.env.BMI_PER_AGE_BOYS}`)
+        this._bmi_per_age_girls_path = __dirname.concat(`${process.env.BMI_PER_AGE_GIRLS}`)
     }
 
     get bmi_per_age_boys(): Array<any> | undefined {
@@ -28,8 +28,8 @@ export class BmiPerAge {
     }
 
     public async toJSON(): Promise<any> {
-        this.bmi_per_age_boys = await this.csvToJson(this.bmi_per_age_boys_path)
-        this.bmi_per_age_girls = await this.csvToJson(this.bmi_per_age_girls_path)
+        this.bmi_per_age_boys = await this.csvToJson(this._bmi_per_age_boys_path)
+        this.bmi_per_age_girls = await this.csvToJson(this._bmi_per_age_girls_path)
 
         return {
             bmi_per_age_boys: this.bmi_per_age_boys ? this.bmi_per_age_boys : [],
