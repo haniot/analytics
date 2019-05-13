@@ -5,8 +5,8 @@ import { JsonUtils } from '../utils/json.utils'
 
 export class Patient extends Entity implements IJSONSerializable, IJSONDeserializable<Patient> {
     private _pilotstudy_id?: string
-    private _first_name?: string
-    private _last_name?: string
+    private _name?: string
+    private _email?: string
     private _gender?: string
     private _birth_date?: string
 
@@ -22,20 +22,20 @@ export class Patient extends Entity implements IJSONSerializable, IJSONDeseriali
         this._pilotstudy_id = value
     }
 
-    get first_name(): string | undefined {
-        return this._first_name
+    get name(): string | undefined {
+        return this._name
     }
 
-    set first_name(value: string | undefined) {
-        this._first_name = value
+    set name(value: string | undefined) {
+        this._name = value
     }
 
-    get last_name(): string | undefined {
-        return this._last_name
+    get email(): string | undefined {
+        return this._email
     }
 
-    set last_name(value: string | undefined) {
-        this._last_name = value
+    set email(value: string | undefined) {
+        this._email = value
     }
 
     get gender(): string | undefined {
@@ -62,8 +62,8 @@ export class Patient extends Entity implements IJSONSerializable, IJSONDeseriali
 
         if (json.id !== undefined) super.id = json.id
         if (json.pilotstudy_id !== undefined) this.pilotstudy_id = json.pilotstudy_id
-        if (json.first_name !== undefined) this.first_name = json.first_name
-        if (json.last_name !== undefined) this.last_name = json.last_name
+        if (json.name !== undefined) this.name = json.name
+        if (json.email !== undefined) this.email = json.email
         if (json.gender !== undefined) this.gender = json.gender
         if (json.birth_date !== undefined) this.birth_date = json.birth_date
 
@@ -74,8 +74,8 @@ export class Patient extends Entity implements IJSONSerializable, IJSONDeseriali
         return {
             id: super.id,
             pilotstudy_id: this.pilotstudy_id,
-            first_name: this.first_name,
-            last_name: this.last_name,
+            name: this.name,
+            email: this.email,
             gender: this.gender,
             birth_date: this.birth_date
         }

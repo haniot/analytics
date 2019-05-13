@@ -6,7 +6,7 @@ import { JsonUtils } from '../utils/json.utils'
 export class Zone implements IJSONSerializable, IJSONDeserializable<Zone> {
     private _preprandial?: MealClassification
     private _postprandial?: MealClassification
-    private _before_sleep?: MealClassification
+    private _bedtime?: MealClassification
     private _glycated_hemoglobin?: MealClassification
 
     get preprandial(): MealClassification | undefined {
@@ -25,12 +25,12 @@ export class Zone implements IJSONSerializable, IJSONDeserializable<Zone> {
         this._postprandial = value
     }
 
-    get before_sleep(): MealClassification | undefined {
-        return this._before_sleep
+    get bedtime(): MealClassification | undefined {
+        return this._bedtime
     }
 
-    set before_sleep(value: MealClassification | undefined) {
-        this._before_sleep = value
+    set bedtime(value: MealClassification | undefined) {
+        this._bedtime = value
     }
 
     get glycated_hemoglobin(): MealClassification | undefined {
@@ -49,7 +49,7 @@ export class Zone implements IJSONSerializable, IJSONDeserializable<Zone> {
 
         if (json.preprandial !== undefined) this.preprandial = new MealClassification().fromJSON(json.preprandial)
         if (json.postprandial !== undefined) this.postprandial = new MealClassification().fromJSON(json.postprandial)
-        if (json.before_sleep !== undefined) this.before_sleep = new MealClassification().fromJSON(json.before_sleep)
+        if (json.bedtime !== undefined) this.bedtime = new MealClassification().fromJSON(json.bedtime)
         if (json.glycated_hemoglobin !== undefined)
             this.glycated_hemoglobin = new MealClassification().fromJSON(json.glycated_hemoglobin)
         return this
@@ -59,7 +59,7 @@ export class Zone implements IJSONSerializable, IJSONDeserializable<Zone> {
         return {
             preprandial: this.preprandial ? this.preprandial.toJSON() : undefined,
             postprandial: this.postprandial ? this.postprandial.toJSON() : undefined,
-            before_sleep: this.before_sleep ? this.before_sleep.toJSON() : undefined,
+            bedtime: this.bedtime ? this.bedtime.toJSON() : undefined,
             glycated_hemoglobin: this.glycated_hemoglobin ? this.glycated_hemoglobin.toJSON() : undefined
         }
     }

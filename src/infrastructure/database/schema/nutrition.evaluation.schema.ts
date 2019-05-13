@@ -132,25 +132,25 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
                         }
                     }
                 },
-                before_sleep: {
+                bedtime: {
                     good: {
                         min: {
                             type: Number,
-                            required: 'Min value for good before sleep is required!'
+                            required: 'Min value for good bedtime is required!'
                         },
                         max: {
                             type: Number,
-                            required: 'Max value for good before sleep is required!'
+                            required: 'Max value for good bedtime is required!'
                         }
                     },
                     great: {
                         min: {
                             type: Number,
-                            required: 'Min value for great before sleep is required!'
+                            required: 'Min value for great bedtime is required!'
                         },
                         max: {
                             type: Number,
-                            required: 'Max value for great before sleep is required!'
+                            required: 'Max value for great bedtime is required!'
                         }
                     }
                 },

@@ -19,7 +19,7 @@ const bloodGlucoseZones = {
             max: 180
         }
     },
-    before_sleep: {
+    bedtime: {
         good: {
             min: 80,
             max: 100
@@ -32,7 +32,7 @@ const bloodGlucoseZones = {
     glycated_hemoglobin: {
         good: {
             min: 4.5,
-            max: 6.5
+            max: 6.05
         },
         great: {
             min: 5.7,

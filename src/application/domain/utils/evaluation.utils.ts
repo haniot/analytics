@@ -113,7 +113,7 @@ export class EvaluationUtils {
      * @param dataSet the list of heart rate measurements
      * @return the min, max, average and the dataset
      */
-    private getDataSetGoals(dataSet: Array<DataSetItem>): any {
+    private getHeartRateDataSetGoals(dataSet: Array<DataSetItem>): any {
         let minValue = dataSet[0].value!
         let maxValue = dataSet[0].value!
         let avrg = 0
@@ -156,7 +156,7 @@ export class EvaluationUtils {
         try {
             const evaluation: NutritionEvaluation = new NutritionEvaluation()
 
-            /* Get evaluation request values to do the evaluation*/
+            /* Get request values to do the evaluation*/
             const height: HeightMeasurement = item.measurements!.filter(value => value.type === MeasurementTypes.HEIGHT)[0]
             const weight: WeightMeasurement = item.measurements!.filter(value => value.type === MeasurementTypes.WEIGHT)[0]
             const waist: WaistCircumferenceMeasurement =
@@ -172,7 +172,7 @@ export class EvaluationUtils {
                 this.getBmiPerAgeClassification(
                     patientBmi, await this.getBmiPercentileFromAge(this.getAgeFromBirthDate(birthDate), item.patient!.gender!))
             const patientWaistHeightRelation = this.getWaistHeightRelation(waist.value!, height.value!)
-            const patientDataSetGoals = this.getDataSetGoals(heartRate.dataset!)
+            const patientDataSetGoals = this.getHeartRateDataSetGoals(heartRate.dataset!)
 
             /* Setting Evaluation parameters before save.*/
             evaluation.status = NutritionEvaluationStatusTypes.INCOMPLETE
