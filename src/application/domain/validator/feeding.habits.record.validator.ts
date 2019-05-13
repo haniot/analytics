@@ -30,7 +30,7 @@ export class FeedingHabitsRecordValidator {
         fields = [...new Set(fields)]
         if (fields.length > 0) {
             throw new ValidationException('Required fields were not provided...',
-                'Feeding Habits validation: '.concat(fields.join(', ')).concat(' is required!'))
+                'Feeding Habits Measurement validation: '.concat(fields.join(', ')).concat(' is required!'))
         }
     }
 }

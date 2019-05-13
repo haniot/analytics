@@ -20,7 +20,7 @@ export class FatMeasurementValidator {
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',
-                'Fat validation: '.concat(fields.join(', ')).concat(' required!'))
+                'Fat Measurement validation: '.concat(fields.join(', ')).concat(' required!'))
         }
     }
 }

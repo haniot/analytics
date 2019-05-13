@@ -22,7 +22,7 @@ export class WeightMeasurementValidator {
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',
-                'Weight validation: '.concat(fields.join(', ')).concat(' required!'))
+                'Weight  Measurement validation: '.concat(fields.join(', ')).concat(' required!'))
         }
     }
 }

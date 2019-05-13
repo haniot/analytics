@@ -8,6 +8,8 @@ import { EvaluationTypes } from '../domain/utils/evaluation.types'
 import { EvaluationRequest } from '../domain/model/evaluation.request'
 import { EvaluationUtils } from '../domain/utils/evaluation.utils'
 import { EvaluationRequestValidator } from '../domain/validator/evaluation.request.validator'
+import { UpdateNutritionalEvaluationValidator } from '../domain/validator/update.nutritional.evaluation.validator'
+import { CreateNutritionalEvaluationValidator } from '../domain/validator/create.nutritional.evaluation.validator'
 
 @injectable()
 export class NutritionEvaluationService implements INutritionEvaluationService {
@@ -38,17 +40,22 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     public update(item: NutritionEvaluation): Promise<NutritionEvaluation> {
+        try {
+            UpdateNutritionalEvaluationValidator.validate(item)
+        } catch (err) {
+            return Promise.reject(err)
+        }
         return this._repo.update(item)
     }
 
     public async addEvaluation(item: EvaluationRequest): Promise<NutritionEvaluation> {
         try {
             EvaluationRequestValidator.validate(item)
+            const evaluation: NutritionEvaluation = await this._nutritionEvaluationUtils.generateEvaluation(item)
+            CreateNutritionalEvaluationValidator.validate(evaluation)
+            return this._repo.create(evaluation)
         } catch (err) {
             return Promise.reject(err)
         }
-        const evaluation: NutritionEvaluation = await this._nutritionEvaluationUtils.generateEvaluation(item)
-        return this._repo.create(evaluation)
     }
-
 }

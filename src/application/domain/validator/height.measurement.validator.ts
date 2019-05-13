@@ -20,7 +20,7 @@ export class HeightMeasurementValidator {
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',
-                'Height validation: '.concat(fields.join(', ')).concat(' required!'))
+                'Height Measurement validation: '.concat(fields.join(', ')).concat(' required!'))
         }
     }
 }

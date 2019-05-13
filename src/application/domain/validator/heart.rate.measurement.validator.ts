@@ -23,7 +23,7 @@ export class HeartRateMeasurementValidator {
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',
-                'HeartRate validation: '.concat(fields.join(', ')).concat(' required!'))
+                'Heart Rate Measurement validation: '.concat(fields.join(', ')).concat(' required!'))
         }
     }
 }

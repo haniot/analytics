@@ -20,7 +20,7 @@ export class WaistCircumferenceMeasurementValidator {
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',
-                'WaistCircumference validation: '.concat(fields.join(', ')).concat(' required!'))
+                'Waist Circumference  Measurement validation: '.concat(fields.join(', ')).concat(' required!'))
         }
     }
 }

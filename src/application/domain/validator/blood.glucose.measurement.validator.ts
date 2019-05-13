@@ -23,7 +23,7 @@ export class BloodGlucoseMeasurementValidator {
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',
-                'BloodGlucose validation: '.concat(fields.join(', ')).concat(' required!'))
+                'Blood Glucose Measurement validation: '.concat(fields.join(', ')).concat(' required!'))
         }
     }
 }

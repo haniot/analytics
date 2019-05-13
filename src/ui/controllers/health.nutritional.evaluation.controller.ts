@@ -5,7 +5,6 @@ import { Identifier } from '../../di/identifiers'
 import { INutritionEvaluationService } from '../../application/port/nutrition.evaluation.service.interface'
 import { Request, Response } from 'express'
 import { Query } from '../../infrastructure/repository/query/query'
-import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
 import { ApiExceptionManager } from '../exception/api.exception.manager'
 
 @controller('/healthprofessionals/:healthprofessional_id/nutritional/evaluations')
@@ -20,7 +19,7 @@ export class HealthNutritionalEvaluationController {
         : Promise<Response> {
         try {
             const query: Query = new Query().fromJSON(req.query)
-            query.addFilter({ type: EvaluationTypes.NUTRITION, health_professional_id: req.params.healthprofessional_id })
+            query.addFilter({ health_professional_id: req.params.healthprofessional_id })
             const result: Array<any> = await this._service.getAll(query)
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
         } catch (err) {

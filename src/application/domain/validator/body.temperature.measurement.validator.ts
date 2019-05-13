@@ -20,7 +20,7 @@ export class BodyTemperatureMeasurementValidator {
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',
-                'BodyTemperature validation: '.concat(fields.join(', ')).concat(' required!'))
+                'Body Temperature Measurement validation: '.concat(fields.join(', ')).concat(' required!'))
         }
     }
 }
