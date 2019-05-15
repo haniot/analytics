@@ -19,6 +19,12 @@ import { BloodGlucoseZones } from './blood.glucose.zones'
 import { BloodGlucoseClassificationTypes } from './blood.glucose.classification.types'
 import { NutritionCounseling } from './nutrition.counseling'
 import { BloodPressure } from '../model/blood.pressure'
+import { Counseling } from '../model/counseling'
+import { BloodPressurePerAge } from './blood.pressure.per.age'
+import { ValidationException } from '../exception/validation.exception'
+import { BloodPressurePercentileClassificationTypes } from './blood.pressure.percentile.classification.types'
+import { GenderTypes } from './gender.types'
+import { BloodPressureMeasurement } from '../model/blood.pressure.measurement'
 
 export class EvaluationUtils {
 
@@ -43,17 +49,29 @@ export class EvaluationUtils {
     }
 
     /**
-     * Get age from patient by a birth date.
+     * Get age from patient by a birth date with month.
      * @param birthDate patient's birth date, in DATE format (ISO Format)
      * @return the patient's age value.
      */
-    private getAgeFromBirthDate(birthDate: string): string {
+    private getAgeFromBirthDateWithMonth(birthDate: string): string {
         const dateNow = new Date() // date now
         const dateBirth = new Date(birthDate) // birth date in Date format
         const totalOfMonths = (dateNow.getFullYear() - dateBirth.getFullYear()) * 12 + (dateNow.getMonth() - dateBirth.getMonth())
         const yearsLived = Math.floor(totalOfMonths / 12)
         const monthsLived = totalOfMonths % 12
         return `${yearsLived}a`.concat(monthsLived > 0 ? `${monthsLived}m` : '')
+    }
+
+    /**
+     * Get age from patient by a birth date.
+     * @param birthDate patient's birth date, in DATE format (ISO Format)
+     * @return the patient's age value.
+     */
+    private getAgeFromBirthDate(birthDate: string): number {
+        const dateNow = new Date() // date now
+        const dateBirth = new Date(birthDate) // birth date in Date format
+        const totalOfMonths = (dateNow.getFullYear() - dateBirth.getFullYear()) * 12 + (dateNow.getMonth() - dateBirth.getMonth())
+        return Math.floor(totalOfMonths / 12)
     }
 
     /**
@@ -90,10 +108,10 @@ export class EvaluationUtils {
             result: BmiPerAgeClassificationTypes.OVERWEIGHT
         }
         else if (percentile.p97 < bmi && bmi < percentile.p999) return {
-            percentile: 'p99',
+            percentile: 'p999',
             result: BmiPerAgeClassificationTypes.OBESITY
         }
-        else return { percentile: 'p99', result: BmiPerAgeClassificationTypes.SEVERE_OBESITY }
+        else return { percentile: 'p999', result: BmiPerAgeClassificationTypes.SEVERE_OBESITY }
     }
 
     /**
@@ -147,6 +165,97 @@ export class EvaluationUtils {
     }
 
     /**
+     * Get the percentile from age and height relation.
+     * @param data data reference for age and height percentile relation
+     * @param age age of the patient
+     * @param height height of the patient
+     * @param gender gender of the patient
+     * @return the percentile from age and height relation
+     */
+    private getAgeHeightPercentile(data: Array<any>, age: number, height: number, gender: string): number {
+        if (gender === 'male') {
+            return data.filter(item => item.age === age && item.height === height)[0].percentile
+        }
+        return data.filter(item => item.age === age && item.height === height)[0].percentile
+    }
+
+    /**
+     * Get the percentiles list from systolic/diastolic pressure by a age.
+     * @param data data reference for systolic/diastolic pressure and age relation
+     * @param gender gender of patient
+     * @param age age of patient
+     * @return a list of systolic/diastolic pressure percentiles by a age.
+     */
+    private getSystolicDiastolicPercentilesByAge(data: Array<any>, gender: string, age: number): Array<any> {
+        if (gender === 'male') return data.filter(item => item.age === age)
+        return data.filter(item => item.age === age)
+    }
+
+    /**
+     * Get the blood pressure percentile based on systolic/diastolic percentiles from an age.
+     * @param data data reference for systolic/diastolic percentiles from an age.
+     * @param ageHeightPercentile percentile from age-height relation
+     * @param sys systolic pressure value
+     * @param dia diastolic pressure value
+     * @param age age of the patient
+     * @param gender gender of the patient
+     * @return The blood pressure percentile based on systolic/diastolic percentiles from age.
+     * @throws validation error if the age-height percentile does not were in range or if the systolic/diastolic
+     * pressure percentile by age is not found on reference.
+     */
+    private getBloodPressurePercentile(
+        data: Array<any>, ageHeightPercentile: number, sys: number, dia: number, age: number, gender: string): Promise<number> {
+        try {
+            switch (ageHeightPercentile) {
+                case (5):
+                    return data.filter(item => item.pas_5 === sys)[0].percentile
+                case (10):
+                    return data.filter(item => item.pas_10 === sys)[0].percentile
+                case (25):
+                    return data.filter(item => item.pas_25 === sys)[0].percentile
+                case (50):
+                    return data.filter(item => item.pas_50 === sys)[0].percentile
+                case (75):
+                    return data.filter(item => item.pas_75 === sys)[0].percentile
+                case (90):
+                    return data.filter(item => item.pas_90 === sys)[0].percentile
+                case (95):
+                    return data.filter(item => item.pas_95 === sys)[0].percentile
+                default:
+                    throw new ValidationException('Value not mapped for age-height percentile.')
+            }
+        } catch (err) {
+            throw new ValidationException(`There is no blood pressure percentile value for the ${age}-year-old ` +
+                `${gender} patient, with height percentile ${ageHeightPercentile}, systolic pressure ${sys}, and diastolic ` +
+                `pressure ${dia}`)
+        }
+    }
+
+    /**
+     *  /**
+     * Get the blood pressure percentile classification by your value.
+     * @param ageHeightData
+     * @param sysDiaData
+     * @param age
+     * @param height
+     * @param gender
+     * @param sys
+     * @param dia
+     * @return a string that contains the classification
+     */
+    private async getBloodPressurePercentileClassification(
+        ageHeightData: Array<any>, sysDiaData: Array<any>, age: number, height: number, gender: string, sys: number, dia: number):
+        Promise<string> {
+        const ageHeightPercentile = this.getAgeHeightPercentile(ageHeightData, age, height, gender)
+        const sysDiasPercentiles = this.getSystolicDiastolicPercentilesByAge(sysDiaData, gender, age)
+        const percentile = await this.getBloodPressurePercentile(sysDiasPercentiles, ageHeightPercentile, sys, dia, age, gender)
+        if (percentile < 90) return BloodPressurePercentileClassificationTypes.NORMAL
+        else if (90 <= percentile && percentile < 95) return BloodPressurePercentileClassificationTypes.BORDERLINE
+        else if (95 <= percentile && percentile < 99) return BloodPressurePercentileClassificationTypes.HYPERTENSION_STAGE_1
+        return BloodPressurePercentileClassificationTypes.HYPERTENSION_STAGE_2
+    }
+
+    /**
      * Function used to generate evaluation, by the data passed in evaluation request.
      * @param item, the evaluation request data
      * @return the nutrition evaluation object
@@ -164,17 +273,22 @@ export class EvaluationUtils {
             const heartRate: HeartRate = item.measurements!.filter(value => value.type === MeasurementTypes.HEART_RATE)[0]
             const bloodGlucose: BloodGlucoseMeasurement =
                 item.measurements!.filter(value => value.type === MeasurementTypes.BLOOD_GLUCOSE)[0]
+            const bloodPressure: BloodPressureMeasurement =
+                item.measurements!.filter(value => value.type === MeasurementTypes.BLOOD_PRESSURE)[0]
             const birthDate: string = item.patient && item.patient.birth_date ? item.patient.birth_date : ''
 
             /* Calculate patient data based on the measurements */
+            const patientAgeWithMonths = this.getAgeFromBirthDateWithMonth(birthDate)
+            const patientAge = this.getAgeFromBirthDate(birthDate)
+            const patientGender = item.patient!.gender!/* Setting Evaluation parameters before save.*/
             const patientBmi = this.calculateBmi(weight.value!, height.value!)
             const patientBmiPercentile =
                 this.getBmiPerAgeClassification(
-                    patientBmi, await this.getBmiPercentileFromAge(this.getAgeFromBirthDate(birthDate), item.patient!.gender!))
+                    patientBmi, await this.getBmiPercentileFromAge(patientAgeWithMonths, patientGender))
             const patientWaistHeightRelation = this.getWaistHeightRelation(waist.value!, height.value!)
             const patientDataSetGoals = this.getHeartRateDataSetGoals(heartRate.dataset!)
 
-            /* Setting Evaluation parameters before save.*/
+            /*Get evaluation by the patient data and measurements*/
             evaluation.status = NutritionEvaluationStatusTypes.INCOMPLETE
             evaluation.patient_id = item.patient && item.patient.id ? item.patient.id : undefined
             evaluation.pilotstudy_id = item.pilotstudy_id ? item.pilotstudy_id : undefined
@@ -197,22 +311,35 @@ export class EvaluationUtils {
                 zones: [new Zone().fromJSON(BloodGlucoseZones.zones)]
             })
 
+            const bloodPressureData =
+                await new BloodPressurePerAge().toJSON(
+                    item.patient!.gender === GenderTypes.MALE ? GenderTypes.MALE : GenderTypes.FEMALE)
+
             // TODO Blood pressure logic
             evaluation.blood_pressure = new BloodPressure().fromJSON({
-                systolic: 80,
-                diastolic: 60,
+                systolic: bloodPressure.systolic!,
+                diastolic: bloodPressure.diastolic!,
                 systolic_percentile: 'PAS5',
                 diastolic_percentile: 'PAD5',
-                classification: 'normal'
+                classification:
+                    await this
+                        .getBloodPressurePercentileClassification(
+                            bloodPressureData.blood_pressure_per_age_height,
+                            bloodPressureData.blood_pressure_per_sys_dias,
+                            patientAge,
+                            height.value!,
+                            patientGender,
+                            bloodPressure.systolic!,
+                            bloodPressure.diastolic!                        )
+
             })
 
             const counselings = await new NutritionCounseling().toJSON()
-
             if (evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.OVERWEIGHT ||
                 evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.OBESITY ||
                 evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.SEVERE_OBESITY ||
                 evaluation.overweight_indicator.classification === OverweightClassificationTypes.OVERWEIGHT_OBESITY_RISK) {
-                evaluation.counseling = counselings.overweight_obesity_counseling
+                evaluation.addCounseling(new Counseling().fromJSON(counselings.overweight_obesity_counseling))
             }
 
             /* Return the complete evaluation */

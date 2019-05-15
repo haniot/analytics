@@ -1,4 +1,4 @@
-﻿"age","percentile_value","percentile_systolic_pas5","percentile_systolic_pas10","percentile_systolic_pas25","percentile_systolic_pas50","percentile_systolic_pas75","percentile_systolic_pas90","percentile_systolic_pas95","percentile_diastolic_pad5","percentile_diastolic_pad10","percentile_diastolic_pad25","percentile_diastolic_pad50","percentile_diastolic_pad75","percentile_diastolic_pad90","percentile_diastolic_pad95"
+﻿"age","percentile","pas_5","pas_10","pas_25","pas_50","pas_75","pas_90","pas_95","pad_5","pad_10","pad_25","pad_50","pad_75","pad_90","pad_95"
 "8","50","95","95","96","98","99","100","101","57","57","57","58","59","60","60"
 "8","90","108","109","110","111","113","114","114","71","71","71","72","73","74","74"
 "8","95","112","112","114","115","116","118","118","75","75","75","76","77","78","78"
