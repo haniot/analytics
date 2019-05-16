@@ -8,6 +8,18 @@ import { HeartRate } from '../../../application/domain/model/heart.rate'
 import { BloodGlucose } from '../../../application/domain/model/blood.glucose'
 import { BloodPressure } from '../../../application/domain/model/blood.pressure'
 import { Counseling } from '../../../application/domain/model/counseling'
+import { MeasurementTypes } from '../../../application/domain/utils/measurement.types'
+import { HeightMeasurement } from '../../../application/domain/model/height.measurement'
+import { HeartRateMeasurement } from '../../../application/domain/model/heart.rate.measurement'
+import { BloodPressureMeasurement } from '../../../application/domain/model/blood.pressure.measurement'
+import { WeightMeasurement } from '../../../application/domain/model/weight.measurement'
+import { BloodGlucoseMeasurement } from '../../../application/domain/model/blood.glucose.measurement'
+import { BodyTemperatureMeasurement } from '../../../application/domain/model/body.temperature.measurement'
+import { WaistCircumferenceMeasurement } from '../../../application/domain/model/waist.circumference.measurement'
+import { FatMeasurement } from '../../../application/domain/model/fat.measurement'
+import { PhysicalActivityHabits } from '../../../application/domain/model/physical.activity.habits'
+import { FeedingHabitsRecord } from '../../../application/domain/model/feeding.habits.record'
+import { MedicalRecord } from '../../../application/domain/model/medical.record'
 
 @injectable()
 export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionEvaluation, NutritionEvaluationEntity> {
@@ -27,14 +39,17 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
             result.nutritional_status = new NutritionalStatus().fromJSON(json.nutritional_status)
         if (json.overweight_indicator !== undefined)
             result.overweight_indicator = new OverweightIndicator().fromJSON(json.overweight_indicator)
-        if (json.heart_rate !== undefined)
-            result.heart_rate = new HeartRate().fromJSON(json.heart_rate)
-        if (json.blood_glucose !== undefined)
-            result.blood_glucose = new BloodGlucose().fromJSON(json.blood_glucose)
-        if (json.blood_pressure !== undefined)
-            result.blood_pressure = new BloodPressure().fromJSON(json.blood_pressure)
-        if (json.counseling !== undefined && json.counseling.length)
-            result.counseling = json.counseling.map(item => new Counseling().fromJSON(item))
+        if (json.heart_rate !== undefined) result.heart_rate = new HeartRate().fromJSON(json.heart_rate)
+        if (json.blood_glucose !== undefined) result.blood_glucose = new BloodGlucose().fromJSON(json.blood_glucose)
+        if (json.blood_pressure !== undefined) result.blood_pressure = new BloodPressure().fromJSON(json.blood_pressure)
+        if (json.counseling !== undefined) result.counseling = new Counseling().fromJSON(json.counseling)
+        if (json.measurements !== undefined && json.measurements.length)
+            result.measurements = json.measurements.map(measurement => this.measurementJsonToModel(measurement))
+        if (json.physical_activity_habits !== undefined)
+            result.physical_activity_habits = new PhysicalActivityHabits().fromJSON(json.physical_activity_habits)
+        if (json.feeding_habits_record !== undefined)
+            result.feeding_habits_record = new FeedingHabitsRecord().fromJSON(json.feeding_habits_record)
+        if (json.medical_record !== undefined) result.medical_record = new MedicalRecord().fromJSON(json.medical_record)
         return result
     }
 
@@ -57,14 +72,53 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (item.heart_rate !== undefined) result.heart_rate = item.heart_rate.toJSON()
         if (item.blood_glucose !== undefined) result.blood_glucose = item.blood_glucose.toJSON()
         if (item.blood_pressure !== undefined) result.blood_pressure = item.blood_pressure.toJSON()
-        if (item.counseling !== undefined && item.counseling.length)
-            result.counseling = item.counseling.map(value => value.toJSON())
-
+        if (item.counseling !== undefined) result.counseling = item.counseling.toJSON()
+        if (item.measurements !== undefined && item.measurements.length)
+            result.measurements = item.measurements.map(measurement => measurement.toJSON())
+        if (item.physical_activity_habits !== undefined) result.physical_activity_habits = item.physical_activity_habits.toJSON()
+        if (item.feeding_habits_record !== undefined) result.feeding_habits_record = item.feeding_habits_record.toJSON()
+        if (item.medical_record !== undefined) result.medical_record = item.medical_record.toJSON()
         return result
     }
 
     public transform(item: any): any {
         if (item instanceof NutritionEvaluation) return this.modelToModelEntity(item)
         return this.jsonToModel(item) // json
+    }
+
+    private measurementJsonToModel(item: any): any {
+        if (item.type) {
+            switch (item.type) {
+                case MeasurementTypes.HEIGHT:
+                    return new HeightMeasurement().fromJSON(item)
+                case MeasurementTypes.HEART_RATE:
+                    return new HeartRateMeasurement().fromJSON(item)
+                case MeasurementTypes.BLOOD_PRESSURE:
+                    return new BloodPressureMeasurement().fromJSON(item)
+                case MeasurementTypes.WEIGHT:
+                    if (item.fat !== undefined) {
+                        item.fat = {
+                            ...item.fat,
+                            ...{
+                                device_id: item.device_id,
+                                timestamp: item.timestamp,
+                                user_id: item.user_id
+                            }
+                        }
+                    }
+                    return new WeightMeasurement().fromJSON(item)
+                case MeasurementTypes.BLOOD_GLUCOSE:
+                    return new BloodGlucoseMeasurement().fromJSON(item)
+                case MeasurementTypes.BODY_TEMPERATURE:
+                    return new BodyTemperatureMeasurement().fromJSON(item)
+                case MeasurementTypes.WAIST_CIRCUMFERENCE:
+                    return new WaistCircumferenceMeasurement().fromJSON(item)
+                case MeasurementTypes.FAT:
+                    return new FatMeasurement().fromJSON(item)
+                default:
+                    return item
+            }
+        }
+        return undefined
     }
 }

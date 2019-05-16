@@ -6,5 +6,9 @@ export class NutritionEvaluationEntity extends EvaluationEntity {
     public heart_rate?: any
     public blood_glucose?: any
     public blood_pressure?: any
-    public counseling?: Array<any>
+    public counseling?: any
+    public measurements?: Array<any>
+    public physical_activity_habits?: any
+    public feeding_habits_record?: any
+    public medical_record?: any
 }

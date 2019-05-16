@@ -1,25 +1,26 @@
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { JsonUtils } from '../utils/json.utils'
+import { NutritionalCouncil } from './nutritional.council'
 
 export class Counseling implements IJSONSerializable, IJSONDeserializable<Counseling> {
-    private _type?: string
-    private _councils?: Array<string>
+    private _suggested?: NutritionalCouncil
+    private _definitive?: NutritionalCouncil
 
-    get type(): string | undefined {
-        return this._type
+    get suggested(): NutritionalCouncil | undefined {
+        return this._suggested
     }
 
-    set type(value: string | undefined) {
-        this._type = value
+    set suggested(value: NutritionalCouncil | undefined) {
+        this._suggested = value
     }
 
-    get councils(): Array<string> | undefined {
-        return this._councils
+    get definitive(): NutritionalCouncil | undefined {
+        return this._definitive
     }
 
-    set councils(value: Array<string> | undefined) {
-        this._councils = value
+    set definitive(value: NutritionalCouncil | undefined) {
+        this._definitive = value
     }
 
     public fromJSON(json: any): Counseling {
@@ -28,15 +29,15 @@ export class Counseling implements IJSONSerializable, IJSONDeserializable<Counse
             json = JSON.parse(json)
         }
 
-        if (json.type !== undefined) this.type = json.type
-        if (json.councils !== undefined && json.councils.length) this.councils = json.councils
+        if (json.suggested !== undefined) this.suggested = new NutritionalCouncil().fromJSON(json.suggested)
+        if (json.definitive !== undefined) this.definitive = new NutritionalCouncil().fromJSON(json.definitive)
         return this
     }
 
     public toJSON(): any {
         return {
-            type: this.type,
-            councils: this.councils && this.councils.length ? this.councils : []
+            suggested: this.suggested ? this.suggested.toJSON() : undefined,
+            definitive: this.definitive ? this.definitive.toJSON() : undefined
         }
     }
 }

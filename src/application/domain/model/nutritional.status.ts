@@ -3,9 +3,27 @@ import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { JsonUtils } from '../utils/json.utils'
 
 export class NutritionalStatus implements IJSONSerializable, IJSONDeserializable<NutritionalStatus> {
+    private _height?: number
+    private _weight?: number
     private _bmi?: number
     private _percentile?: string
     private _classification?: string
+
+    get height(): number | undefined {
+        return this._height
+    }
+
+    set height(value: number | undefined) {
+        this._height = value
+    }
+
+    get weight(): number | undefined {
+        return this._weight
+    }
+
+    set weight(value: number | undefined) {
+        this._weight = value
+    }
 
     get bmi(): number | undefined {
         return this._bmi
@@ -37,6 +55,8 @@ export class NutritionalStatus implements IJSONSerializable, IJSONDeserializable
             json = JSON.parse(json)
         }
 
+        if (json.height !== undefined) this.height = json.height
+        if (json.weight !== undefined) this.weight = json.weight
         if (json.bmi !== undefined) this.bmi = json.bmi
         if (json.percentile !== undefined) this.percentile = json.percentile
         if (json.classification !== undefined) this.classification = json.classification
@@ -45,6 +65,8 @@ export class NutritionalStatus implements IJSONSerializable, IJSONDeserializable
 
     public toJSON(): any {
         return {
+            height: this.height,
+            weight: this.weight,
             bmi: this.bmi,
             percentile: this.percentile,
             classification: this.classification

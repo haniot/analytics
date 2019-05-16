@@ -2,29 +2,21 @@ import { BmiPerAgeClassificationTypes } from './bmi.per.age.classification.types
 import { EvaluationRequest } from '../model/evaluation.request'
 import { NutritionEvaluation } from '../model/nutrition.evaluation'
 import { NutritionEvaluationStatusTypes } from './nutrition.evaluation.status.types'
-import { HeightMeasurement } from '../model/height.measurement'
 import { MeasurementTypes } from './measurement.types'
-import { WeightMeasurement } from '../model/weight.measurement'
 import { BmiPerAge } from './bmi.per.age'
 import { NutritionalStatus } from '../model/nutritional.status'
-import { WaistCircumferenceMeasurement } from '../model/waist.circumference.measurement'
 import { OverweightClassificationTypes } from './overweight.classification.types'
 import { OverweightIndicator } from '../model/overweight.indicator'
 import { HeartRate } from '../model/heart.rate'
-import { DataSetItem } from '../model/data.set.item'
 import { BloodGlucose } from '../model/blood.glucose'
-import { BloodGlucoseMeasurement } from '../model/blood.glucose.measurement'
 import { Zone } from '../model/zone'
 import { BloodGlucoseZones } from './blood.glucose.zones'
 import { BloodGlucoseClassificationTypes } from './blood.glucose.classification.types'
-import { NutritionCounseling } from './nutrition.counseling'
 import { BloodPressure } from '../model/blood.pressure'
-import { Counseling } from '../model/counseling'
 import { BloodPressurePerAge } from './blood.pressure.per.age'
 import { ValidationException } from '../exception/validation.exception'
 import { BloodPressurePercentileClassificationTypes } from './blood.pressure.percentile.classification.types'
 import { GenderTypes } from './gender.types'
-import { BloodPressureMeasurement } from '../model/blood.pressure.measurement'
 
 export class EvaluationUtils {
 
@@ -131,14 +123,14 @@ export class EvaluationUtils {
      * @param dataSet the list of heart rate measurements
      * @return the min, max, average and the dataset
      */
-    private getHeartRateDataSetGoals(dataSet: Array<DataSetItem>): any {
-        let minValue = dataSet[0].value!
-        let maxValue = dataSet[0].value!
+    private getHeartRateDataSetGoals(dataSet: Array<any>): any {
+        let minValue = dataSet[0].value
+        let maxValue = dataSet[0].value
         let avrg = 0
         dataSet.forEach(item => {
-            if (item.value! < minValue) minValue = item.value!
-            else if (item.value! > maxValue) maxValue = item.value!
-            avrg += item.value!
+            if (item.value < minValue) minValue = item.value
+            else if (item.value > maxValue) maxValue = item.value
+            avrg += item.value
         })
 
         return {
@@ -154,11 +146,11 @@ export class EvaluationUtils {
      * @param bloodGlucose the blood glucose measurement object
      * @return the blood glucose classification
      */
-    private getBloodGlucoseClassification(bloodGlucose: BloodGlucoseMeasurement): string {
-        const bloodGlucoseLevels = BloodGlucoseZones.zones[bloodGlucose.meal!]
-        if (bloodGlucoseLevels.good.min < bloodGlucose.value! && bloodGlucose.value! < bloodGlucoseLevels.good.max) {
+    private getBloodGlucoseClassification(bloodGlucose: any): string {
+        const bloodGlucoseLevels = BloodGlucoseZones.zones[bloodGlucose.meal]
+        if (bloodGlucoseLevels.good.min < bloodGlucose.value && bloodGlucose.value < bloodGlucoseLevels.good.max) {
             return BloodGlucoseClassificationTypes.GOOD
-        } else if (bloodGlucoseLevels.great.min < bloodGlucose.value! && bloodGlucose.value! < bloodGlucoseLevels.great.max) {
+        } else if (bloodGlucoseLevels.great.min < bloodGlucose.value && bloodGlucose.value < bloodGlucoseLevels.great.max) {
             return BloodGlucoseClassificationTypes.GREAT
         }
         return BloodGlucoseClassificationTypes.UNDEFINED
@@ -266,59 +258,51 @@ export class EvaluationUtils {
             const evaluation: NutritionEvaluation = new NutritionEvaluation()
 
             /* Get request values to do the evaluation*/
-            const height: HeightMeasurement = item.measurements!.filter(value => value.type === MeasurementTypes.HEIGHT)[0]
-            const weight: WeightMeasurement = item.measurements!.filter(value => value.type === MeasurementTypes.WEIGHT)[0]
-            const waist: WaistCircumferenceMeasurement =
-                item.measurements!.filter(value => value.type === MeasurementTypes.WAIST_CIRCUMFERENCE)[0]
-            const heartRate: HeartRate = item.measurements!.filter(value => value.type === MeasurementTypes.HEART_RATE)[0]
-            const bloodGlucose: BloodGlucoseMeasurement =
-                item.measurements!.filter(value => value.type === MeasurementTypes.BLOOD_GLUCOSE)[0]
-            const bloodPressure: BloodPressureMeasurement =
-                item.measurements!.filter(value => value.type === MeasurementTypes.BLOOD_PRESSURE)[0]
-            const birthDate: string = item.patient && item.patient.birth_date ? item.patient.birth_date : ''
+            const evaluationData: any = this.getNutritionalEvaluationInformation(item)
 
             /* Calculate patient data based on the measurements */
-            const patientAgeWithMonths = this.getAgeFromBirthDateWithMonth(birthDate)
-            const patientAge = this.getAgeFromBirthDate(birthDate)
-            const patientGender = item.patient!.gender!/* Setting Evaluation parameters before save.*/
-            const patientBmi = this.calculateBmi(weight.value!, height.value!)
-            const patientBmiPercentile =
-                this.getBmiPerAgeClassification(
-                    patientBmi, await this.getBmiPercentileFromAge(patientAgeWithMonths, patientGender))
-            const patientWaistHeightRelation = this.getWaistHeightRelation(waist.value!, height.value!)
-            const patientDataSetGoals = this.getHeartRateDataSetGoals(heartRate.dataset!)
+            const patientBmi = this.calculateBmi(evaluationData.weight, evaluationData.height)
+            const patientBmiPercentilePerAge =
+                await this.getBmiPercentileFromAge(evaluationData.patient.age_with_month, evaluationData.patient.gender)
+            const patientBmiPercentile = this.getBmiPerAgeClassification(patientBmi, patientBmiPercentilePerAge)
+            const patientWaistHeightRelation =
+                this.getWaistHeightRelation(evaluationData.waist_circumference, evaluationData.height)
+            const patientDataSetGoals = this.getHeartRateDataSetGoals(evaluationData.heart_rate_dataset)
 
             /*Get evaluation by the patient data and measurements*/
             evaluation.status = NutritionEvaluationStatusTypes.INCOMPLETE
-            evaluation.patient_id = item.patient && item.patient.id ? item.patient.id : undefined
-            evaluation.pilotstudy_id = item.pilotstudy_id ? item.pilotstudy_id : undefined
-            evaluation.health_professional_id = item.health_professional_id ? item.health_professional_id : undefined
-            evaluation.patient_id = item.patient!.id
+            evaluation.patient_id = evaluationData.patient_id
+            evaluation.pilotstudy_id = evaluationData.pilotstudy_id
+            evaluation.health_professional_id = evaluationData.health_professional_id
             evaluation.nutritional_status = new NutritionalStatus().fromJSON({
+                height: evaluationData.height,
+                weight: evaluationData.weight,
                 bmi: patientBmi,
                 percentile: patientBmiPercentile.percentile,
                 classification: patientBmiPercentile.result
             })
             evaluation.overweight_indicator = new OverweightIndicator().fromJSON({
+                waist_circumference: evaluationData.waist_circumference,
+                height: evaluationData.height,
                 waist_height_relation: patientWaistHeightRelation,
                 classification: this.getOverweightIndicator(patientWaistHeightRelation)
             })
             evaluation.heart_rate = new HeartRate().fromJSON(patientDataSetGoals)
             evaluation.blood_glucose = new BloodGlucose().fromJSON({
-                value: bloodGlucose.value,
-                meal: bloodGlucose.meal,
-                classification: this.getBloodGlucoseClassification(bloodGlucose),
+                value: evaluationData.blood_glucose.value,
+                meal: evaluationData.blood_glucose.meal,
+                classification: this.getBloodGlucoseClassification(evaluationData.blood_glucose),
                 zones: [new Zone().fromJSON(BloodGlucoseZones.zones)]
             })
 
             const bloodPressureData =
-                await new BloodPressurePerAge().toJSON(
-                    item.patient!.gender === GenderTypes.MALE ? GenderTypes.MALE : GenderTypes.FEMALE)
+                await new BloodPressurePerAge()
+                    .toJSON(evaluationData.patient.gender === GenderTypes.MALE ? GenderTypes.MALE : GenderTypes.FEMALE)
 
             // TODO Blood pressure logic
             evaluation.blood_pressure = new BloodPressure().fromJSON({
-                systolic: bloodPressure.systolic!,
-                diastolic: bloodPressure.diastolic!,
+                systolic: evaluationData.blood_pressure.systolic,
+                diastolic: evaluationData.blood_pressure.diastolic,
                 systolic_percentile: 'PAS5',
                 diastolic_percentile: 'PAD5',
                 classification:
@@ -326,26 +310,54 @@ export class EvaluationUtils {
                         .getBloodPressurePercentileClassification(
                             bloodPressureData.blood_pressure_per_age_height,
                             bloodPressureData.blood_pressure_per_sys_dias,
-                            patientAge,
-                            height.value!,
-                            patientGender,
-                            bloodPressure.systolic!,
-                            bloodPressure.diastolic!                        )
-
+                            evaluationData.patient.age,
+                            evaluationData.height,
+                            evaluationData.patient.gender,
+                            evaluationData.blood_pressure.systolic,
+                            evaluationData.blood_pressure.diastolic)
             })
-
-            const counselings = await new NutritionCounseling().toJSON()
-            if (evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.OVERWEIGHT ||
-                evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.OBESITY ||
-                evaluation.nutritional_status.classification === BmiPerAgeClassificationTypes.SEVERE_OBESITY ||
-                evaluation.overweight_indicator.classification === OverweightClassificationTypes.OVERWEIGHT_OBESITY_RISK) {
-                evaluation.addCounseling(new Counseling().fromJSON(counselings.overweight_obesity_counseling))
-            }
 
             /* Return the complete evaluation */
             return Promise.resolve(evaluation)
         } catch (err) {
             return Promise.reject(err)
+        }
+    }
+
+    private getNutritionalEvaluationInformation(request: EvaluationRequest): any {
+        const patient: any = request.patient!.toJSON()
+        const height = request.measurements!.filter(item => item.type === MeasurementTypes.HEIGHT)[0].toJSON()
+        const weight = request.measurements!.filter(item => item.type === MeasurementTypes.WEIGHT)[0].toJSON()
+        const heart_rate = request.measurements!
+            .filter(item => item.type === MeasurementTypes.HEART_RATE)[0].toJSON()
+        const blood_glucose = request.measurements!
+            .filter(item => item.type === MeasurementTypes.BLOOD_GLUCOSE)[0].toJSON()
+        const blood_pressure = request.measurements!
+            .filter(item => item.type === MeasurementTypes.BLOOD_PRESSURE)[0].toJSON()
+        const waist_circumference = request.measurements!
+            .filter(item => item.type === MeasurementTypes.WAIST_CIRCUMFERENCE)[0].toJSON()
+
+        return {
+            patient: {
+                id: patient.id,
+                age: this.getAgeFromBirthDate(patient.birth_date),
+                age_with_month: this.getAgeFromBirthDateWithMonth(patient.birth_date),
+                gender: patient.gender
+            },
+            height: height.value,
+            weight: weight.value,
+            heart_rate_dataset: heart_rate.dataset,
+            blood_glucose: {
+                value: blood_glucose.value,
+                meal: blood_glucose.meal
+            },
+            blood_pressure: {
+                systolic: blood_pressure.systolic,
+                diastolic: blood_pressure.diastolic
+            },
+            waist_circumference: waist_circumference.value,
+            pilotstudy_id: request.pilotstudy_id!,
+            health_professional_id: request.health_professional_id
         }
     }
 }
