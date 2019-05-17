@@ -89,7 +89,10 @@ export class EvaluationUtils {
      * @return the percentile and the patient's classification of bmi-per age relation.
      */
     private getBmiPerAgeClassification(bmi: number, percentile: any): any {
-        if (bmi < percentile.p01) return { percentile: 'p01', result: BmiPerAgeClassificationTypes.ACCENTUATED_THINNESS }
+        if (bmi < percentile.p01) return {
+            percentile: 'p01',
+            classification: BmiPerAgeClassificationTypes.ACCENTUATED_THINNESS
+        }
         else if (percentile.p01 < bmi && bmi < percentile.p3) return {
             percentile: 'p3',
             classification: BmiPerAgeClassificationTypes.THINNESS
@@ -394,8 +397,10 @@ export class EvaluationUtils {
 
     private getNutritionalEvaluationInformation(request: EvaluationRequest): any {
         const patient: any = request.patient!.toJSON()
-        const height = request.measurements!.filter(item => item.type === MeasurementTypes.HEIGHT)[0].toJSON()
-        const weight = request.measurements!.filter(item => item.type === MeasurementTypes.WEIGHT)[0].toJSON()
+        const height = request.measurements!
+            .filter(item => item.type === MeasurementTypes.HEIGHT)[0].toJSON()
+        const weight = request.measurements!
+            .filter(item => item.type === MeasurementTypes.WEIGHT)[0].toJSON()
         const heart_rate = request.measurements!
             .filter(item => item.type === MeasurementTypes.HEART_RATE)[0].toJSON()
         const blood_glucose = request.measurements!
