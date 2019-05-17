@@ -4,8 +4,8 @@ import { EvaluationStatusTypesValidator } from './evaluation.status.types.valida
 import { ObjectIdValidator } from './object.id.validator'
 import { NutritionalStatusValidator } from './nutritional.status.validator'
 import { OverweightIndicatorValidator } from './overweight.indicator.validator'
-import { HeartRateValidator } from './heart.rate.validator'
 import { BloodGlucoseValidator } from './blood.glucose.validator'
+import { HeartRateValidator } from './heart.rate.validator'
 
 export class UpdateNutritionalEvaluationValidator {
     public static validate(item: NutritionEvaluation): void | ValidationException {

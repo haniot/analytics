@@ -36,7 +36,7 @@ export class HeartRateMeasurement extends Measurement implements IJSONSerializab
     public toJSON(): any {
         return {
             ...super.toJSON(),
-            ...{ dataset: this.dataset && this.dataset.length ? this.dataset.map(item => item.toJSON()) : [] }
+            ...{ dataset: this.dataset && this.dataset.length ? this.dataset.map(item => item.toJSON()) : undefined }
         }
     }
 }

@@ -117,8 +117,6 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         }
 
         super.fromJSON(json)
-        if (json.status !== undefined) this.status = json.status
-        if (json.created_at !== undefined) this.created_at = json.created_at
         if (json.nutritional_status !== undefined)
             this.nutritional_status = new NutritionalStatus().fromJSON(json.nutritional_status)
         if (json.overweight_indicator !== undefined)
@@ -145,7 +143,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
                 blood_glucose: this.blood_glucose ? this.blood_glucose.toJSON() : undefined,
                 blood_pressure: this.blood_pressure ? this.blood_pressure.toJSON() : undefined,
                 counseling: this.counseling ? this.counseling.toJSON() : undefined,
-                measurement: this.measurements ? this.measurements.map(item => item.toJSON()) : [],
+                measurement: this.measurements ? this.measurements.map(item => item.toJSON()) : undefined,
                 physical_activity_habits: this.physical_activity_habits ? this.physical_activity_habits.toJSON() : undefined,
                 feeding_habits_record: this.feeding_habits_record ? this.feeding_habits_record.toJSON() : undefined,
                 medical_record: this.medical_record ? this.medical_record.toJSON() : undefined

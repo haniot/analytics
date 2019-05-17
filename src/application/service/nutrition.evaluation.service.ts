@@ -10,6 +10,10 @@ import { EvaluationUtils } from '../domain/utils/evaluation.utils'
 import { EvaluationRequestValidator } from '../domain/validator/evaluation.request.validator'
 import { UpdateNutritionalEvaluationValidator } from '../domain/validator/update.nutritional.evaluation.validator'
 import { CreateNutritionalEvaluationValidator } from '../domain/validator/create.nutritional.evaluation.validator'
+import { NutritionalCouncil } from '../domain/model/nutritional.council'
+import { ObjectIdValidator } from '../domain/validator/object.id.validator'
+import { Query } from '../../infrastructure/repository/query/query'
+import { NutritionEvaluationStatusTypes } from '../domain/utils/nutrition.evaluation.status.types'
 
 @injectable()
 export class NutritionEvaluationService implements INutritionEvaluationService {
@@ -54,6 +58,22 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             const evaluation: NutritionEvaluation = await this._nutritionEvaluationUtils.generateEvaluation(item)
             CreateNutritionalEvaluationValidator.validate(evaluation)
             return this._repo.create(evaluation)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    public async updateNutritionalCounseling(patientId: string, evaluationId: string, counseling: NutritionalCouncil):
+        Promise<NutritionEvaluation> {
+        try {
+            ObjectIdValidator.validate(patientId)
+            ObjectIdValidator.validate(evaluationId)
+            const nutritionEvaluation: NutritionEvaluation =
+                await this.getById(evaluationId, new Query().fromJSON({ filters: { patient_id: patientId } }))
+            if (!nutritionEvaluation) return Promise.resolve(undefined!)
+            nutritionEvaluation.counseling!.definitive = counseling
+            nutritionEvaluation.status = NutritionEvaluationStatusTypes.COMPLETE
+            return await this.update(nutritionEvaluation)
         } catch (err) {
             return Promise.reject(err)
         }

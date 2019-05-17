@@ -1,4 +1,3 @@
-
 import { ChronicDisease } from './chronic.disease'
 import { JsonUtils } from '../utils/json.utils'
 import { QuestionnaireTypes } from '../utils/questionnaire.types'
@@ -31,9 +30,8 @@ export class MedicalRecord
         }
 
         super.fromJSON(json)
-        if (json.chronic_diseases !== undefined && json.chronic_diseases instanceof Array)
-            this.chronic_diseases =
-                json.chronic_diseases.map(item => new ChronicDisease().fromJSON(item))
+        if (json.chronic_diseases !== undefined && json.chronic_diseases.length)
+            this.chronic_diseases = json.chronic_diseases.map(item => new ChronicDisease().fromJSON(item))
 
         return this
     }
@@ -41,7 +39,7 @@ export class MedicalRecord
     public toJSON(): any {
         return {
             ...super.toJSON(),
-            ...{ chronic_diseases: this.chronic_diseases }
+            ...{ chronic_diseases: this.chronic_diseases && this.chronic_diseases.length ? this.chronic_diseases : undefined }
         }
     }
 }

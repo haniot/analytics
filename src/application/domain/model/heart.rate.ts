@@ -60,7 +60,7 @@ export class HeartRate implements IJSONSerializable, IJSONDeserializable<HeartRa
             min: this.min,
             max: this.max,
             average: this.average,
-            dataset: this.dataset && this.dataset.length ? this.dataset.map(item => item.toJSON()) : []
+            dataset: this.dataset && this.dataset.length ? this.dataset.map(item => item.toJSON()) : undefined
         }
     }
 }

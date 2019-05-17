@@ -11,7 +11,7 @@ export class HeartRateValidator {
         if (!item.dataset || !item.dataset.length) fields.push('dataset')
         else item.dataset.forEach(value => {
             if (!value.value) fields.push('heart_rate.dataset.item.value')
-            if (!value.timestamp) fields.push('heart_rate.dataset.item.timestamp')
+            else if (!value.timestamp) fields.push('heart_rate.dataset.item.timestamp')
             else DatetimeValidator.validate(value.timestamp)
         })
 

@@ -287,5 +287,10 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
     }
 )
 
+nutritionEvaluationSchema.post('save', (err, doc, next) => {
+    if (!err) doc.update({ _id: doc._id }, { $set: { created_at: new Date().toISOString() } })
+    next()
+})
+
 export const NutritionEvaluationRepoModel =
     Mongoose.model<INutritionEvaluation>('NutritionEvaluation', nutritionEvaluationSchema, 'evaluations')
