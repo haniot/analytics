@@ -14,6 +14,7 @@ import { HeightMeasurementValidator } from './height.measurement.validator'
 import { WaistCircumferenceMeasurementValidator } from './waist.circumference.measurement.validator'
 import { FatMeasurementValidator } from './fat.measurement.validator'
 import { Strings } from '../../../utils/strings'
+import { WeightMeasurementValidator } from './weight.measurement.validator'
 
 export class EvaluationRequestValidator {
     public static validate(item: EvaluationRequest): void | ValidationException {
@@ -45,7 +46,7 @@ export class EvaluationRequestValidator {
                         WaistCircumferenceMeasurementValidator.validate(measurement)
                         break
                     case(MeasurementTypes.WEIGHT):
-                        HeightMeasurementValidator.validate(measurement)
+                        WeightMeasurementValidator.validate(measurement)
                         break
                     case(MeasurementTypes.FAT):
                         FatMeasurementValidator.validate(measurement)

@@ -1,5 +1,5 @@
 import HttpStatus from 'http-status-codes'
-import { controller, httpGet, httpPatch, httpPost, request, response } from 'inversify-express-utils'
+import { controller, httpDelete, httpGet, httpPatch, httpPost, request, response } from 'inversify-express-utils'
 import { Request, Response } from 'express'
 import { inject } from 'inversify'
 import { Identifier } from '../../di/identifiers'
@@ -80,17 +80,16 @@ export class PatientNutritionalEvaluationController {
         }
     }
 
-    private toJSONView(item: NutritionEvaluation | Array<NutritionEvaluation>): object {
-        if (item instanceof Array) return item.map(evaluation => {
-            evaluation.health_professional_id = undefined
-            evaluation.pilotstudy_id = undefined
-            evaluation.patient_id = undefined
-            return evaluation.toJSON()
-        })
-        item.health_professional_id = undefined
-        item.pilotstudy_id = undefined
-        item.patient_id = undefined
-        return item.toJSON()
+    @httpDelete('/:evaluation_id')
+    public async removeUser(@request() req: Request, @response() res: Response): Promise<Response> {
+        try {
+            await this._service.removeEvaluation(req.params.patient_id, req.params.evaluation_id)
+            return res.status(HttpStatus.NO_CONTENT).send()
+        } catch (err) {
+            const handlerError = ApiExceptionManager.build(err)
+            return res.status(handlerError.code)
+                .send(handlerError.toJson())
+        }
     }
 
     @httpPost('/:evaluation_id/counselings')
@@ -110,6 +109,19 @@ export class PatientNutritionalEvaluationController {
         } finally {
             req.query = {}
         }
+    }
+
+    private toJSONView(item: NutritionEvaluation | Array<NutritionEvaluation>): object {
+        if (item instanceof Array) return item.map(evaluation => {
+            evaluation.health_professional_id = undefined
+            evaluation.pilotstudy_id = undefined
+            evaluation.patient_id = undefined
+            return evaluation.toJSON()
+        })
+        item.health_professional_id = undefined
+        item.pilotstudy_id = undefined
+        item.patient_id = undefined
+        return item.toJSON()
     }
 
     private jsonToModel(item: any): any {

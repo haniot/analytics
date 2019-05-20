@@ -78,4 +78,14 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             return Promise.reject(err)
         }
     }
+
+    public async removeEvaluation(patientId: string, evaluationId: string): Promise<boolean> {
+        try {
+            ObjectIdValidator.validate(patientId)
+            ObjectIdValidator.validate(evaluationId)
+            return await this._repo.delete(evaluationId)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
 }

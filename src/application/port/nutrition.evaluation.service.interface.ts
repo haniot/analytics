@@ -7,4 +7,5 @@ export interface INutritionEvaluationService extends IService<NutritionEvaluatio
     addEvaluation(item: EvaluationRequest): Promise<NutritionEvaluation>
     updateNutritionalCounseling(patientId: string, evaluationId: string, counseling: NutritionalCouncil):
         Promise<NutritionEvaluation>
+    removeEvaluation(patientId: string, evaluationId: string): Promise<boolean>
 }

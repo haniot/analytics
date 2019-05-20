@@ -19,9 +19,9 @@ gulp.task('ts-lint', () => {
 // COPY FILES
 gulp.task('copy-files', () => {
     const COPY_FILES = ['package.json']
-    const COPY_CSV = ['./src/application/domain/utils/files/*.csv']
+    const COPY_CSV = ['./src/infrastructure/repository/files/*.csv']
     return gulp.src(COPY_FILES)
-        .pipe(gulp.dest('dist')) && gulp.src(COPY_CSV).pipe(gulp.dest('./dist/src/application/domain/utils/files/'))
+        .pipe(gulp.dest('dist')) && gulp.src(COPY_CSV).pipe(gulp.dest('./dist/src/infrastructure/repository/files/'))
 })
 
 // WATCH

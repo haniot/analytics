@@ -6,6 +6,11 @@ import { NutritionalStatusValidator } from './nutritional.status.validator'
 import { OverweightIndicatorValidator } from './overweight.indicator.validator'
 import { HeartRateValidator } from './heart.rate.validator'
 import { BloodGlucoseValidator } from './blood.glucose.validator'
+import { BloodPressureValidator } from './blood.pressure.validator'
+import { MeasurementsValidator } from './measurements.validator'
+import { PhysicalActivityHabitsValidator } from './physical.activity.habits.validator'
+import { FeedingHabitsRecordValidator } from './feeding.habits.record.validator'
+import { MedicalRecordValidator } from './medical.record.validator'
 
 export class CreateNutritionalEvaluationValidator {
     public static validate(item: NutritionEvaluation): void | ValidationException {
@@ -23,8 +28,16 @@ export class CreateNutritionalEvaluationValidator {
         else HeartRateValidator.validate(item.heart_rate)
         if (!item.blood_glucose) fields.push('blood_glucose')
         else BloodGlucoseValidator.validate(item.blood_glucose)
-
-        // TODO Validate Blood Pressure
+        if (!item.blood_pressure) fields.push('blood_pressure')
+        else BloodPressureValidator.validate(item.blood_pressure)
+        if (!item.measurements || !item.measurements.length) fields.push('measurements')
+        else MeasurementsValidator.validate(item.measurements)
+        if (!item.physical_activity_habits) fields.push('physical_activity_habits')
+        else PhysicalActivityHabitsValidator.validate(item.physical_activity_habits)
+        if (!item.feeding_habits_record) fields.push('feeding_habits_record')
+        else FeedingHabitsRecordValidator.validate(item.feeding_habits_record)
+        if (!item.medical_record) fields.push('medical_record')
+        else MedicalRecordValidator.validate(item.medical_record)
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',

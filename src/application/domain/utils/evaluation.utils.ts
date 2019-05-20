@@ -3,7 +3,6 @@ import { EvaluationRequest } from '../model/evaluation.request'
 import { NutritionEvaluation } from '../model/nutrition.evaluation'
 import { NutritionEvaluationStatusTypes } from './nutrition.evaluation.status.types'
 import { MeasurementTypes } from './measurement.types'
-import { BmiPerAge } from './bmi.per.age'
 import { NutritionalStatus } from '../model/nutritional.status'
 import { OverweightClassificationTypes } from './overweight.classification.types'
 import { OverweightIndicator } from '../model/overweight.indicator'
@@ -13,13 +12,18 @@ import { Zone } from '../model/zone'
 import { BloodGlucoseZones } from './blood.glucose.zones'
 import { BloodGlucoseClassificationTypes } from './blood.glucose.classification.types'
 import { BloodPressure } from '../model/blood.pressure'
-import { BloodPressurePerAge } from './blood.pressure.per.age'
 import { ValidationException } from '../exception/validation.exception'
 import { BloodPressurePercentileClassificationTypes } from './blood.pressure.percentile.classification.types'
-import { GenderTypes } from './gender.types'
 import { Counseling } from '../model/counseling'
-import { NutritionCounseling } from './nutrition.counseling'
 import { BloodPressurePerAgeClassificationTypes } from './blood.pressure.per.age.classification.types'
+import { NutritionCounseling } from '../model/nutrition.counseling'
+import { BloodPressurePerAge } from '../model/blood.pressure.per.age'
+import { BmiPerAgeRepository } from '../../../infrastructure/repository/bmi.per.age.repository'
+import { AgeBmiPercentile } from '../model/age.bmi.percentile'
+import { BloodPressurePerAgeRepository } from '../../../infrastructure/repository/blood.pressure.per.age.repository'
+import { BmiPerAge } from '../model/bmi.per.age'
+import { NutritionalCounselingRepository } from '../../../infrastructure/repository/nutritional.counseling.repository'
+import { GenderTypes } from './gender.types'
 
 export class EvaluationUtils {
 
@@ -118,10 +122,9 @@ export class EvaluationUtils {
      * @param gender the gender of the patient
      * @return the percentile classifications based on age
      */
-    private async getBmiPercentileFromAge(age: string, gender: string) {
-        const bmiPerAge = await new BmiPerAge().toJSON()
-        if (gender === 'male') return await bmiPerAge.bmi_per_age_boys.filter(value => value.age === age)[0].percentile
-        return await bmiPerAge.bmi_per_age_girls.filter(value => value.age === age)[0].percentile
+    private async getBmiPercentileFromAge(bmiPerAge: BmiPerAge, age: string, gender: string): Promise<AgeBmiPercentile> {
+        if (gender === 'male') return await bmiPerAge.bmi_per_age_boys!.filter(value => value.age === age)[0]
+        return await bmiPerAge.bmi_per_age_girls!.filter(value => value.age === age)[0]
     }
 
     /**
@@ -303,18 +306,34 @@ export class EvaluationUtils {
             /* Get request values to do the evaluation*/
             const evaluationData: any = this.getNutritionalEvaluationInformation(item)
 
+            /* Get CSV contents*/
+            const bloodPressurePerAgeData: BloodPressurePerAge =
+                await new BloodPressurePerAgeRepository().getBloodPressurePerAgeHeight()
+            const bmiPerAgeData: BmiPerAge = await new BmiPerAgeRepository().getBmiPerAge()
+            const nutritionalCounselingData: NutritionCounseling =
+                await new NutritionalCounselingRepository().getNutritionalCounseling()
+
             /* Calculate patient evaluation data based on the measurements */
+
+            /* Get BMI evaluation */
             const patientBmi = this.calculateBmi(evaluationData.weight, evaluationData.height)
             const patientBmiPercentilePerAge =
-                await this.getBmiPercentileFromAge(evaluationData.patient.age_with_month, evaluationData.patient.gender)
+                await this.getBmiPercentileFromAge(
+                    bmiPerAgeData,
+                    evaluationData.patient.age_with_month,
+                    evaluationData.patient.gender)
             const patientBmiPercentile = this.getBmiPerAgeClassification(patientBmi, patientBmiPercentilePerAge)
+
+            /* Get Overweight Evaluation*/
             const patientWaistHeightRelation =
                 this.getWaistHeightRelation(evaluationData.waist_circumference, evaluationData.height)
-            const patientDataSetGoals = this.getHeartRateDataSetGoals(evaluationData.heart_rate_dataset)
-            const bloodPressureData =
-                await new BloodPressurePerAge()
-                    .toJSON(evaluationData.patient.gender === GenderTypes.MALE ? GenderTypes.MALE : GenderTypes.FEMALE)
             const patientOverweightIndicator = this.getOverweightIndicator(patientWaistHeightRelation)
+
+            /* Get HeartRate Evaluation*/
+            const patientDataSetGoals = this.getHeartRateDataSetGoals(evaluationData.heart_rate_dataset)
+
+            /* Get Blood Pressure Evaluation */
+
             const patientBloodGlucoseClassification = this.getBloodGlucoseClassification(evaluationData.blood_glucose)
             const patientBloodPressureClassification =
                 await this.getBloodPressurePercentileClassification(
