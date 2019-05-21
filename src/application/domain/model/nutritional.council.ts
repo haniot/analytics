@@ -45,9 +45,9 @@ export class NutritionalCouncil implements IJSONSerializable, IJSONDeserializabl
 
     public toJSON(): any {
         return {
-            bmi_whr: this.bmi_whr && this.bmi_whr.length ? this.bmi_whr : undefined,
-            glycemia: this.glycemia && this.glycemia.length ? this.glycemia : undefined,
-            blood_pressure: this.blood_pressure && this.blood_pressure.length ? this.blood_pressure : undefined
+            bmi_whr: this.bmi_whr && this.bmi_whr.length ? this.bmi_whr : [],
+            glycemia: this.glycemia && this.glycemia.length ? this.glycemia : [],
+            blood_pressure: this.blood_pressure && this.blood_pressure.length ? this.blood_pressure : []
         }
     }
 }

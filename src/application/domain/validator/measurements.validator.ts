@@ -2,13 +2,13 @@ import { ValidationException } from '../exception/validation.exception'
 import { MeasurementTypes } from '../utils/measurement.types'
 import { HeightMeasurementValidator } from './height.measurement.validator'
 import { HeartRateMeasurementValidator } from './heart.rate.measurement.validator'
-import { BloodPressureValidator } from './blood.pressure.validator'
 import { WeightMeasurementValidator } from './weight.measurement.validator'
 import { BloodGlucoseMeasurementValidator } from './blood.glucose.measurement.validator'
 import { FatMeasurementValidator } from './fat.measurement.validator'
 import { WaistCircumferenceMeasurementValidator } from './waist.circumference.measurement.validator'
 import { BodyTemperatureMeasurementValidator } from './body.temperature.measurement.validator'
 import { Strings } from '../../../utils/strings'
+import { BloodPressureMeasurementValidator } from './blood.pressure.measurement.validator'
 
 export class MeasurementsValidator {
     public static validate(measurements: Array<any>): void | ValidationException {
@@ -21,7 +21,7 @@ export class MeasurementsValidator {
                     HeartRateMeasurementValidator.validate(item)
                     break
                 case MeasurementTypes.BLOOD_PRESSURE:
-                    BloodPressureValidator.validate(item)
+                    BloodPressureMeasurementValidator.validate(item)
                     break
                 case MeasurementTypes.WEIGHT:
                     WeightMeasurementValidator.validate(item)

@@ -36,8 +36,8 @@ export class Counseling implements IJSONSerializable, IJSONDeserializable<Counse
 
     public toJSON(): any {
         return {
-            suggested: this.suggested ? this.suggested.toJSON() : undefined,
-            definitive: this.definitive ? this.definitive.toJSON() : undefined
+            suggested: this.suggested ? this.suggested.toJSON() : [],
+            definitive: this.definitive ? this.definitive.toJSON() : []
         }
     }
 }

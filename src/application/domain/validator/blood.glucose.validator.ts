@@ -1,9 +1,10 @@
 import { ValidationException } from '../exception/validation.exception'
 import { MealTypesValidator } from './meal.types.validator'
 import { BloodGlucoseClassificationTypesValidator } from './blood.glucose.classification.types.validator'
+import { BloodGlucose } from '../model/blood.glucose'
 
 export class BloodGlucoseValidator {
-    public static validate(item: any): void | ValidationException {
+    public static validate(item: BloodGlucose): void | ValidationException {
         const fields: Array<string> = []
 
         if (!item.value) fields.push('blood_glucose.value')

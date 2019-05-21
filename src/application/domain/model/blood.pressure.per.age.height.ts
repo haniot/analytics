@@ -3,7 +3,7 @@ import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { AgeHeightPercentile } from './age.height.percentile'
 import { JsonUtils } from '../utils/json.utils'
 
-export class BloodPressurePerAge implements IJSONSerializable, IJSONDeserializable<BloodPressurePerAge> {
+export class BloodPressurePerAgeHeight implements IJSONSerializable, IJSONDeserializable<BloodPressurePerAgeHeight> {
     private _blood_pressure_per_age_boys?: Array<AgeHeightPercentile>
     private _blood_pressure_per_age_girls?: Array<AgeHeightPercentile>
 
@@ -23,7 +23,7 @@ export class BloodPressurePerAge implements IJSONSerializable, IJSONDeserializab
         this._blood_pressure_per_age_girls = value
     }
 
-    public fromJSON(json: any): BloodPressurePerAge {
+    public fromJSON(json: any): BloodPressurePerAgeHeight {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

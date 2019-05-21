@@ -1,5 +1,5 @@
 import HttpStatus from 'http-status-codes'
-import { controller, httpDelete, httpGet, httpPatch, httpPost, request, response } from 'inversify-express-utils'
+import { controller, httpDelete, httpGet, httpPost, request, response } from 'inversify-express-utils'
 import { Request, Response } from 'express'
 import { inject } from 'inversify'
 import { Identifier } from '../../di/identifiers'
@@ -61,22 +61,6 @@ export class PatientNutritionalEvaluationController {
                 .send(handlerError.toJson())
         } finally {
             req.query = {}
-        }
-    }
-
-    @httpPatch('/:evaluation_id')
-    public async updateNutritionEvaluationFromPatient(@request() req: Request, @response() res: Response)
-        : Promise<Response> {
-        try {
-            const nutritionEvaluation: NutritionEvaluation = new NutritionEvaluation().fromJSON(req.body)
-            nutritionEvaluation.id = req.params.evaluation_id
-            nutritionEvaluation.patient_id = req.params.patient_id
-            const result: NutritionEvaluation = await this._service.update(nutritionEvaluation)
-            if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
-            return res.status(HttpStatus.OK).send(this.toJSONView(result))
-        } catch (err) {
-            const handleError = ApiExceptionManager.build(err)
-            return res.status(handleError.code).send(handleError.toJson())
         }
     }
 

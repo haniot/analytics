@@ -1,13 +1,13 @@
 import csv from 'csvtojson'
-import { BloodPressurePerSystolicDiastolic } from '../../application/domain/model/blood.pressure.per.systolic.diastolic'
+import { BloodPressurePerSysDias } from '../../application/domain/model/blood.pressure.per.sys.dias'
 
-export class BloodPressurePerSystolicDiastolicRepository {
+export class BloodPressurePerSysDiasRepository {
     private blood_pressure_per_age_sys_dias_boys_path: string = __dirname.concat('/files/blood-pressure-per-sys-dias-boys.csv')
     private blood_pressure_per_age_sys_dias_girls_path: string = __dirname.concat('/files/blood-pressure-per-sys-dias-girls.csv')
 
-    public async getBloodPressurePerAgeHeight(): Promise<BloodPressurePerSystolicDiastolic> {
+    public async getBloodPressurePerAgeHeight(): Promise<BloodPressurePerSysDias> {
         try {
-            const result: BloodPressurePerSystolicDiastolic = new BloodPressurePerSystolicDiastolic()
+            const result: BloodPressurePerSysDias = new BloodPressurePerSysDias()
             result.age_systolic_diastolic_percentile_boys = await this.csvToJson(this.blood_pressure_per_age_sys_dias_boys_path)
             result.age_systolic_diastolic_percentile_girls = await this.csvToJson(this.blood_pressure_per_age_sys_dias_girls_path)
             return Promise.resolve(result)
