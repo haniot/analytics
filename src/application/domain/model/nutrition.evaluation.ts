@@ -12,6 +12,7 @@ import { Counseling } from './counseling'
 import { PhysicalActivityHabits } from './physical.activity.habits'
 import { FeedingHabitsRecord } from './feeding.habits.record'
 import { MedicalRecord } from './medical.record'
+import { SleepHabit } from './sleep.habit'
 
 export class NutritionEvaluation extends Evaluation implements IJSONSerializable, IJSONDeserializable<NutritionEvaluation> {
     private _nutritional_status?: NutritionalStatus
@@ -24,6 +25,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
     private _physical_activity_habits?: PhysicalActivityHabits
     private _feeding_habits_record?: FeedingHabitsRecord
     private _medical_record?: MedicalRecord
+    private _sleep_habit?: SleepHabit
 
     constructor() {
         super()
@@ -110,6 +112,14 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         this._medical_record = value
     }
 
+    get sleep_habit(): SleepHabit | undefined {
+        return this._sleep_habit
+    }
+
+    set sleep_habit(value: SleepHabit | undefined) {
+        this._sleep_habit = value
+    }
+
     public fromJSON(json: any): NutritionEvaluation {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
@@ -130,6 +140,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         if (json.feeding_habits_record !== undefined)
             this.feeding_habits_record = new FeedingHabitsRecord().fromJSON(json.feeding_habits_record)
         if (json.medical_record !== undefined) this.medical_record = new MedicalRecord().fromJSON(json.medical_record)
+        if (json.sleep_habit !== undefined) this.sleep_habit = new SleepHabit().fromJSON(json.sleep_habit)
         return this
     }
 
@@ -146,7 +157,8 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
                 measurements: this.measurements ? this.measurements.map(item => item.toJSON()) : undefined,
                 physical_activity_habits: this.physical_activity_habits ? this.physical_activity_habits.toJSON() : undefined,
                 feeding_habits_record: this.feeding_habits_record ? this.feeding_habits_record.toJSON() : undefined,
-                medical_record: this.medical_record ? this.medical_record.toJSON() : undefined
+                medical_record: this.medical_record ? this.medical_record.toJSON() : undefined,
+                sleep_habit: this.sleep_habit ? this.sleep_habit.toJSON() : undefined,
             }
         }
     }

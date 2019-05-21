@@ -11,4 +11,5 @@ export class NutritionEvaluationEntity extends EvaluationEntity {
     public physical_activity_habits?: any
     public feeding_habits_record?: any
     public medical_record?: any
+    public sleep_habit?: any
 }

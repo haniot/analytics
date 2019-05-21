@@ -272,6 +272,13 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
                 type: { type: String },
                 disease_history: { type: String }
             }]
+        },
+        sleep_habit: {
+            patient_id: { type: Schema.Types.ObjectId },
+            created_at: { type: String },
+            type: { type: String },
+            week_day_sleep: { type: String },
+            week_day_wake_up: { type: String }
         }
     },
     {

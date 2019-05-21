@@ -1,6 +1,6 @@
 export enum FoodAllergyIntoleranceTypes {
     GLUTEN = 'gluten',
-    APVL = 'apvl',
+    APLV = 'aplv',
     LACTOSE = 'lactose',
     DYE = 'dye',
     EGG = 'egg',

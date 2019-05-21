@@ -53,8 +53,7 @@ export class QuestionnaireRecord extends Entity implements IJSONSerializable, IJ
     public toJSON(): any {
         return {
             id: super.id,
-            created_at: this.created_at ? new Date(this.created_at).toISOString() : undefined,
-            type: this._type
+            created_at: this.created_at ? new Date(this.created_at).toISOString() : undefined
         }
     }
 }

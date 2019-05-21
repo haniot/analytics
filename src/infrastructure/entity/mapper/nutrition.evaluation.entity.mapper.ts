@@ -20,6 +20,7 @@ import { FatMeasurement } from '../../../application/domain/model/fat.measuremen
 import { PhysicalActivityHabits } from '../../../application/domain/model/physical.activity.habits'
 import { FeedingHabitsRecord } from '../../../application/domain/model/feeding.habits.record'
 import { MedicalRecord } from '../../../application/domain/model/medical.record'
+import { SleepHabit } from '../../../application/domain/model/sleep.habit'
 
 @injectable()
 export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionEvaluation, NutritionEvaluationEntity> {
@@ -50,6 +51,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (json.feeding_habits_record !== undefined)
             result.feeding_habits_record = new FeedingHabitsRecord().fromJSON(json.feeding_habits_record)
         if (json.medical_record !== undefined) result.medical_record = new MedicalRecord().fromJSON(json.medical_record)
+        if (json.sleep_habit !== undefined) result.sleep_habit = new SleepHabit().fromJSON(json.sleep_habit)
         return result
     }
 
@@ -78,6 +80,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (item.physical_activity_habits !== undefined) result.physical_activity_habits = item.physical_activity_habits.toJSON()
         if (item.feeding_habits_record !== undefined) result.feeding_habits_record = item.feeding_habits_record.toJSON()
         if (item.medical_record !== undefined) result.medical_record = item.medical_record.toJSON()
+        if (item.sleep_habit !== undefined) result.sleep_habit = item.sleep_habit.toJSON()
         return result
     }
 

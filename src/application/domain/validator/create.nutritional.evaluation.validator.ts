@@ -11,6 +11,7 @@ import { MeasurementsValidator } from './measurements.validator'
 import { PhysicalActivityHabitsValidator } from './physical.activity.habits.validator'
 import { FeedingHabitsRecordValidator } from './feeding.habits.record.validator'
 import { MedicalRecordValidator } from './medical.record.validator'
+import { SleepHabitValidator } from './sleep.habit.validator'
 
 export class CreateNutritionalEvaluationValidator {
     public static validate(item: NutritionEvaluation): void | ValidationException {
@@ -38,6 +39,8 @@ export class CreateNutritionalEvaluationValidator {
         else FeedingHabitsRecordValidator.validate(item.feeding_habits_record)
         if (!item.medical_record) fields.push('medical_record')
         else MedicalRecordValidator.validate(item.medical_record)
+        if (!item.sleep_habit) fields.push('sleep_habit')
+        else SleepHabitValidator.validate(item.sleep_habit)
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',

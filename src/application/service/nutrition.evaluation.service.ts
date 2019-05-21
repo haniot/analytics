@@ -119,6 +119,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             result.physical_activity_habits = item.physical_activity_habits
             result.feeding_habits_record = item.feeding_habits_record
             result.medical_record = item.medical_record
+            result.sleep_habit = item.sleep_habit
             result.created_at = new Date(new Date()).toISOString()
 
             // Set Nutritional Status
