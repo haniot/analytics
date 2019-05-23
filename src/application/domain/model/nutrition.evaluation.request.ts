@@ -7,7 +7,7 @@ import { MedicalRecord } from './medical.record'
 import { JsonUtils } from '../utils/json.utils'
 import { SleepHabit } from './sleep.habit'
 
-export class EvaluationRequest implements IJSONSerializable, IJSONDeserializable<EvaluationRequest> {
+export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeserializable<NutritionEvaluationRequest> {
     private _patient?: Patient
     private _measurements?: Array<any>
     private _physical_activity_habits?: PhysicalActivityHabits
@@ -81,7 +81,7 @@ export class EvaluationRequest implements IJSONSerializable, IJSONDeserializable
         this._pilotstudy_id = value
     }
 
-    public fromJSON(json: any): EvaluationRequest {
+    public fromJSON(json: any): NutritionEvaluationRequest {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

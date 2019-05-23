@@ -4,7 +4,7 @@ import { PhysicalActivityHabitsValidator } from './physical.activity.habits.vali
 import { FeedingHabitsRecordValidator } from './feeding.habits.record.validator'
 import { MedicalRecordValidator } from './medical.record.validator'
 import { ObjectIdValidator } from './object.id.validator'
-import { EvaluationRequest } from '../model/evaluation.request'
+import { NutritionEvaluationRequest } from '../model/nutrition.evaluation.request'
 import { MeasurementTypes } from '../utils/measurement.types'
 import { BloodGlucoseMeasurementValidator } from './blood.glucose.measurement.validator'
 import { BloodPressureMeasurementValidator } from './blood.pressure.measurement.validator'
@@ -17,7 +17,7 @@ import { Strings } from '../../../utils/strings'
 import { WeightMeasurementValidator } from './weight.measurement.validator'
 
 export class EvaluationRequestValidator {
-    public static validate(item: EvaluationRequest): void | ValidationException {
+    public static validate(item: NutritionEvaluationRequest): void | ValidationException {
         if (item.patient) PatientValidator.validate(item.patient)
         if (item.physical_activity_habits) PhysicalActivityHabitsValidator.validate(item.physical_activity_habits)
         if (item.feeding_habits_record) FeedingHabitsRecordValidator.validate(item.feeding_habits_record)

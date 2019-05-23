@@ -18,15 +18,19 @@ export abstract class Identifier {
 
     // Services
     public static readonly NUTRITION_EVALUATION_SERVICE: any = Symbol.for('NutritionEvaluationService')
+    public static readonly ODONTOLOGIC_EVALUATION_SERVICE: any = Symbol.for('OdontologicEvaluationService')
 
     // Repositories
     public static readonly NUTRITION_EVALUATION_REPOSITORY: any = Symbol.for('NutritionEvaluationRepository')
+    public static readonly ODONTOLOGIC_EVALUATION_REPOSITORY: any = Symbol.for('OdontologicEvaluationRepository')
 
     // Models
     public static readonly NUTRITION_EVALUATION_REPO_MODEL: any = Symbol.for('NutritionEvaluationRepoModel')
+    public static readonly ODONTOLOGIC_EVALUATION_REPO_MODEL: any = Symbol.for('OdontologicEvaluationRepoModel')
 
     // Mappers
     public static readonly NUTRITION_EVALUATION_ENTITY_MAPPER: any = Symbol.for('NutritionEvaluationEntityMapper')
+    public static readonly ODONTOLOGIC_EVALUATION_ENTITY_MAPPER: any = Symbol.for('OdontologicEvaluationEntityMapper')
 
     // Background Services
     public static readonly MONGODB_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryMongodb')

@@ -23,6 +23,14 @@ import { NutritionalEvaluationController } from '../ui/controllers/nutritional.e
 import { PatientNutritionalEvaluationController } from '../ui/controllers/patient.nutritional.evaluation.controller'
 import { PilotStudyNutritionalEvaluationController } from '../ui/controllers/pilot.study.nutritional.evaluation.controller'
 import { HealthNutritionalEvaluationController } from '../ui/controllers/health.nutritional.evaluation.controller'
+import { OdontologicEvaluationRepoModel } from '../infrastructure/database/schema/odontologic.evaluation.schema'
+import { OdontologicEvaluation } from '../application/domain/model/odontologic.evaluation'
+import { OdontologicEvaluationEntity } from '../infrastructure/entity/odontologic.evaluation.entity'
+import { OdontologicEvaluationEntityMapper } from '../infrastructure/entity/mapper/odontologic.evaluation.entity.mapper'
+import { IOdontologicEvaluationRepository } from '../application/port/odontologic.evaluation.repository.interface'
+import { OdontologicEvaluationRepository } from '../infrastructure/repository/odontologic.evaluation.repository'
+import { IOdontologicEvaluationService } from '../application/port/odontologic.evaluation.service.interface'
+import { OdontologicEvaluationService } from '../application/service/odontologic.evaluation.service'
 
 export class DI {
     private static instance: DI
@@ -84,18 +92,27 @@ export class DI {
         // Services
         this.container.bind<INutritionEvaluationService>
         (Identifier.NUTRITION_EVALUATION_SERVICE).to(NutritionEvaluationService).inSingletonScope()
+        this.container.bind<IOdontologicEvaluationService>
+        (Identifier.ODONTOLOGIC_EVALUATION_SERVICE).to(OdontologicEvaluationService).inSingletonScope()
 
         // Repositories
         this.container.bind<INutritionEvaluationRepository>(Identifier.NUTRITION_EVALUATION_REPOSITORY)
             .to(NutritionEvaluationRepository).inSingletonScope()
+        this.container.bind<IOdontologicEvaluationRepository>(Identifier.ODONTOLOGIC_EVALUATION_REPOSITORY)
+            .to(OdontologicEvaluationRepository).inSingletonScope()
 
         // Models
         this.container.bind(Identifier.NUTRITION_EVALUATION_REPO_MODEL).toConstantValue(NutritionEvaluationRepoModel)
+        this.container.bind(Identifier.ODONTOLOGIC_EVALUATION_REPO_MODEL).toConstantValue(OdontologicEvaluationRepoModel)
 
         // Mappers
         this.container
             .bind<IEntityMapper<NutritionEvaluation, NutritionEvaluationEntity>>(Identifier.NUTRITION_EVALUATION_ENTITY_MAPPER)
             .to(NutritionEvaluationEntityMapper).inSingletonScope()
+        this.container
+            .bind<IEntityMapper<OdontologicEvaluation, OdontologicEvaluationEntity>>
+            (Identifier.ODONTOLOGIC_EVALUATION_ENTITY_MAPPER)
+            .to(OdontologicEvaluationEntityMapper).inSingletonScope()
 
         // Background Services
         this.container

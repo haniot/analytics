@@ -8,7 +8,6 @@ export class PatientValidator {
     public static validate(user: Patient): void | ValidationException {
         const fields: Array<string> = []
         if (!user.name) fields.push('name')
-        if (!user.email) fields.push('email')
         if (!user.gender) fields.push('gender')
         else GenderTypesValidator.validate(user.gender)
         if (!user.birth_date) fields.push('birth_date')

@@ -1,7 +1,6 @@
 import { NutritionEvaluation } from '../model/nutrition.evaluation'
 import { ValidationException } from '../exception/validation.exception'
 import { EvaluationStatusTypesValidator } from './evaluation.status.types.validator'
-import { ObjectIdValidator } from './object.id.validator'
 import { NutritionalStatusValidator } from './nutritional.status.validator'
 import { OverweightIndicatorValidator } from './overweight.indicator.validator'
 import { HeartRateValidator } from './heart.rate.validator'
@@ -12,6 +11,7 @@ import { PhysicalActivityHabitsValidator } from './physical.activity.habits.vali
 import { FeedingHabitsRecordValidator } from './feeding.habits.record.validator'
 import { MedicalRecordValidator } from './medical.record.validator'
 import { SleepHabitValidator } from './sleep.habit.validator'
+import { PatientValidator } from './patient.validator'
 
 export class CreateNutritionalEvaluationValidator {
     public static validate(item: NutritionEvaluation): void | ValidationException {
@@ -19,8 +19,8 @@ export class CreateNutritionalEvaluationValidator {
 
         if (!item.status) fields.push('status')
         else EvaluationStatusTypesValidator.validate(item.status)
-        if (!item.patient_id) fields.push('patient_id')
-        else ObjectIdValidator.validate(item.patient_id)
+        if (!item.patient) fields.push('patient')
+        else PatientValidator.validate(item.patient)
         if (!item.nutritional_status) fields.push('nutritional_status')
         else NutritionalStatusValidator.validate(item.nutritional_status)
         if (!item.overweight_indicator) fields.push('overweight_indicator')

@@ -13,8 +13,10 @@ import { PhysicalActivityHabits } from './physical.activity.habits'
 import { FeedingHabitsRecord } from './feeding.habits.record'
 import { MedicalRecord } from './medical.record'
 import { SleepHabit } from './sleep.habit'
+import { Patient } from './patient'
 
 export class NutritionEvaluation extends Evaluation implements IJSONSerializable, IJSONDeserializable<NutritionEvaluation> {
+    private _patient?: Patient
     private _nutritional_status?: NutritionalStatus
     private _overweight_indicator?: OverweightIndicator
     private _heart_rate?: HeartRate
@@ -30,6 +32,14 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
     constructor() {
         super()
         super.type = EvaluationTypes.NUTRITION
+    }
+
+    get patient(): Patient | undefined {
+        return this._patient
+    }
+
+    set patient(value: Patient | undefined) {
+        this._patient = value
     }
 
     get nutritional_status(): NutritionalStatus | undefined {
@@ -127,6 +137,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         }
 
         super.fromJSON(json)
+        if (json.patient !== undefined) this.patient = new Patient().fromJSON(json.patient)
         if (json.nutritional_status !== undefined)
             this.nutritional_status = new NutritionalStatus().fromJSON(json.nutritional_status)
         if (json.overweight_indicator !== undefined)
@@ -148,6 +159,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         return {
             ...super.toJSON(),
             ...{
+                patient: this.patient ? this.patient.toJSON() : undefined,
                 nutritional_status: this.nutritional_status ? this.nutritional_status.toJSON() : undefined,
                 overweight_indicator: this.overweight_indicator ? this.overweight_indicator.toJSON() : undefined,
                 heart_rate: this.heart_rate ? this.heart_rate.toJSON() : undefined,
@@ -158,7 +170,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
                 physical_activity_habits: this.physical_activity_habits ? this.physical_activity_habits.toJSON() : undefined,
                 feeding_habits_record: this.feeding_habits_record ? this.feeding_habits_record.toJSON() : undefined,
                 medical_record: this.medical_record ? this.medical_record.toJSON() : undefined,
-                sleep_habit: this.sleep_habit ? this.sleep_habit.toJSON() : undefined,
+                sleep_habit: this.sleep_habit ? this.sleep_habit.toJSON() : undefined
             }
         }
     }

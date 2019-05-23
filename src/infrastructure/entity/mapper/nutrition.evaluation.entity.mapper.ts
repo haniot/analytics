@@ -21,6 +21,7 @@ import { PhysicalActivityHabits } from '../../../application/domain/model/physic
 import { FeedingHabitsRecord } from '../../../application/domain/model/feeding.habits.record'
 import { MedicalRecord } from '../../../application/domain/model/medical.record'
 import { SleepHabit } from '../../../application/domain/model/sleep.habit'
+import { Patient } from '../../../application/domain/model/patient'
 
 @injectable()
 export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionEvaluation, NutritionEvaluationEntity> {
@@ -32,8 +33,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (json.status !== undefined) result.status = json.status
         if (json.created_at !== undefined) result.created_at = json.created_at
         if (json.type !== undefined) result.type = json.type
-        if (json.patient_id !== undefined) result.patient_id = json.patient_id
-        if (json.patient_id !== undefined) result.patient_id = json.patient_id
+        if (json.patient !== undefined) result.patient = new Patient().fromJSON(json.patient)
         if (json.pilotstudy_id !== undefined) result.pilotstudy_id = json.pilotstudy_id
         if (json.health_professional_id !== undefined) result.health_professional_id = json.health_professional_id
         if (json.nutritional_status !== undefined)
@@ -66,7 +66,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (item.status !== undefined) result.status = item.status
         if (item.created_at !== undefined) result.created_at = item.created_at
         if (item.type !== undefined) result.type = item.type
-        if (item.patient_id !== undefined) result.patient_id = item.patient_id
+        if (item.patient !== undefined) result.patient = item.patient.toJSON()
         if (item.pilotstudy_id !== undefined) result.pilotstudy_id = item.pilotstudy_id
         if (item.health_professional_id !== undefined) result.health_professional_id = item.health_professional_id
         if (item.nutritional_status !== undefined) result.nutritional_status = item.nutritional_status.toJSON()

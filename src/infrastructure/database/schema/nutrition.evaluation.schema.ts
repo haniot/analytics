@@ -9,10 +9,28 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
             type: String,
             required: 'Status of nutrition evaluation is required!'
         },
-        created_at: { type: String },
-        patient_id: {
-            type: Schema.Types.ObjectId,
-            required: 'Id of patient of nutrition evaluation is required!'
+        created_at: { type: Date },
+        patient: {
+            id: {
+                type: Schema.Types.ObjectId
+            },
+            email: { /* Common parameter between admin, patient and health professional. */
+                type: String,
+                index: { unique: true }
+            }, /* Health Professional parameters*/
+            name: {
+                type: String
+            },
+            gender: {
+                type: String
+            },
+            birth_date: {
+                type: String
+            },
+            pilotstudy_id: {
+                type: Schema.Types.ObjectId,
+                ref: 'PilotStudy'
+            }
         },
         pilotstudy_id: {
             type: Schema.Types.ObjectId,
@@ -293,11 +311,6 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
         }
     }
 )
-
-nutritionEvaluationSchema.post('save', (err, doc, next) => {
-    if (!err) doc.update({ _id: doc._id }, { $set: { created_at: new Date().toISOString() } })
-    next()
-})
 
 export const NutritionEvaluationRepoModel =
     Mongoose.model<INutritionEvaluation>('NutritionEvaluation', nutritionEvaluationSchema, 'evaluations')

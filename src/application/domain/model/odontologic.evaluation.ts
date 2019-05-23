@@ -1,18 +1,21 @@
-import { Entity } from './entity'
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
+import { Entity } from './entity'
 import { JsonUtils } from '../utils/json.utils'
+import { EvaluationTypes } from '../utils/evaluation.types'
 import { DatetimeValidator } from '../validator/date.time.validator'
 
-export class Evaluation extends Entity implements IJSONSerializable, IJSONDeserializable<Evaluation> {
+export class OdontologicEvaluation extends Entity implements IJSONSerializable, IJSONDeserializable<OdontologicEvaluation> {
     private _type?: string
-    private _status?: string
     private _created_at?: Date
-    private _pilotstudy_id?: string
+    private _total_patients?: number
+    private _file_csv?: string
+    private _file_xls?: string
     private _health_professional_id?: string
 
-    public constructor() {
+    constructor() {
         super()
+        this.type = EvaluationTypes.ODONTOLOGIC
     }
 
     get type(): string | undefined {
@@ -23,14 +26,6 @@ export class Evaluation extends Entity implements IJSONSerializable, IJSONDeseri
         this._type = value
     }
 
-    get status(): string | undefined {
-        return this._status
-    }
-
-    set status(value: string | undefined) {
-        this._status = value
-    }
-
     get created_at(): Date | undefined {
         return this._created_at
     }
@@ -39,12 +34,28 @@ export class Evaluation extends Entity implements IJSONSerializable, IJSONDeseri
         this._created_at = value
     }
 
-    get pilotstudy_id(): string | undefined {
-        return this._pilotstudy_id
+    get total_patients(): number | undefined {
+        return this._total_patients
     }
 
-    set pilotstudy_id(value: string | undefined) {
-        this._pilotstudy_id = value
+    set total_patients(value: number | undefined) {
+        this._total_patients = value
+    }
+
+    get file_csv(): string | undefined {
+        return this._file_csv
+    }
+
+    set file_csv(value: string | undefined) {
+        this._file_csv = value
+    }
+
+    get file_xls(): string | undefined {
+        return this._file_xls
+    }
+
+    set file_xls(value: string | undefined) {
+        this._file_xls = value
     }
 
     get health_professional_id(): string | undefined {
@@ -60,16 +71,16 @@ export class Evaluation extends Entity implements IJSONSerializable, IJSONDeseri
         return new Date(value)
     }
 
-    public fromJSON(json: any): Evaluation {
+    public fromJSON(json: any): OdontologicEvaluation {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)
         }
 
-        if (json.type !== undefined) this.type = json.type
-        if (json.status !== undefined) this.status = json.status
         if (json.created_at !== undefined) this.created_at = this.convertDatetimeString(json.created_at)
-        if (json.pilotstudy_id !== undefined) this.pilotstudy_id = json.pilotstudy_id
+        if (json.total_patients !== undefined) this.total_patients = json.total_patients
+        if (json.file_csv !== undefined) this.file_csv = json.file_csv
+        if (json.file_xls !== undefined) this.file_xls = json.file_xls
         if (json.health_professional_id !== undefined) this.health_professional_id = json.health_professional_id
         return this
     }
@@ -77,10 +88,12 @@ export class Evaluation extends Entity implements IJSONSerializable, IJSONDeseri
     public toJSON(): any {
         return {
             id: super.id,
-            status: this.status,
             created_at: this.created_at,
-            pilotstudy_id: this.pilotstudy_id,
+            total_patients: this.total_patients,
+            file_csv: this.file_csv,
+            file_xls: this.file_xls,
             health_professional_id: this.health_professional_id
         }
     }
+
 }

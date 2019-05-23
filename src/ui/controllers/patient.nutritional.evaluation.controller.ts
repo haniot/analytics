@@ -16,7 +16,7 @@ import { BloodGlucoseMeasurement } from '../../application/domain/model/blood.gl
 import { BodyTemperatureMeasurement } from '../../application/domain/model/body.temperature.measurement'
 import { WaistCircumferenceMeasurement } from '../../application/domain/model/waist.circumference.measurement'
 import { FatMeasurement } from '../../application/domain/model/fat.measurement'
-import { EvaluationRequest } from '../../application/domain/model/evaluation.request'
+import { NutritionEvaluationRequest } from '../../application/domain/model/nutrition.evaluation.request'
 import { Strings } from '../../utils/strings'
 import { ApiException } from '../exception/api.exception'
 import { NutritionalCouncil } from '../../application/domain/model/nutritional.council'
@@ -32,7 +32,7 @@ export class PatientNutritionalEvaluationController {
     public async addNutritionalEvaluationFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
             req.body.patient.id = req.params.patient_id
-            const evaluation: EvaluationRequest = new EvaluationRequest().fromJSON(req.body)
+            const evaluation: NutritionEvaluationRequest = new NutritionEvaluationRequest().fromJSON(req.body)
             evaluation.measurements = req.body.measurements.map(item => {
                 item.user_id = req.params.patient_id
                 return this.jsonToModel(item)
@@ -99,12 +99,10 @@ export class PatientNutritionalEvaluationController {
         if (item instanceof Array) return item.map(evaluation => {
             evaluation.health_professional_id = undefined
             evaluation.pilotstudy_id = undefined
-            evaluation.patient_id = undefined
             return evaluation.toJSON()
         })
         item.health_professional_id = undefined
         item.pilotstudy_id = undefined
-        item.patient_id = undefined
         return item.toJSON()
     }
 

@@ -5,7 +5,7 @@ import { NutritionEvaluation } from '../domain/model/nutrition.evaluation'
 import { Identifier } from '../../di/identifiers'
 import { INutritionEvaluationRepository } from '../port/nutrition.evaluation.repository.interface'
 import { EvaluationTypes } from '../domain/utils/evaluation.types'
-import { EvaluationRequest } from '../domain/model/evaluation.request'
+import { NutritionEvaluationRequest } from '../domain/model/nutrition.evaluation.request'
 import { EvaluationRequestValidator } from '../domain/validator/evaluation.request.validator'
 import { CreateNutritionalEvaluationValidator } from '../domain/validator/create.nutritional.evaluation.validator'
 import { NutritionalCouncil } from '../domain/model/nutritional.council'
@@ -68,7 +68,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         throw Error('Not implemented!')
     }
 
-    public async addEvaluation(item: EvaluationRequest): Promise<NutritionEvaluation> {
+    public async addEvaluation(item: NutritionEvaluationRequest): Promise<NutritionEvaluation> {
         try {
             EvaluationRequestValidator.validate(item)
             const evaluation: NutritionEvaluation = await this.generateEvaluation(item)
@@ -106,13 +106,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     // Generate Nutrition Evaluation Function
-    private async generateEvaluation(item: EvaluationRequest): Promise<NutritionEvaluation> {
+    private async generateEvaluation(item: NutritionEvaluationRequest): Promise<NutritionEvaluation> {
         const result: NutritionEvaluation = new NutritionEvaluation()
         try {
             const info = await this.getNutritionalEvaluationInformation(item)
             // Set General Information
             result.status = NutritionEvaluationStatusTypes.INCOMPLETE
-            result.patient_id = info.patient.id
+            result.patient = item.patient
             result.pilotstudy_id = info.pilotstudy_id
             result.health_professional_id = info.health_professional_id
             result.measurements = item.measurements
@@ -120,7 +120,6 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             result.feeding_habits_record = item.feeding_habits_record
             result.medical_record = item.medical_record
             result.sleep_habit = item.sleep_habit
-            result.created_at = new Date(new Date()).toISOString()
 
             // Set Nutritional Status
             result.nutritional_status = new NutritionalStatus().fromJSON({
@@ -179,7 +178,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     // Evaluation Information Functions
-    private async getNutritionalEvaluationInformation(request: EvaluationRequest): Promise<any> {
+    private async getNutritionalEvaluationInformation(request: NutritionEvaluationRequest): Promise<any> {
         try {
             const patient: any = request.patient!.toJSON()
             const height = request.measurements!
@@ -201,12 +200,6 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                 await this.getBloodPressureAgeHeightPercentile(patientAge.age, height.value, patient.gender)
 
             const result = {
-                patient: {
-                    id: patient.id,
-                    age: patientAge.age,
-                    age_with_months: patientAge.age_with_months,
-                    gender: patient.gender
-                },
                 measurements: {
                     height: height.value,
                     weight: weight.value,
@@ -241,6 +234,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                 pilotstudy_id: request.pilotstudy_id,
                 health_professional_id: request.health_professional_id
             }
+
             return Promise.resolve(result)
         } catch (err) {
             return Promise.reject(err)
