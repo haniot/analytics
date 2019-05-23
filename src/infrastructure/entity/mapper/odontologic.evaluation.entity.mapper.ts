@@ -1,7 +1,9 @@
 import { IEntityMapper } from '../../port/entity.mapper.interface'
 import { OdontologicEvaluationEntity } from '../odontologic.evaluation.entity'
 import { OdontologicEvaluation } from '../../../application/domain/model/odontologic.evaluation'
+import { injectable } from 'inversify'
 
+@injectable()
 export class OdontologicEvaluationEntityMapper implements IEntityMapper<OdontologicEvaluation, OdontologicEvaluationEntity> {
     public jsonToModel(json: any): OdontologicEvaluation {
         const result: OdontologicEvaluation = new OdontologicEvaluation()
