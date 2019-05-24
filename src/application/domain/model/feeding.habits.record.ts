@@ -64,15 +64,13 @@ export class FeedingHabitsRecord
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)
         }
-
         super.fromJSON(json)
-
-        if (json.weekly_feeding_habits !== undefined && json.weekly_feeding_habits instanceof Array)
+        if (json.weekly_feeding_habits !== undefined && json.weekly_feeding_habits.length)
             this.weekly_feeding_habits =
                 json.weekly_feeding_habits.map(item => new WeeklyFoodRecord().fromJSON(item))
         if (json.daily_water_glasses !== undefined) this.daily_water_glasses = json.daily_water_glasses
         if (json.six_month_breast_feeding !== undefined) this.six_month_breast_feeding = json.six_month_breast_feeding
-        if (json.food_allergy_intolerance !== undefined && json.food_allergy_intolerance instanceof Array)
+        if (json.food_allergy_intolerance !== undefined && json.food_allergy_intolerance.length)
             this.food_allergy_intolerance =
                 json.food_allergy_intolerance.filter(item => typeof item === 'string')
         if (json.breakfast_daily_frequency !== undefined) this.breakfast_daily_frequency = json.breakfast_daily_frequency

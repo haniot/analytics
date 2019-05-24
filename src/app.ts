@@ -73,7 +73,7 @@ export class App {
 
             // create application/json parser
             // {@link https://www.npmjs.com/package/body-parser}
-            app.use(bodyParser.json())
+            app.use(bodyParser.json({ limit: '500kb'}))
             // create application/x-www-form-urlencoded parser
             app.use(bodyParser.urlencoded({ extended: false }))
 
