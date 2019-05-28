@@ -29,12 +29,17 @@ import { SevenDaysFeedingFrequencyTypes } from '../domain/utils/seven.days.feedi
 import { MealTypes } from '../domain/utils/meal.types'
 import { Parser } from 'json2csv'
 import json2xls from 'json2xls'
+import fs, { readFileSync } from 'fs'
+import { AwsFilesRepository } from '../../infrastructure/repository/aws.files.repository'
+import { IFilesRepository } from '../../infrastructure/port/files.repository.interface'
+import { EvaluationFile } from '../domain/model/evaluation.file'
+import { ObjectIdValidator } from '../domain/validator/object.id.validator'
+import { EvaluationTypes } from '../domain/utils/evaluation.types'
 
 @injectable()
 export class OdontologicEvaluationService implements IOdontologicEvaluationService {
     constructor(
         @inject(Identifier.ODONTOLOGIC_EVALUATION_REPOSITORY) readonly _repo: IOdontologicEvaluationRepository
-        // @inject(Identifier.ODONTOLOGIC_EVALUATION_REPOSITORY) private readonly _repo: IOdontologicEvaluationRepository
     ) {
     }
 
@@ -43,11 +48,24 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
     }
 
     public getAll(query: IQuery): Promise<Array<OdontologicEvaluation>> {
-        throw Error('Not implemented!')
+        try {
+            ObjectIdValidator.validate(query.toJSON().filters.pilotstudy_id)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+        query.addFilter({ type: EvaluationTypes.ODONTOLOGIC })
+        return this._repo.find(query)
     }
 
     public getById(id: string, query: IQuery): Promise<OdontologicEvaluation> {
-        throw Error('Not implemented!')
+        try {
+            ObjectIdValidator.validate(id)
+            ObjectIdValidator.validate(query.toJSON().filters.pilotstudy_id)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+        query.addFilter({ _id: id, type: EvaluationTypes.ODONTOLOGIC })
+        return this._repo.findOne(query)
     }
 
     public remove(id: string): Promise<boolean> {
@@ -58,19 +76,55 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         throw Error('Not implemented!')
     }
 
+    public removeEvaluation(pilotId: string, evaluationId: string): Promise<boolean> {
+        try {
+            ObjectIdValidator.validate(pilotId)
+            ObjectIdValidator.validate(evaluationId)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+        return this._repo.delete(evaluationId)
+    }
+
     public async addEvaluation(item: Array<OdontologicEvaluationRequest>): Promise<OdontologicEvaluation> {
-        await this.generateEvaluation(item)
-        return Promise.resolve(undefined!)
+        const evaluation: OdontologicEvaluation = await this.generateEvaluation(item)
+        return this._repo.create(evaluation)
     }
 
     private async generateEvaluation(requests: Array<OdontologicEvaluationRequest>): Promise<OdontologicEvaluation> {
-        const result: OdontologicEvaluation = new OdontologicEvaluation()
-        const evaluationData = requests.map(item => this.getEvaluationData(item))
-        const csv = await this.generateCsvEvaluation(evaluationData)
-        const xls = await this.generateXlsEvaluation(evaluationData)
-        console.log(csv)
-        xls
-        return Promise.resolve(result)
+        try {
+            const evaluationData = requests.map(item => this.getEvaluationData(item))
+
+            await this.generateCsvEvaluation(evaluationData)
+            await this.generateXlsEvaluation(evaluationData)
+
+            const filesRepo: IFilesRepository = new AwsFilesRepository()
+
+            const csv_url: string = await filesRepo.upload(new EvaluationFile().fromJSON({
+                name: `ps-${requests[0].pilotstudy_id}-${new Date().getTime()}.csv`,
+                file: fs.readFileSync('./file.csv')
+            }))
+
+            const xls_url: string = await filesRepo.upload(new EvaluationFile().fromJSON({
+                name: `ps-${requests[0].pilotstudy_id}-${new Date().getTime()}.xls`,
+                file: readFileSync('./file.xls')
+            }))
+
+            const result: OdontologicEvaluation = new OdontologicEvaluation().fromJSON({
+                total_patients: evaluationData.length,
+                file_csv: csv_url,
+                file_xls: xls_url,
+                health_professional_id: requests[0].health_professional_id,
+                pilotstudy_id: requests[0].pilotstudy_id
+            })
+
+            return Promise.resolve(result)
+        } catch (err) {
+            return Promise.reject(err)
+        } finally {
+            fs.unlinkSync('./file.csv')
+            fs.unlinkSync('./file.xls')
+        }
     }
 
     private getEvaluationData(request: OdontologicEvaluationRequest): any {
@@ -295,21 +349,22 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         return result
     }
 
-    private async generateCsvEvaluation(evaluation: any): Promise<any> {
+    private async generateCsvEvaluation(evaluation: any): Promise<void> {
         const fields = Object.keys(evaluation[0])
         const opts = { fields }
         try {
             const parser = new Parser(opts)
             const csv = parser.parse(evaluation)
-            return Promise.resolve(csv)
+            fs.writeFileSync('./file.csv', csv)
         } catch (err) {
             return Promise.reject(err)
         }
     }
 
-    private async generateXlsEvaluation(evaluation: any): Promise<any> {
+    private async generateXlsEvaluation(evaluation: any): Promise<void> {
         try {
-            return Promise.resolve(json2xls(evaluation))
+            const xls = json2xls(evaluation)
+            fs.writeFileSync('./file.xls', xls, 'binary')
         } catch (err) {
             return Promise.reject(err)
         }

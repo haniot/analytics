@@ -4,4 +4,6 @@ import { OdontologicEvaluationRequest } from '../domain/model/odontologic.evalua
 
 export interface IOdontologicEvaluationService extends IService<OdontologicEvaluation> {
     addEvaluation(item: Array<OdontologicEvaluationRequest>): Promise<OdontologicEvaluation>
+
+    removeEvaluation(pilotId: string, evaluationId: string): Promise<boolean>
 }

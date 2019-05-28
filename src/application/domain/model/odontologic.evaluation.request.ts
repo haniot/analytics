@@ -17,6 +17,7 @@ export class OdontologicEvaluationRequest implements IJSONSerializable, IJSONDes
     private _family_cohesion_record?: FamilyCohesionRecord
     private _oral_health_record?: OralHealthRecord
     private _health_professional_id?: string
+    private _pilotstudy_id?: string
 
     get patient(): Patient | undefined {
         return this._patient
@@ -82,6 +83,14 @@ export class OdontologicEvaluationRequest implements IJSONSerializable, IJSONDes
         this._health_professional_id = value
     }
 
+    get pilotstudy_id(): string | undefined {
+        return this._pilotstudy_id
+    }
+
+    set pilotstudy_id(value: string | undefined) {
+        this._pilotstudy_id = value
+    }
+
     public fromJSON(json: any): OdontologicEvaluationRequest {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
@@ -99,6 +108,7 @@ export class OdontologicEvaluationRequest implements IJSONSerializable, IJSONDes
         if (json.oral_health_record !== undefined)
             this.oral_health_record = new OralHealthRecord().fromJSON(json.oral_health_record)
         if (json.health_professional_id !== undefined) this.health_professional_id = json.health_professional_id
+        if (json.pilotstudy_id !== undefined) this.pilotstudy_id = json.pilotstudy_id
 
         return this
     }
@@ -112,7 +122,8 @@ export class OdontologicEvaluationRequest implements IJSONSerializable, IJSONDes
             sociodemographic_record: this.sociodemographic_record ? this.sociodemographic_record.toJSON() : undefined,
             family_cohesion_record: this.family_cohesion_record ? this.family_cohesion_record.toJSON() : undefined,
             oral_health_record: this.oral_health_record ? this.oral_health_record.toJSON() : undefined,
-            health_professional_id: this.health_professional_id
+            health_professional_id: this.health_professional_id,
+            pilotstudy_id: this.pilotstudy_id
         }
     }
 }

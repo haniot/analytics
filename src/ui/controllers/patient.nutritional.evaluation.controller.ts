@@ -52,7 +52,7 @@ export class PatientNutritionalEvaluationController {
     public async getAllNutritionalEvaluationsFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
             const query: Query = new Query().fromJSON(req.query)
-            query.addFilter({ patient_id: req.params.patient_id })
+            query.addFilter({ 'patient.id': req.params.patient_id })
             const result: Array<NutritionEvaluation> = await this._service.getAll(query)
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
         } catch (err) {
@@ -64,8 +64,25 @@ export class PatientNutritionalEvaluationController {
         }
     }
 
+    @httpGet('/:evaluation_id')
+    public async getNutritionalEvaluationFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
+        try {
+            const query: Query = new Query().fromJSON(req.query)
+            query.addFilter({ 'patient.id': req.params.patient_id })
+            const result: NutritionEvaluation = await this._service.getById(req.params.evaluation_id, query)
+            if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
+            return res.status(HttpStatus.OK).send(this.toJSONView(result))
+        } catch (err) {
+            const handlerError = ApiExceptionManager.build(err)
+            return res.status(handlerError.code)
+                .send(handlerError.toJson())
+        } finally {
+            req.query = {}
+        }
+    }
+
     @httpDelete('/:evaluation_id')
-    public async removeUser(@request() req: Request, @response() res: Response): Promise<Response> {
+    public async removeNutritionalEvaluationFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
             await this._service.removeEvaluation(req.params.patient_id, req.params.evaluation_id)
             return res.status(HttpStatus.NO_CONTENT).send()
@@ -145,8 +162,8 @@ export class PatientNutritionalEvaluationController {
     private getMessageNotFound(): object {
         return new ApiException(
             HttpStatus.NOT_FOUND,
-            Strings.NUTRITION_EVALUATION.NOT_FOUND,
-            Strings.NUTRITION_EVALUATION.NOT_FOUND_DESCRIPTION
+            Strings.ODONTOLOGIC_EVALUATION.NOT_FOUND,
+            Strings.ODONTOLOGIC_EVALUATION.NOT_FOUND_DESCRIPTION
         ).toJson()
     }
 }

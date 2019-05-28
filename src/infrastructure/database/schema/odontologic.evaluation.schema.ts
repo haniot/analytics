@@ -5,10 +5,6 @@ interface IOdontologicEvaluation extends Mongoose.Document {
 
 const ontologicEvaluationSchema = new Mongoose.Schema({
         type: { type: String },
-        status: {
-            type: String,
-            required: 'Status of odontologic evaluation is required!'
-        },
         created_at: { type: Date },
         total_patients: {
             type: Number,
@@ -25,6 +21,10 @@ const ontologicEvaluationSchema = new Mongoose.Schema({
         health_professional_id: {
             type: Schema.Types.ObjectId,
             required: 'Id of health professional responsible for odontologic evaluation is required!'
+        },
+        pilotstudy_id: {
+            type: Schema.Types.ObjectId,
+            required: 'Id of pilot study of odontologic evaluation is required!'
         }
     },
     {

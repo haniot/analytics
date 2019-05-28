@@ -31,4 +31,10 @@ export abstract class Strings {
         NOT_FOUND_DESCRIPTION: 'Nutrition evaluation record not found or already removed.' +
             ' A new operation for the same resource is required.'
     }
+
+    public static readonly ODONTOLOGIC_EVALUATION: any = {
+        NOT_FOUND: 'Odontologic evaluation record not found!',
+        NOT_FOUND_DESCRIPTION: 'Odontologic evaluation record not found or already removed.' +
+            ' A new operation for the same resource is required.'
+    }
 }

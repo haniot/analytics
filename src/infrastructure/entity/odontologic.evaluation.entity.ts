@@ -6,4 +6,5 @@ export class OdontologicEvaluationEntity {
     public file_csv?: string
     public file_xls?: string
     public health_professional_id?: string
+    public pilotstudy_id?: string
 }

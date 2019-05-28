@@ -56,6 +56,11 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     public getById(id: string, query: IQuery): Promise<NutritionEvaluation> {
+        try {
+            ObjectIdValidator.validate(id)
+        } catch (err) {
+            return Promise.reject(err)
+        }
         query.addFilter({ _id: id, type: EvaluationTypes.NUTRITION })
         return this._repo.findOne(query)
     }
@@ -85,11 +90,11 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             ObjectIdValidator.validate(patientId)
             ObjectIdValidator.validate(evaluationId)
             const nutritionEvaluation: NutritionEvaluation =
-                await this.getById(evaluationId, new Query().fromJSON({ filters: { patient_id: patientId } }))
+                await this.getById(evaluationId, new Query().fromJSON({ filters: { 'patient.id': patientId } }))
             if (!nutritionEvaluation) return Promise.resolve(undefined!)
             nutritionEvaluation.counseling!.definitive = counseling
             nutritionEvaluation.status = NutritionEvaluationStatusTypes.COMPLETE
-            return await this.update(nutritionEvaluation)
+            return await this._repo.update(nutritionEvaluation)
         } catch (err) {
             return Promise.reject(err)
         }

@@ -16,7 +16,7 @@ export abstract class Identifier {
         Symbol.for('HealthNutritionalEvaluationController')
     public static readonly PATIENT_NUTRITIONAL_EVALUATION_CONTROLLER: any = Symbol.for('PatientNutritionalEvaluationController')
     public static readonly PATIENT_ODONTOLOGIC_EVALUATION_CONTROLLER: any =
-        Symbol.for('PatientOdontologicEvaluationController')
+        Symbol.for('PilotStudyOdontologicalEvaluationController')
 
     // Services
     public static readonly NUTRITION_EVALUATION_SERVICE: any = Symbol.for('NutritionEvaluationService')

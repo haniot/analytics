@@ -12,6 +12,7 @@ export class OdontologicEvaluation extends Entity implements IJSONSerializable, 
     private _file_csv?: string
     private _file_xls?: string
     private _health_professional_id?: string
+    private _pilotstudy_id?: string
 
     constructor() {
         super()
@@ -66,6 +67,14 @@ export class OdontologicEvaluation extends Entity implements IJSONSerializable, 
         this._health_professional_id = value
     }
 
+    get pilotstudy_id(): string | undefined {
+        return this._pilotstudy_id
+    }
+
+    set pilotstudy_id(value: string | undefined) {
+        this._pilotstudy_id = value
+    }
+
     public convertDatetimeString(value: string): Date {
         DatetimeValidator.validate(value)
         return new Date(value)
@@ -82,6 +91,7 @@ export class OdontologicEvaluation extends Entity implements IJSONSerializable, 
         if (json.file_csv !== undefined) this.file_csv = json.file_csv
         if (json.file_xls !== undefined) this.file_xls = json.file_xls
         if (json.health_professional_id !== undefined) this.health_professional_id = json.health_professional_id
+        if (json.pilotstudy_id !== undefined) this.pilotstudy_id = json.pilotstudy_id
         return this
     }
 
@@ -92,7 +102,8 @@ export class OdontologicEvaluation extends Entity implements IJSONSerializable, 
             total_patients: this.total_patients,
             file_csv: this.file_csv,
             file_xls: this.file_xls,
-            health_professional_id: this.health_professional_id
+            health_professional_id: this.health_professional_id,
+            pilotstudy_id: this.pilotstudy_id
         }
     }
 

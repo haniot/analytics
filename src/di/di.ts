@@ -31,7 +31,7 @@ import { IOdontologicEvaluationRepository } from '../application/port/odontologi
 import { OdontologicEvaluationRepository } from '../infrastructure/repository/odontologic.evaluation.repository'
 import { IOdontologicEvaluationService } from '../application/port/odontologic.evaluation.service.interface'
 import { OdontologicEvaluationService } from '../application/service/odontologic.evaluation.service'
-import { PatientOdontologicEvaluationController } from '../ui/controllers/patient.odontologic.evaluation.controller'
+import { PilotStudyOdontologicalEvaluationController } from '../ui/controllers/pilot.study.odontological.evaluation.controller'
 
 export class DI {
     private static instance: DI
@@ -89,8 +89,8 @@ export class DI {
             .to(NutritionalEvaluationController).inSingletonScope()
         this.container.bind<PatientNutritionalEvaluationController>(Identifier.PATIENT_NUTRITIONAL_EVALUATION_CONTROLLER)
             .to(PatientNutritionalEvaluationController).inSingletonScope()
-        this.container.bind<PatientOdontologicEvaluationController>(Identifier.PATIENT_ODONTOLOGIC_EVALUATION_CONTROLLER)
-            .to(PatientOdontologicEvaluationController).inSingletonScope()
+        this.container.bind<PilotStudyOdontologicalEvaluationController>(Identifier.PATIENT_ODONTOLOGIC_EVALUATION_CONTROLLER)
+            .to(PilotStudyOdontologicalEvaluationController).inSingletonScope()
 
         // Services
         this.container.bind<INutritionEvaluationService>

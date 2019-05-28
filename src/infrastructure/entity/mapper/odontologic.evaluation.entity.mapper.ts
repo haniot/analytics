@@ -16,6 +16,7 @@ export class OdontologicEvaluationEntityMapper implements IEntityMapper<Odontolo
         if (json.file_csv !== undefined) result.file_csv = json.file_csv
         if (json.file_xls !== undefined) result.file_xls = json.file_xls
         if (json.health_professional_id !== undefined) result.health_professional_id = json.health_professional_id
+        if (json.pilotstudy_id !== undefined) result.pilotstudy_id = json.pilotstudy_id
 
         return result
     }
@@ -34,6 +35,7 @@ export class OdontologicEvaluationEntityMapper implements IEntityMapper<Odontolo
         if (item.file_csv !== undefined) result.file_csv = item.file_csv
         if (item.file_xls !== undefined) result.file_xls = item.file_xls
         if (item.health_professional_id !== undefined) result.health_professional_id = item.health_professional_id
+        if (item.pilotstudy_id !== undefined) result.pilotstudy_id = item.pilotstudy_id
 
         return result
     }

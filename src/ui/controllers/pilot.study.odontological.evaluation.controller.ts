@@ -1,5 +1,5 @@
 import HttpStatus from 'http-status-codes'
-import { controller, httpPost, request, response } from 'inversify-express-utils'
+import { controller, httpDelete, httpGet, httpPost, request, response } from 'inversify-express-utils'
 import { inject } from 'inversify'
 import { Identifier } from '../../di/identifiers'
 import { Request, Response } from 'express'
@@ -16,9 +16,12 @@ import { BodyTemperatureMeasurement } from '../../application/domain/model/body.
 import { WaistCircumferenceMeasurement } from '../../application/domain/model/waist.circumference.measurement'
 import { FatMeasurement } from '../../application/domain/model/fat.measurement'
 import { OdontologicEvaluation } from '../../application/domain/model/odontologic.evaluation'
+import { Query } from '../../infrastructure/repository/query/query'
+import { ApiException } from '../exception/api.exception'
+import { Strings } from '../../utils/strings'
 
 @controller('/pilotstudies/:pilotstudy_id/odontological/evaluations')
-export class PatientOdontologicEvaluationController {
+export class PilotStudyOdontologicalEvaluationController {
     constructor(
         @inject(Identifier.ODONTOLOGIC_EVALUATION_SERVICE) private readonly _service: IOdontologicEvaluationService
     ) {
@@ -29,7 +32,8 @@ export class PatientOdontologicEvaluationController {
         try {
             const requests: Array<OdontologicEvaluationRequest> =
                 req.body.map(item => {
-                    const evaluation =  new OdontologicEvaluationRequest().fromJSON(item)
+                    const evaluation = new OdontologicEvaluationRequest().fromJSON(item)
+                    evaluation.pilotstudy_id = req.params.pilotstudy_id
                     evaluation.measurements = item.measurements.map(measurement => this.jsonToModel(measurement))
                     return evaluation
                 })
@@ -44,12 +48,57 @@ export class PatientOdontologicEvaluationController {
         }
     }
 
+    @httpGet('/')
+    public async getAllOdontologicalEvaluationsFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
+        try {
+            const query: Query = new Query().fromJSON(req.query)
+            query.addFilter({ pilotstudy_id: req.params.pilotstudy_id })
+            const result: Array<OdontologicEvaluation> = await this._service.getAll(query)
+            return res.status(HttpStatus.OK).send(this.toJSONView(result))
+        } catch (err) {
+            const handlerError = ApiExceptionManager.build(err)
+            return res.status(handlerError.code)
+                .send(handlerError.toJson())
+        } finally {
+            req.query = {}
+        }
+    }
+
+    @httpGet('/:evaluation_id')
+    public async getOdontologicalEvaluationFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
+        try {
+            const query: Query = new Query().fromJSON(req.query)
+            query.addFilter({ pilotstudy_id: req.params.pilotstudy_id })
+            const result: OdontologicEvaluation = await this._service.getById(req.params.evaluation_id, query)
+            if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
+            return res.status(HttpStatus.OK).send(this.toJSONView(result))
+        } catch (err) {
+            const handlerError = ApiExceptionManager.build(err)
+            return res.status(handlerError.code)
+                .send(handlerError.toJson())
+        } finally {
+            req.query = {}
+        }
+    }
+
+    @httpDelete('/:evaluation_id')
+    public async removeOdontologicalEvaluationFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
+        try {
+            await this._service.removeEvaluation(req.params.pilotstudy_id, req.params.evaluation_id)
+            return res.status(HttpStatus.NO_CONTENT).send()
+        } catch (err) {
+            const handlerError = ApiExceptionManager.build(err)
+            return res.status(handlerError.code)
+                .send(handlerError.toJson())
+        }
+    }
+
     private toJSONView(item: OdontologicEvaluation | Array<OdontologicEvaluation>): object {
         if (item instanceof Array) return item.map(evaluation => {
-            evaluation.health_professional_id = undefined
+            evaluation.pilotstudy_id = undefined
             return evaluation.toJSON()
         })
-        item.health_professional_id = undefined
+        item.pilotstudy_id = undefined
         return item.toJSON()
     }
 
@@ -87,5 +136,13 @@ export class PatientOdontologicEvaluationController {
             }
         }
         return undefined
+    }
+
+    private getMessageNotFound(): object {
+        return new ApiException(
+            HttpStatus.NOT_FOUND,
+            Strings.NUTRITION_EVALUATION.NOT_FOUND,
+            Strings.NUTRITION_EVALUATION.NOT_FOUND_DESCRIPTION
+        ).toJson()
     }
 }
