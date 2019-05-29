@@ -13,7 +13,7 @@ import { MedicalRecordValidator } from './medical.record.validator'
 import { SleepHabitValidator } from './sleep.habit.validator'
 import { PatientValidator } from './patient.validator'
 
-export class CreateNutritionalEvaluationValidator {
+export class CreateNutritionEvaluationValidator {
     public static validate(item: NutritionEvaluation): void | ValidationException {
         const fields: Array<string> = []
 

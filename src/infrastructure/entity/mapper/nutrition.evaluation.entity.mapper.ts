@@ -2,7 +2,7 @@ import { injectable } from 'inversify'
 import { IEntityMapper } from '../../port/entity.mapper.interface'
 import { NutritionEvaluation } from '../../../application/domain/model/nutrition.evaluation'
 import { NutritionEvaluationEntity } from '../nutrition.evaluation.entity'
-import { NutritionalStatus } from '../../../application/domain/model/nutritional.status'
+import { NutritionStatus } from '../../../application/domain/model/nutrition.status'
 import { OverweightIndicator } from '../../../application/domain/model/overweight.indicator'
 import { HeartRate } from '../../../application/domain/model/heart.rate'
 import { BloodGlucose } from '../../../application/domain/model/blood.glucose'
@@ -37,7 +37,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (json.pilotstudy_id !== undefined) result.pilotstudy_id = json.pilotstudy_id
         if (json.health_professional_id !== undefined) result.health_professional_id = json.health_professional_id
         if (json.nutritional_status !== undefined)
-            result.nutritional_status = new NutritionalStatus().fromJSON(json.nutritional_status)
+            result.nutritional_status = new NutritionStatus().fromJSON(json.nutritional_status)
         if (json.overweight_indicator !== undefined)
             result.overweight_indicator = new OverweightIndicator().fromJSON(json.overweight_indicator)
         if (json.heart_rate !== undefined) result.heart_rate = new HeartRate().fromJSON(json.heart_rate)

@@ -1,25 +1,25 @@
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { JsonUtils } from '../utils/json.utils'
-import { NutritionalCouncil } from './nutritional.council'
+import { NutritionCouncil } from './nutrition.council'
 
 export class Counseling implements IJSONSerializable, IJSONDeserializable<Counseling> {
-    private _suggested?: NutritionalCouncil
-    private _definitive?: NutritionalCouncil
+    private _suggested?: NutritionCouncil
+    private _definitive?: NutritionCouncil
 
-    get suggested(): NutritionalCouncil | undefined {
+    get suggested(): NutritionCouncil | undefined {
         return this._suggested
     }
 
-    set suggested(value: NutritionalCouncil | undefined) {
+    set suggested(value: NutritionCouncil | undefined) {
         this._suggested = value
     }
 
-    get definitive(): NutritionalCouncil | undefined {
+    get definitive(): NutritionCouncil | undefined {
         return this._definitive
     }
 
-    set definitive(value: NutritionalCouncil | undefined) {
+    set definitive(value: NutritionCouncil | undefined) {
         this._definitive = value
     }
 
@@ -29,8 +29,8 @@ export class Counseling implements IJSONSerializable, IJSONDeserializable<Counse
             json = JSON.parse(json)
         }
 
-        if (json.suggested !== undefined) this.suggested = new NutritionalCouncil().fromJSON(json.suggested)
-        if (json.definitive !== undefined) this.definitive = new NutritionalCouncil().fromJSON(json.definitive)
+        if (json.suggested !== undefined) this.suggested = new NutritionCouncil().fromJSON(json.suggested)
+        if (json.definitive !== undefined) this.definitive = new NutritionCouncil().fromJSON(json.definitive)
         return this
     }
 

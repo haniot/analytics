@@ -1,10 +1,13 @@
 import { NutritionCounseling } from '../../application/domain/model/nutrition.counseling'
 import csv from 'csvtojson'
+import { IFileRepository } from '../../application/port/files.repository.interface'
+import { injectable } from 'inversify'
 
-export class NutritionalCounselingRepository {
+@injectable()
+export class NutritionCounselingRepository implements IFileRepository<NutritionCounseling>{
     private counseling_path: string = __dirname.concat('/files/nutritional-counseling.csv')
 
-    public async getNutritionalCounseling(): Promise<NutritionCounseling> {
+    public async getFile(): Promise<NutritionCounseling> {
         try {
             const counseling = await this.csvToJson(this.counseling_path)
             return Promise.resolve(new NutritionCounseling().fromJSON(counseling))

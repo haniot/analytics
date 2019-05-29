@@ -2,7 +2,7 @@ import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { JsonUtils } from '../utils/json.utils'
 
-export class NutritionalCouncil implements IJSONSerializable, IJSONDeserializable<NutritionalCouncil> {
+export class NutritionCouncil implements IJSONSerializable, IJSONDeserializable<NutritionCouncil> {
     private _bmi_whr?: Array<string>
     private _glycemia?: Array<string>
     private _blood_pressure?: Array<string>
@@ -31,7 +31,7 @@ export class NutritionalCouncil implements IJSONSerializable, IJSONDeserializabl
         this._blood_pressure = value
     }
 
-    public fromJSON(json: any): NutritionalCouncil {
+    public fromJSON(json: any): NutritionCouncil {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

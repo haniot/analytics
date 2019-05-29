@@ -7,6 +7,8 @@ import { GenderTypesValidator } from './gender.types.validator'
 export class PatientValidator {
     public static validate(user: Patient): void | ValidationException {
         const fields: Array<string> = []
+        if (!user.id) fields.push('id')
+        else ObjectIdValidator.validate(user.id)
         if (!user.name) fields.push('name')
         if (!user.gender) fields.push('gender')
         else GenderTypesValidator.validate(user.gender)

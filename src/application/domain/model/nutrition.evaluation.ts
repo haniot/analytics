@@ -1,6 +1,6 @@
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
-import { NutritionalStatus } from './nutritional.status'
+import { NutritionStatus } from './nutrition.status'
 import { OverweightIndicator } from './overweight.indicator'
 import { HeartRate } from './heart.rate'
 import { BloodGlucose } from './blood.glucose'
@@ -17,7 +17,7 @@ import { Patient } from './patient'
 
 export class NutritionEvaluation extends Evaluation implements IJSONSerializable, IJSONDeserializable<NutritionEvaluation> {
     private _patient?: Patient
-    private _nutritional_status?: NutritionalStatus
+    private _nutritional_status?: NutritionStatus
     private _overweight_indicator?: OverweightIndicator
     private _heart_rate?: HeartRate
     private _blood_glucose?: BloodGlucose
@@ -42,11 +42,11 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         this._patient = value
     }
 
-    get nutritional_status(): NutritionalStatus | undefined {
+    get nutritional_status(): NutritionStatus | undefined {
         return this._nutritional_status
     }
 
-    set nutritional_status(value: NutritionalStatus | undefined) {
+    set nutritional_status(value: NutritionStatus | undefined) {
         this._nutritional_status = value
     }
 
@@ -139,7 +139,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         super.fromJSON(json)
         if (json.patient !== undefined) this.patient = new Patient().fromJSON(json.patient)
         if (json.nutritional_status !== undefined)
-            this.nutritional_status = new NutritionalStatus().fromJSON(json.nutritional_status)
+            this.nutritional_status = new NutritionStatus().fromJSON(json.nutritional_status)
         if (json.overweight_indicator !== undefined)
             this.overweight_indicator = new OverweightIndicator().fromJSON(json.overweight_indicator)
         if (json.heart_rate !== undefined) this.heart_rate = new HeartRate().fromJSON(json.heart_rate)

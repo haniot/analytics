@@ -1,11 +1,14 @@
 import csv from 'csvtojson'
 import { BloodPressurePerSysDias } from '../../application/domain/model/blood.pressure.per.sys.dias'
+import { IFileRepository } from '../../application/port/files.repository.interface'
+import { injectable } from 'inversify'
 
-export class BloodPressurePerSysDiasRepository {
+@injectable()
+export class BloodPressurePerSysDiasRepository implements IFileRepository<BloodPressurePerSysDias>{
     private blood_pressure_per_age_sys_dias_boys_path: string = __dirname.concat('/files/blood-pressure-per-sys-dias-boys.csv')
     private blood_pressure_per_age_sys_dias_girls_path: string = __dirname.concat('/files/blood-pressure-per-sys-dias-girls.csv')
 
-    public async getBloodPressurePerAgeHeight(): Promise<BloodPressurePerSysDias> {
+    public async getFile(): Promise<BloodPressurePerSysDias> {
         try {
             const result: BloodPressurePerSysDias = new BloodPressurePerSysDias()
             result.age_systolic_diastolic_percentile_boys = await this.csvToJson(this.blood_pressure_per_age_sys_dias_boys_path)

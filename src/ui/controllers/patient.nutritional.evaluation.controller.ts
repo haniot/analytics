@@ -19,7 +19,7 @@ import { FatMeasurement } from '../../application/domain/model/fat.measurement'
 import { NutritionEvaluationRequest } from '../../application/domain/model/nutrition.evaluation.request'
 import { Strings } from '../../utils/strings'
 import { ApiException } from '../exception/api.exception'
-import { NutritionalCouncil } from '../../application/domain/model/nutritional.council'
+import { NutritionCouncil } from '../../application/domain/model/nutrition.council'
 
 @controller('/patients/:patient_id/nutritional/evaluations')
 export class PatientNutritionalEvaluationController {
@@ -100,7 +100,7 @@ export class PatientNutritionalEvaluationController {
                 await this._service.updateNutritionalCounseling(
                     req.params.patient_id,
                     req.params.evaluation_id,
-                    new NutritionalCouncil().fromJSON(req.body))
+                    new NutritionCouncil().fromJSON(req.body))
             if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
         } catch (err) {

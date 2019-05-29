@@ -332,7 +332,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NutritionalCouncil'
+              $ref: '#/components/schemas/NutritionCouncil'
         description: Nutritional council from health professional.
         required: true
 
@@ -460,4 +460,4 @@ components:
     NutritionEvaluation:
       $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/NutritionEvaluation'
     NutritionalCouncil:
-      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/NutritionalCouncil'
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/schemas/NutritionCouncil'

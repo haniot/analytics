@@ -7,8 +7,8 @@ import { INutritionEvaluationRepository } from '../port/nutrition.evaluation.rep
 import { EvaluationTypes } from '../domain/utils/evaluation.types'
 import { NutritionEvaluationRequest } from '../domain/model/nutrition.evaluation.request'
 import { EvaluationRequestValidator } from '../domain/validator/evaluation.request.validator'
-import { CreateNutritionalEvaluationValidator } from '../domain/validator/create.nutritional.evaluation.validator'
-import { NutritionalCouncil } from '../domain/model/nutritional.council'
+import { CreateNutritionEvaluationValidator } from '../domain/validator/create.nutrition.evaluation.validator'
+import { NutritionCouncil } from '../domain/model/nutrition.council'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
 import { Query } from '../../infrastructure/repository/query/query'
 import { NutritionEvaluationStatusTypes } from '../domain/utils/nutrition.evaluation.status.types'
@@ -20,49 +20,75 @@ import { BloodGlucoseZones } from '../domain/utils/blood.glucose.zones'
 import { BloodGlucoseClassificationTypes } from '../domain/utils/blood.glucose.classification.types'
 import { MeasurementTypes } from '../domain/utils/measurement.types'
 import { DateUtils } from '../domain/utils/date.utils'
-import { NutritionalStatus } from '../domain/model/nutritional.status'
-import { BmiPerAgeRepository } from '../../infrastructure/repository/bmi.per.age.repository'
+import { NutritionStatus } from '../domain/model/nutrition.status'
 import { OverweightIndicator } from '../domain/model/overweight.indicator'
 import { HeartRate } from '../domain/model/heart.rate'
 import { BloodGlucose } from '../domain/model/blood.glucose'
 import { Zone } from '../domain/model/zone'
 import { Counseling } from '../domain/model/counseling'
-import { NutritionalCounselingRepository } from '../../infrastructure/repository/nutritional.counseling.repository'
 import { NutritionCounseling } from '../domain/model/nutrition.counseling'
 import { BloodPressurePercentileClassificationTypes } from '../domain/utils/blood.pressure.percentile.classification.types'
 import { BloodPressure } from '../domain/model/blood.pressure'
 import { AgeHeightPercentile } from '../domain/model/age.height.percentile'
 import { BloodPressurePerAgeHeight } from '../domain/model/blood.pressure.per.age.height'
-import { BloodPressurePerAgeHeightRepository } from '../../infrastructure/repository/blood.pressure.per.age.height.repository'
 import { GenderTypes } from '../domain/utils/gender.types'
 import { ValidationException } from '../domain/exception/validation.exception'
-import { BloodPressurePerSysDiasRepository } from '../../infrastructure/repository/blood.pressure.per.sys.dias.repository'
 import { BloodPressurePerSysDias } from '../domain/model/blood.pressure.per.sys.dias'
+import { IFileRepository } from '../port/files.repository.interface'
 
 @injectable()
 export class NutritionEvaluationService implements INutritionEvaluationService {
     constructor(
-        @inject(Identifier.NUTRITION_EVALUATION_REPOSITORY) private readonly _repo: INutritionEvaluationRepository
+        @inject(Identifier.NUTRITION_EVALUATION_REPOSITORY)
+        private readonly _nutritionEvaluationRepo: INutritionEvaluationRepository,
+        @inject(Identifier.BLOOD_PRESSURE_PER_AGE_HEIGHT_REPOSITORY)
+        private readonly _bloodPressurePerAgeHeightRepo: IFileRepository<BloodPressurePerAgeHeight>,
+        @inject(Identifier.BLOOD_PRESSURE_PER_SYS_DIAS_REPOSITORY)
+        private readonly _bloodPressurePerSysDiasRepo: IFileRepository<BloodPressurePerSysDias>,
+        @inject(Identifier.BMI_PER_AGE_REPOSITORY)
+        private readonly _bmiPerAgeRepo: IFileRepository<BmiPerAge>,
+        @inject(Identifier.NUTRITION_COUNSELING_REPOSITORY)
+        private readonly _nutritionCounselingRepo: IFileRepository<NutritionCounseling>
     ) {
     }
 
     public add(item: any): Promise<NutritionEvaluation> {
-        throw Error('Not implemented!')
+        try {
+            CreateNutritionEvaluationValidator.validate(item)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+        return this._nutritionEvaluationRepo.create(item)
     }
 
     public getAll(query: IQuery): Promise<Array<NutritionEvaluation>> {
+        try {
+            const pilotId = query.toJSON().filters.pilotstudy_id
+            if (pilotId) ObjectIdValidator.validate(pilotId)
+            const patientId = query.toJSON().filters.patient_id
+            if (patientId) ObjectIdValidator.validate(patientId)
+            const healthProfessionalId = query.toJSON().filters.healthprofessional_id
+            if (healthProfessionalId) ObjectIdValidator.validate(healthProfessionalId)
+        } catch (err) {
+            return Promise.reject(err)
+        }
         query.addFilter({ type: EvaluationTypes.NUTRITION })
-        return this._repo.find(query)
+        return this._nutritionEvaluationRepo.find(query)
     }
 
     public getById(id: string, query: IQuery): Promise<NutritionEvaluation> {
         try {
             ObjectIdValidator.validate(id)
+            const patientId = query.toJSON().filters.patient_id
+            if (patientId) ObjectIdValidator.validate(patientId)
+            const pilotId = query.toJSON().filters.pilotstudy_id
+            if (pilotId) ObjectIdValidator.validate(pilotId)
+            ObjectIdValidator.validate(id)
         } catch (err) {
             return Promise.reject(err)
         }
         query.addFilter({ _id: id, type: EvaluationTypes.NUTRITION })
-        return this._repo.findOne(query)
+        return this._nutritionEvaluationRepo.findOne(query)
     }
 
     public remove(id: string): Promise<boolean> {
@@ -77,14 +103,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         try {
             EvaluationRequestValidator.validate(item)
             const evaluation: NutritionEvaluation = await this.generateEvaluation(item)
-            CreateNutritionalEvaluationValidator.validate(evaluation)
-            return this._repo.create(evaluation)
+            return this.add(evaluation)
         } catch (err) {
             return Promise.reject(err)
         }
     }
 
-    public async updateNutritionalCounseling(patientId: string, evaluationId: string, counseling: NutritionalCouncil):
+    public async updateNutritionalCounseling(patientId: string, evaluationId: string, counseling: NutritionCouncil):
         Promise<NutritionEvaluation> {
         try {
             ObjectIdValidator.validate(patientId)
@@ -94,7 +119,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             if (!nutritionEvaluation) return Promise.resolve(undefined!)
             nutritionEvaluation.counseling!.definitive = counseling
             nutritionEvaluation.status = NutritionEvaluationStatusTypes.COMPLETE
-            return await this._repo.update(nutritionEvaluation)
+            return await this._nutritionEvaluationRepo.update(nutritionEvaluation)
         } catch (err) {
             return Promise.reject(err)
         }
@@ -104,7 +129,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         try {
             ObjectIdValidator.validate(patientId)
             ObjectIdValidator.validate(evaluationId)
-            return await this._repo.delete(evaluationId)
+            return await this._nutritionEvaluationRepo.delete(evaluationId)
         } catch (err) {
             return Promise.reject(err)
         }
@@ -127,7 +152,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             result.sleep_habit = item.sleep_habit
 
             // Set Nutritional Status
-            result.nutritional_status = new NutritionalStatus().fromJSON({
+            result.nutritional_status = new NutritionStatus().fromJSON({
                 height: info.measurements.height,
                 weight: info.measurements.weight,
                 bmi: info.evaluation.bmi.value,
@@ -199,7 +224,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             const waist_circumference = request.measurements!
                 .filter(item => item.type === MeasurementTypes.WAIST_CIRCUMFERENCE)[0].toJSON()
 
-            const bmiPerAge: BmiPerAge = await new BmiPerAgeRepository().getBmiPerAge()
+            const bmiPerAge: BmiPerAge = await this._bmiPerAgeRepo.getFile()
             const patientAge: any = DateUtils.getAgeFromBirthDate(patient.birth_date)
             const patientAgeHeightPercentile =
                 await this.getBloodPressureAgeHeightPercentile(patientAge.age, height.value, patient.gender)
@@ -310,10 +335,8 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     // Blood Pressure Functions
-
     private async getBloodPressurePercentile(gender: string, age: number, percentile: number, sys: number): Promise<any> {
-        const bloodPressurePerSysDias: BloodPressurePerSysDias =
-            await new BloodPressurePerSysDiasRepository().getBloodPressurePerAgeHeight()
+        const bloodPressurePerSysDias: BloodPressurePerSysDias = await this._bloodPressurePerSysDiasRepo.getFile()
         let data = bloodPressurePerSysDias.age_systolic_diastolic_percentile_boys!.filter(item => item.age === age)
         if (gender === GenderTypes.FEMALE) {
             data = bloodPressurePerSysDias.age_systolic_diastolic_percentile_girls!.filter(item => item.age === age)
@@ -384,8 +407,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
 
     private async getBloodPressureAgeHeightPercentile(age: number, height: number, gender: string): Promise<AgeHeightPercentile> {
         try {
-            const bloodPressurePerAgeHeight: BloodPressurePerAgeHeight =
-                await new BloodPressurePerAgeHeightRepository().getBloodPressurePerAgeHeight()
+            const bloodPressurePerAgeHeight: BloodPressurePerAgeHeight = await this._bloodPressurePerAgeHeightRepo.getFile()
             if (gender === GenderTypes.MALE) {
                 return Promise.resolve(
                     await bloodPressurePerAgeHeight.blood_pressure_per_age_boys!
@@ -411,8 +433,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     // Nutritional Counseling Functions
     private async getCounselings(bmi: string, overweight: string, bloodGlucose: string, bloodPressure: string): Promise<any> {
         try {
-            const nutritionCounseling: NutritionCounseling =
-                await new NutritionalCounselingRepository().getNutritionalCounseling()
+            const nutritionCounseling: NutritionCounseling = await this._nutritionCounselingRepo.getFile()
 
             const patientCounselings: any = { bmi_whr: [], glycemia: [], blood_pressure: [] }
 

@@ -1,10 +1,10 @@
 import { injectable } from 'inversify'
-import { IFilesRepository } from '../port/files.repository.interface'
+import { IEvaluationFilesManagerRepository } from '../../application/port/evaluation.files.manager.repository.interface'
 import AWS from 'aws-sdk'
 import { EvaluationFile } from '../../application/domain/model/evaluation.file'
 
 @injectable()
-export class AwsFilesRepository implements IFilesRepository {
+export class AwsFilesRepository implements IEvaluationFilesManagerRepository<EvaluationFile> {
     private _sdk: any
     private _bucket_name?: string
 

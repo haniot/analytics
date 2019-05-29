@@ -25,6 +25,13 @@ export abstract class Identifier {
     // Repositories
     public static readonly NUTRITION_EVALUATION_REPOSITORY: any = Symbol.for('NutritionEvaluationRepository')
     public static readonly ODONTOLOGIC_EVALUATION_REPOSITORY: any = Symbol.for('OdontologicEvaluationRepository')
+    public static readonly AWS_FILES_REPOSITORY: any = Symbol.for('AwsFilesRepository')
+    public static readonly BLOOD_PRESSURE_PER_AGE_HEIGHT_REPOSITORY: any =
+        Symbol.for('BloodPressurePerAgeHeightRepository')
+    public static readonly BLOOD_PRESSURE_PER_SYS_DIAS_REPOSITORY: any =
+        Symbol.for('BloodPressurePerSysDiasRepository')
+    public static readonly BMI_PER_AGE_REPOSITORY: any = Symbol.for('BmiPerAgeRepository')
+    public static readonly NUTRITION_COUNSELING_REPOSITORY: any = Symbol.for('NutritionCounselingRepository')
 
     // Models
     public static readonly NUTRITION_EVALUATION_REPO_MODEL: any = Symbol.for('NutritionEvaluationRepoModel')

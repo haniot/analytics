@@ -32,6 +32,18 @@ import { OdontologicEvaluationRepository } from '../infrastructure/repository/od
 import { IOdontologicEvaluationService } from '../application/port/odontologic.evaluation.service.interface'
 import { OdontologicEvaluationService } from '../application/service/odontologic.evaluation.service'
 import { PilotStudyOdontologicalEvaluationController } from '../ui/controllers/pilot.study.odontological.evaluation.controller'
+import { IEvaluationFilesManagerRepository } from '../application/port/evaluation.files.manager.repository.interface'
+import { AwsFilesRepository } from '../infrastructure/repository/aws.files.repository'
+import { EvaluationFile } from '../application/domain/model/evaluation.file'
+import { IFileRepository } from '../application/port/files.repository.interface'
+import { BloodPressurePerAgeHeight } from '../application/domain/model/blood.pressure.per.age.height'
+import { BloodPressurePerAgeHeightRepository } from '../infrastructure/repository/blood.pressure.per.age.height.repository'
+import { BloodPressurePerSysDias } from '../application/domain/model/blood.pressure.per.sys.dias'
+import { BloodPressurePerSysDiasRepository } from '../infrastructure/repository/blood.pressure.per.sys.dias.repository'
+import { BmiPerAge } from '../application/domain/model/bmi.per.age'
+import { BmiPerAgeRepository } from '../infrastructure/repository/bmi.per.age.repository'
+import { NutritionCounselingRepository } from '../infrastructure/repository/nutrition.counseling.repository'
+import { NutritionCounseling } from '../application/domain/model/nutrition.counseling'
 
 export class DI {
     private static instance: DI
@@ -103,6 +115,16 @@ export class DI {
             .to(NutritionEvaluationRepository).inSingletonScope()
         this.container.bind<IOdontologicEvaluationRepository>(Identifier.ODONTOLOGIC_EVALUATION_REPOSITORY)
             .to(OdontologicEvaluationRepository).inSingletonScope()
+        this.container.bind<IEvaluationFilesManagerRepository<EvaluationFile>>(Identifier.AWS_FILES_REPOSITORY)
+            .to(AwsFilesRepository).inSingletonScope()
+        this.container.bind<IFileRepository<BloodPressurePerAgeHeight>>(Identifier.BLOOD_PRESSURE_PER_AGE_HEIGHT_REPOSITORY)
+            .to(BloodPressurePerAgeHeightRepository).inSingletonScope()
+        this.container.bind<IFileRepository<BloodPressurePerSysDias>>(Identifier.BLOOD_PRESSURE_PER_SYS_DIAS_REPOSITORY)
+            .to(BloodPressurePerSysDiasRepository).inSingletonScope()
+        this.container.bind<IFileRepository<BmiPerAge>>(Identifier.BMI_PER_AGE_REPOSITORY)
+            .to(BmiPerAgeRepository).inSingletonScope()
+        this.container.bind<IFileRepository<NutritionCounseling>>(Identifier.NUTRITION_COUNSELING_REPOSITORY)
+            .to(NutritionCounselingRepository).inSingletonScope()
 
         // Models
         this.container.bind(Identifier.NUTRITION_EVALUATION_REPO_MODEL).toConstantValue(NutritionEvaluationRepoModel)

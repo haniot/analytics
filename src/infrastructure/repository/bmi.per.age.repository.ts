@@ -1,11 +1,14 @@
 import { BmiPerAge } from '../../application/domain/model/bmi.per.age'
 import csv from 'csvtojson'
+import { IFileRepository } from '../../application/port/files.repository.interface'
+import { injectable } from 'inversify'
 
-export class BmiPerAgeRepository {
+@injectable()
+export class BmiPerAgeRepository implements IFileRepository<BmiPerAge> {
     private bmi_per_age_boys_path: string = __dirname.concat('/files/bmi-per-age-boys.csv')
     private bmi_per_age_girls_path: string = __dirname.concat('/files/bmi-per-age-girls.csv')
 
-    public async getBmiPerAge(): Promise<BmiPerAge> {
+    public async getFile(): Promise<BmiPerAge> {
         try {
             const result: BmiPerAge = new BmiPerAge()
             result.bmi_per_age_boys = await this.csvToJson(this.bmi_per_age_boys_path)
