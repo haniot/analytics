@@ -12,7 +12,7 @@ export class WeeklyFoodRecordValidator {
         else {
             if (!Object.values(FoodTypes).includes(value.food)) {
                 throw new ValidationException(
-                    Strings.ENUM_VALIDATOR.NOT_MAPPED.concat(`weekly_food_record.food: ${value}`),
+                    Strings.ENUM_VALIDATOR.NOT_MAPPED.concat(`weekly_food_record.food: ${value.food}`),
                     Strings.ENUM_VALIDATOR.NOT_MAPPED_DESC
                         .concat(Object.values(FoodTypes).join(', ').concat('.')))
             }
@@ -21,7 +21,7 @@ export class WeeklyFoodRecordValidator {
         else {
             if (!Object.values(SevenDaysFeedingFrequencyTypes).includes(value.seven_days_freq)) {
                 throw new ValidationException(
-                    Strings.ENUM_VALIDATOR.NOT_MAPPED.concat(`weekly_food_record.seven_days_freq: ${value}`),
+                    Strings.ENUM_VALIDATOR.NOT_MAPPED.concat(`weekly_food_record.seven_days_freq: ${value.seven_days_freq}`),
                     Strings.ENUM_VALIDATOR.NOT_MAPPED_DESC
                         .concat(Object.values(SevenDaysFeedingFrequencyTypes).join(', ').concat('.')))
             }
