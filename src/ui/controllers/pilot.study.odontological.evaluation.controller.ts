@@ -19,6 +19,7 @@ import { OdontologicEvaluation } from '../../application/domain/model/odontologi
 import { Query } from '../../infrastructure/repository/query/query'
 import { ApiException } from '../exception/api.exception'
 import { Strings } from '../../utils/strings'
+import { Patient } from '../../application/domain/model/patient'
 
 @controller('/pilotstudies/:pilotstudy_id/odontological/evaluations')
 export class PilotStudyOdontologicalEvaluationController {
@@ -33,7 +34,9 @@ export class PilotStudyOdontologicalEvaluationController {
             const requests: Array<OdontologicEvaluationRequest> =
                 req.body.map(item => {
                     const evaluation = new OdontologicEvaluationRequest().fromJSON(item)
+                    if (!evaluation.patient) evaluation.patient = new Patient()
                     evaluation.pilotstudy_id = req.params.pilotstudy_id
+                    if (!evaluation.measurements) evaluation.measurements = []
                     evaluation.measurements = item.measurements.map(measurement => this.jsonToModel(measurement))
                     return evaluation
                 })

@@ -37,6 +37,7 @@ import { ObjectIdValidator } from '../domain/validator/object.id.validator'
 import { EvaluationTypes } from '../domain/utils/evaluation.types'
 import { Query } from '../../infrastructure/repository/query/query'
 import { CreateOdontologicEvaluationValidator } from '../domain/validator/create.odontologic.evaluation.validator'
+import { OdontologicEvaluationRequestValidator } from '../domain/validator/odontologic.evaluation.request.validator'
 
 @injectable()
 export class OdontologicEvaluationService implements IOdontologicEvaluationService {
@@ -90,6 +91,7 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
 
     public async addEvaluation(item: Array<OdontologicEvaluationRequest>): Promise<OdontologicEvaluation> {
         try {
+            item.forEach(request => OdontologicEvaluationRequestValidator.validate(request))
             const evaluation: OdontologicEvaluation = await this.generateEvaluation(item)
             const result = await this.add(evaluation)
             if (!result) {

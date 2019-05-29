@@ -20,6 +20,7 @@ import { NutritionEvaluationRequest } from '../../application/domain/model/nutri
 import { Strings } from '../../utils/strings'
 import { ApiException } from '../exception/api.exception'
 import { NutritionCouncil } from '../../application/domain/model/nutrition.council'
+import { Patient } from '../../application/domain/model/patient'
 
 @controller('/patients/:patient_id/nutritional/evaluations')
 export class PatientNutritionalEvaluationController {
@@ -31,12 +32,11 @@ export class PatientNutritionalEvaluationController {
     @httpPost('/')
     public async addNutritionalEvaluationFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
-            req.body.patient.id = req.params.patient_id
             const evaluation: NutritionEvaluationRequest = new NutritionEvaluationRequest().fromJSON(req.body)
-            evaluation.measurements = req.body.measurements.map(item => {
-                item.user_id = req.params.patient_id
-                return this.jsonToModel(item)
-            })
+            if (!evaluation.patient) evaluation.patient = new Patient()
+            evaluation.patient.id = req.params.patient_id
+            if (!evaluation.measurements) evaluation.measurements = []
+            evaluation.measurements = req.body.measurements.map(item => this.jsonToModel(item))
             const result: NutritionEvaluation = await this._service.addEvaluation(evaluation)
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
         } catch (err) {

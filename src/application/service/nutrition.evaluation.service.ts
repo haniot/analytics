@@ -6,7 +6,6 @@ import { Identifier } from '../../di/identifiers'
 import { INutritionEvaluationRepository } from '../port/nutrition.evaluation.repository.interface'
 import { EvaluationTypes } from '../domain/utils/evaluation.types'
 import { NutritionEvaluationRequest } from '../domain/model/nutrition.evaluation.request'
-import { EvaluationRequestValidator } from '../domain/validator/evaluation.request.validator'
 import { CreateNutritionEvaluationValidator } from '../domain/validator/create.nutrition.evaluation.validator'
 import { NutritionCouncil } from '../domain/model/nutrition.council'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
@@ -35,6 +34,7 @@ import { GenderTypes } from '../domain/utils/gender.types'
 import { ValidationException } from '../domain/exception/validation.exception'
 import { BloodPressurePerSysDias } from '../domain/model/blood.pressure.per.sys.dias'
 import { IFileRepository } from '../port/files.repository.interface'
+import { NutritionEvaluationRequestValidator } from '../domain/validator/nutrition.evaluation.request.validator'
 
 @injectable()
 export class NutritionEvaluationService implements INutritionEvaluationService {
@@ -52,7 +52,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     ) {
     }
 
-    public add(item: any): Promise<NutritionEvaluation> {
+    public add(item: NutritionEvaluation): Promise<NutritionEvaluation> {
         try {
             CreateNutritionEvaluationValidator.validate(item)
         } catch (err) {
@@ -101,7 +101,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
 
     public async addEvaluation(item: NutritionEvaluationRequest): Promise<NutritionEvaluation> {
         try {
-            EvaluationRequestValidator.validate(item)
+            NutritionEvaluationRequestValidator.validate(item)
             const evaluation: NutritionEvaluation = await this.generateEvaluation(item)
             return this.add(evaluation)
         } catch (err) {
