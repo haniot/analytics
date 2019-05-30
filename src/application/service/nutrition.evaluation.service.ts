@@ -140,6 +140,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         const result: NutritionEvaluation = new NutritionEvaluation()
         try {
             const info = await this.getNutritionalEvaluationInformation(item)
+
             // Set General Information
             result.status = NutritionEvaluationStatusTypes.INCOMPLETE
             result.patient = item.patient
@@ -152,45 +153,33 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             result.sleep_habit = item.sleep_habit
 
             // Set Nutritional Status
-            result.nutritional_status = new NutritionStatus().fromJSON({
-                height: info.measurements.height,
-                weight: info.measurements.weight,
-                bmi: info.evaluation.bmi.value,
-                percentile: this.getBmiPerAgeClassification(info.evaluation.bmi.value, info.evaluation.bmi.percentile)
-                    .percentile,
-                classification: this.getBmiPerAgeClassification(info.evaluation.bmi.value, info.evaluation.bmi.percentile)
-                    .classification
-            })
-
+            result.nutritional_status = await this.getNutritionalStatus(
+                info.patient.age.value_with_month,
+                info.patient.gender,
+                info.measurements.height,
+                info.measurements.weight
+            )
             // Set Overweight Indicator
-            result.overweight_indicator = new OverweightIndicator().fromJSON({
-                waist_circumference: info.measurements.waist_circumference,
-                height: info.measurements.height,
-                waist_height_relation: info.evaluation.waist_height_relation.value,
-                classification: info.evaluation.waist_height_relation.value < 0.5 ?
-                    OverweightClassificationTypes.NORMAL : OverweightClassificationTypes.OVERWEIGHT_OBESITY_RISK
-
-            })
+            result.overweight_indicator =
+                this.getOverweightIndicator(info.measurements.waist_circumference, info.measurements.height)
 
             // Set Heart Rate
-            result.heart_rate = new HeartRate().fromJSON(this.getHeartRateDataSetGoals(info.measurements.heart_rate))
+            result.heart_rate = this.getHeartRate(info.measurements.heart_rate)
 
             // Set Blood Glucose
-            result.blood_glucose = new BloodGlucose().fromJSON({
-                value: info.measurements.blood_glucose.value,
-                meal: info.measurements.blood_glucose.meal,
-                classification: this.getBloodGlucoseClassification(info.measurements.blood_glucose),
-                zones: [new Zone().fromJSON(BloodGlucoseZones.zones)]
-            })
+
+            result.blood_glucose =
+                this.getBloodGlucose(info.measurements.blood_glucose.value, info.measurements.blood_glucose.meal)
 
             // Set Blood Pressure
-            result.blood_pressure = new BloodPressure().fromJSON({
-                systolic: info.measurements.blood_pressure.systolic,
-                diastolic: info.measurements.blood_pressure.diastolic,
-                systolic_percentile: info.evaluation.blood_pressure.percentile.systolic_percentile,
-                diastolic_percentile: info.evaluation.blood_pressure.percentile.diastolic_percentile,
-                classification: this.getBloodPressurePercentileClassification(info.evaluation.blood_pressure.percentile)
-            })
+
+            result.blood_pressure = await this.getBloodPressure(
+                info.patient.age.value,
+                info.patient.gender,
+                info.measurements.height,
+                info.measurements.blood_pressure.systolic,
+                info.measurements.blood_pressure.diastolic
+            )
 
             // Set Counseling
             result.counseling = new Counseling().fromJSON({
@@ -224,12 +213,16 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             const waist_circumference = request.measurements!
                 .filter(item => item.type === MeasurementTypes.WAIST_CIRCUMFERENCE)[0].toJSON()
 
-            const bmiPerAge: BmiPerAge = await this._bmiPerAgeRepo.getFile()
             const patientAge: any = DateUtils.getAgeFromBirthDate(patient.birth_date)
-            const patientAgeHeightPercentile =
-                await this.getBloodPressureAgeHeightPercentile(patientAge.age, height.value, patient.gender)
 
             const result = {
+                patient: {
+                    age: {
+                        value: patientAge.age,
+                        value_with_month: patientAge.age_with_months
+                    },
+                    gender: patient.gender
+                },
                 measurements: {
                     height: height.value,
                     weight: weight.value,
@@ -244,23 +237,6 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                     },
                     waist_circumference: waist_circumference.value
                 },
-                evaluation: {
-                    bmi: {
-                        value: this.getBmiPerWeightHeight(weight.value, height.value),
-                        percentile: this.getBmiPercentileFromAgeGender(bmiPerAge, patientAge.age_with_months, patient.gender)
-                    },
-                    waist_height_relation: {
-                        value: this.getWaistHeightRelation(waist_circumference.value, height.value)
-                    },
-                    blood_pressure: {
-                        percentile: await this.getBloodPressurePercentile(
-                            patient.gender,
-                            patientAge.age,
-                            patientAgeHeightPercentile.percentile!,
-                            blood_pressure.systolic
-                        )
-                    }
-                },
                 pilotstudy_id: request.pilotstudy_id,
                 health_professional_id: request.health_professional_id
             }
@@ -271,17 +247,43 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         }
     }
 
-    // BMI Functions
-    private getBmiPerWeightHeight(weight: number, height: number): number {
+    // Bmi Functions
+    public async getNutritionalStatus(age: string, gender: string, height: number, weight: number): Promise<NutritionStatus> {
+        const result: NutritionStatus = new NutritionStatus()
+        try {
+            result.height = height
+            result.weight = weight
+            result.bmi = this.calculateBmi(weight, height)
+            const percentile: AgeBmiPercentile = await this.getBmiPercentileFromAgeGender(age, gender)
+            const bmiClassification = this.getBmiClassification(result.bmi, percentile)
+            result.percentile = bmiClassification.percentile
+            result.classification = bmiClassification.classification
+        } catch (err) {
+            return Promise.reject(err)
+        }
+        return Promise.resolve(result)
+    }
+
+    private calculateBmi(weight: number, height: number): number {
         return parseFloat((weight / Math.pow((height / 100), 2)).toFixed(1))
     }
 
-    private getBmiPercentileFromAgeGender(bmiPerAge: BmiPerAge, age: string, gender: string): AgeBmiPercentile {
-        if (gender === 'male') return bmiPerAge.bmi_per_age_boys!.filter(value => value.age === age)[0]
-        return bmiPerAge.bmi_per_age_girls!.filter(value => value.age === age)[0]
+    private async getBmiPercentileFromAgeGender(age: string, gender: string): Promise<AgeBmiPercentile> {
+        try {
+            const bmiPerAge: BmiPerAge = await this._bmiPerAgeRepo.getFile()
+            if (gender === 'male') return Promise.resolve(bmiPerAge.bmi_per_age_boys!.filter(value => value.age === age)[0])
+            return Promise.resolve(bmiPerAge.bmi_per_age_girls!.filter(value => value.age === age)[0])
+        } catch (err) {
+            return Promise.reject(err)
+        }
     }
 
-    private getBmiPerAgeClassification(bmi: number, percentile: any): any {
+    private getBmiClassification(bmi: number, percentile: any): any {
+        if (!percentile) return {
+            percentile: 'undefined',
+            classification: 'undefined'
+        }
+
         if (bmi < percentile.p01) return {
             percentile: 'p01',
             classification: BmiPerAgeClassificationTypes.ACCENTUATED_THINNESS
@@ -306,13 +308,23 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     // Waist-Height Functions
+    private getOverweightIndicator(waist: number, height: number): OverweightIndicator {
+        const result: OverweightIndicator = new OverweightIndicator()
+        result.height = height
+        result.waist_circumference = waist
+        result.waist_height_relation = this.getWaistHeightRelation(waist, height)
+        result.classification = result.waist_height_relation < 0.5 ?
+            OverweightClassificationTypes.NORMAL : OverweightClassificationTypes.OVERWEIGHT_OBESITY_RISK
+        return result
+    }
+
     private getWaistHeightRelation(waist: number, height: number) {
         return parseFloat((waist / height).toFixed(2))
     }
 
     // Heart Rate Functions
-    private getHeartRateDataSetGoals(dataSet: Array<any>): any {
-        return {
+    private getHeartRate(dataSet: Array<any>): HeartRate {
+        return new HeartRate().fromJSON({
             min: dataSet.reduce((min, item) => Math.min(min, item.value), dataSet[0].value),
             max: dataSet.reduce((max, item) => Math.max(max, item.value), dataSet[0].value),
             average: Math.round(
@@ -320,21 +332,71 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                     .map(item => item.value)
                     .reduce((prev, curr) => prev + curr) / dataSet.length),
             dataset: dataSet
-        }
+        })
     }
 
     // Blood Glucose Functions
-    private getBloodGlucoseClassification(bloodGlucose: any): string {
-        const bloodGlucoseLevels = BloodGlucoseZones.zones[bloodGlucose.meal]
-        if (bloodGlucoseLevels.good.min < bloodGlucose.value && bloodGlucose.value < bloodGlucoseLevels.good.max) {
+    private getBloodGlucose(value: number, meal: string): BloodGlucose {
+        const result: BloodGlucose = new BloodGlucose()
+        result.value = value
+        result.meal = meal
+        result.classification = this.getBloodGlucoseClassification(value, meal)
+        result.zones = [new Zone().fromJSON(BloodGlucoseZones.zones)]
+        return result
+    }
+
+    private getBloodGlucoseClassification(value: number, meal: string): string {
+        const bloodGlucoseLevels = BloodGlucoseZones.zones[meal]
+        if (bloodGlucoseLevels.good.min < value && value < bloodGlucoseLevels.good.max) {
             return BloodGlucoseClassificationTypes.GOOD
-        } else if (bloodGlucoseLevels.great.min < bloodGlucose.value && bloodGlucose.value < bloodGlucoseLevels.great.max) {
+        } else if (bloodGlucoseLevels.great.min < value && value < bloodGlucoseLevels.great.max) {
             return BloodGlucoseClassificationTypes.GREAT
         }
         return BloodGlucoseClassificationTypes.UNDEFINED
     }
 
     // Blood Pressure Functions
+    private async getBloodPressure(age: number, gender: string, height: number, sys: number, dias: number):
+        Promise<BloodPressure> {
+        try {
+            const result: BloodPressure = new BloodPressure().fromJSON({
+                    systolic: sys,
+                    diastolic: dias,
+                    systolic_percentile: 'undefined',
+                    diastolic_percentile: 'undefined',
+                    classification: 'undefined'
+                }
+            )
+
+            const bmiPerAgeHeight = await this.getBloodPressureAgeHeightPercentile(age, height, gender)
+            if (!bmiPerAgeHeight) return Promise.resolve(result)
+
+            const ageHeightPercentile = await this.getBloodPressurePercentile(gender, age, bmiPerAgeHeight.percentile!, sys)
+            if (!ageHeightPercentile.percentile) return Promise.resolve(result)
+
+            result.systolic_percentile = ageHeightPercentile.systolic_percentile
+            result.diastolic_percentile = ageHeightPercentile.diastolic_percentile
+            result.classification = this.getBloodPressurePercentileClassification(ageHeightPercentile)
+            return Promise.resolve(result)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    private async getBloodPressureAgeHeightPercentile(age: number, height: number, gender: string): Promise<AgeHeightPercentile> {
+        try {
+            const bloodPressurePerAge: BloodPressurePerAgeHeight = await this._bloodPressurePerAgeHeightRepo.getFile()
+            if (gender === GenderTypes.MALE) {
+                return Promise.resolve(bloodPressurePerAge.blood_pressure_per_age_boys!
+                    .filter(item => item.age === age && item.height === height)[0])
+            }
+            return Promise.resolve(bloodPressurePerAge.blood_pressure_per_age_girls!
+                .filter(item => item.age === age && item.height === height)[0])
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
     private async getBloodPressurePercentile(gender: string, age: number, percentile: number, sys: number): Promise<any> {
         const bloodPressurePerSysDias: BloodPressurePerSysDias = await this._bloodPressurePerSysDiasRepo.getFile()
         let data = bloodPressurePerSysDias.age_systolic_diastolic_percentile_boys!.filter(item => item.age === age)
@@ -348,6 +410,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             switch (percentile) {
                 case (5):
                     result = data.filter(item => item.age === age && item.pas_5 === sys)[0]
+                    if (!result) {
+                        return Promise.resolve({
+                            percentile: undefined,
+                            systolic_percentile: 'undefined',
+                            diastolic_percentile: 'undefined'
+                        })
+                    }
                     return Promise.resolve({
                         percentile: result.percentile,
                         systolic_percentile: 'pas5',
@@ -355,6 +424,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                     })
                 case (10):
                     result = data.filter(item => item.pas_10 === sys)[0]
+                    if (!result) {
+                        return Promise.resolve({
+                            percentile: undefined,
+                            systolic_percentile: 'undefined',
+                            diastolic_percentile: 'undefined'
+                        })
+                    }
                     return Promise.resolve({
                         percentile: result.percentile,
                         systolic_percentile: 'pas10',
@@ -362,6 +438,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                     })
                 case (25):
                     result = data.filter(item => item.pas_25 === sys)[0]
+                    if (!result) {
+                        return Promise.resolve({
+                            percentile: undefined,
+                            systolic_percentile: 'undefined',
+                            diastolic_percentile: 'undefined'
+                        })
+                    }
                     return Promise.resolve({
                         percentile: result.percentile,
                         systolic_percentile: 'pas25',
@@ -369,6 +452,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                     })
                 case (50):
                     result = data.filter(item => item.pas_50 === sys)[0]
+                    if (!result) {
+                        return Promise.resolve({
+                            percentile: undefined,
+                            systolic_percentile: 'undefined',
+                            diastolic_percentile: 'undefined'
+                        })
+                    }
                     return Promise.resolve({
                         percentile: result.percentile,
                         systolic_percentile: 'pas50',
@@ -376,6 +466,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                     })
                 case (75):
                     result = data.filter(item => item.pas_75 === sys)[0]
+                    if (!result) {
+                        return Promise.resolve({
+                            percentile: undefined,
+                            systolic_percentile: 'undefined',
+                            diastolic_percentile: 'undefined'
+                        })
+                    }
                     return Promise.resolve({
                         percentile: result.percentile,
                         systolic_percentile: 'pas75',
@@ -383,6 +480,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                     })
                 case (90):
                     result = data.filter(item => item.pas_90 === sys)[0]
+                    if (!result) {
+                        return Promise.resolve({
+                            percentile: undefined,
+                            systolic_percentile: 'undefined',
+                            diastolic_percentile: 'undefined'
+                        })
+                    }
                     return Promise.resolve({
                         percentile: result.percentile,
                         systolic_percentile: 'pas90',
@@ -390,6 +494,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                     })
                 case (95):
                     result = data.filter(item => item.pas_95 === sys)[0]
+                    if (!result) {
+                        return Promise.resolve({
+                            percentile: undefined,
+                            systolic_percentile: 'undefined',
+                            diastolic_percentile: 'undefined'
+                        })
+                    }
                     return Promise.resolve({
                         percentile: result.percentile,
                         systolic_percentile: 'pas95',
@@ -405,29 +516,14 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         }
     }
 
-    private async getBloodPressureAgeHeightPercentile(age: number, height: number, gender: string): Promise<AgeHeightPercentile> {
-        try {
-            const bloodPressurePerAgeHeight: BloodPressurePerAgeHeight = await this._bloodPressurePerAgeHeightRepo.getFile()
-            if (gender === GenderTypes.MALE) {
-                return Promise.resolve(
-                    await bloodPressurePerAgeHeight.blood_pressure_per_age_boys!
-                        .filter(item => item.age === age && item.height === height)[0])
-            }
-            return Promise.resolve(
-                await bloodPressurePerAgeHeight.blood_pressure_per_age_girls!
-                    .filter(item => item.age === age && item.height === height)[0])
-        } catch (err) {
-            return Promise.reject(err)
-        }
-    }
-
-    private getBloodPressurePercentileClassification(ageHeightPercentile: AgeHeightPercentile): string {
+    private getBloodPressurePercentileClassification(ageHeightPercentile: any): string {
         if (ageHeightPercentile.percentile! < 90) return BloodPressurePercentileClassificationTypes.NORMAL
         else if (90 <= ageHeightPercentile.percentile! && ageHeightPercentile.percentile! < 95)
             return BloodPressurePercentileClassificationTypes.BORDERLINE
         else if (95 <= ageHeightPercentile.percentile! && ageHeightPercentile.percentile! < 99)
             return BloodPressurePercentileClassificationTypes.HYPERTENSION_STAGE_1
-        return BloodPressurePercentileClassificationTypes.HYPERTENSION_STAGE_2
+        else if (99 <= ageHeightPercentile.percentile) return BloodPressurePercentileClassificationTypes.HYPERTENSION_STAGE_2
+        return BloodPressurePercentileClassificationTypes.UNDEFINED
     }
 
     // Nutritional Counseling Functions

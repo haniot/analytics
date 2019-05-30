@@ -1,7 +1,7 @@
 import { NutritionEvaluation } from '../model/nutrition.evaluation'
 import { ValidationException } from '../exception/validation.exception'
 import { EvaluationStatusTypesValidator } from './evaluation.status.types.validator'
-import { NutritionalStatusValidator } from './nutritional.status.validator'
+import { NutritionStatusValidator } from './nutrition.status.validator'
 import { OverweightIndicatorValidator } from './overweight.indicator.validator'
 import { HeartRateValidator } from './heart.rate.validator'
 import { BloodGlucoseValidator } from './blood.glucose.validator'
@@ -22,7 +22,7 @@ export class CreateNutritionEvaluationValidator {
         if (!item.patient) fields.push('patient')
         else PatientValidator.validate(item.patient)
         if (!item.nutritional_status) fields.push('nutritional_status')
-        else NutritionalStatusValidator.validate(item.nutritional_status)
+        else NutritionStatusValidator.validate(item.nutritional_status)
         if (!item.overweight_indicator) fields.push('overweight_indicator')
         else OverweightIndicatorValidator.validate(item.overweight_indicator)
         if (!item.heart_rate) fields.push('heart_rate')

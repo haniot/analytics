@@ -4,5 +4,6 @@ export enum BmiPerAgeClassificationTypes {
     EUTROPHY = 'eutrophy',
     OVERWEIGHT = 'overweight',
     OBESITY = 'obesity',
-    SEVERE_OBESITY = 'severe_obesity'
+    SEVERE_OBESITY = 'severe_obesity',
+    UNDEFINED = 'undefined'
 }

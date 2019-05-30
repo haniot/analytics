@@ -2,7 +2,7 @@ import { ValidationException } from '../exception/validation.exception'
 import { BmiPercentileTypesValidator } from './bmi.percentile.types.validator'
 import { BmiPerAgeClassificationTypesValidator } from './bmi.per.age.classification.types.validator'
 
-export class NutritionalStatusValidator {
+export class NutritionStatusValidator {
     public static validate(item: any): void | ValidationException {
         const fields: Array<string> = []
 

@@ -5,5 +5,6 @@ export enum BloodPressureDiastolicPercentileTypes {
     PAD50 = 'pad50',
     PAD75 = 'pad75',
     PAD90 = 'pad90',
-    PAD95 = 'pad95'
+    PAD95 = 'pad95',
+    UNDEFINED = 'undefined'
 }
