@@ -372,7 +372,12 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             if (!bmiPerAgeHeight) return Promise.resolve(result)
 
             const ageHeightPercentile = await this.getBloodPressurePercentile(gender, age, bmiPerAgeHeight.percentile!, sys)
-            if (!ageHeightPercentile.percentile) return Promise.resolve(result)
+            if (!ageHeightPercentile.percentile) {
+                result.systolic_percentile = ageHeightPercentile.systolic_percentile
+                result.diastolic_percentile = ageHeightPercentile.diastolic_percentile
+                result.classification = 'undefined'
+                return Promise.resolve(result)
+            }
 
             result.systolic_percentile = ageHeightPercentile.systolic_percentile
             result.diastolic_percentile = ageHeightPercentile.diastolic_percentile
@@ -404,108 +409,52 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             data = bloodPressurePerSysDias.age_systolic_diastolic_percentile_girls!.filter(item => item.age === age)
         }
 
-        let result
+        let filtering
 
         try {
             switch (percentile) {
                 case (5):
-                    result = data.filter(item => item.age === age && item.pas_5 === sys)[0]
-                    if (!result) {
-                        return Promise.resolve({
-                            percentile: undefined,
-                            systolic_percentile: 'undefined',
-                            diastolic_percentile: 'undefined'
-                        })
-                    }
-                    return Promise.resolve({
-                        percentile: result.percentile,
-                        systolic_percentile: 'pas5',
-                        diastolic_percentile: 'pad5'
-                    })
+                    filtering = data.filter(item => item.age === age && item.pas_5 === sys)[0]
+                    return Promise.resolve(
+                        filtering ?
+                            { percentile: filtering.percentile, systolic_percentile: 'pas5', diastolic_percentile: 'pad5' } :
+                            { percentile: undefined, systolic_percentile: 'pas5', diastolic_percentile: 'pad5' })
                 case (10):
-                    result = data.filter(item => item.pas_10 === sys)[0]
-                    if (!result) {
-                        return Promise.resolve({
-                            percentile: undefined,
-                            systolic_percentile: 'undefined',
-                            diastolic_percentile: 'undefined'
-                        })
-                    }
-                    return Promise.resolve({
-                        percentile: result.percentile,
-                        systolic_percentile: 'pas10',
-                        diastolic_percentile: 'pad10'
-                    })
+                    filtering = data.filter(item => item.pas_10 === sys)[0]
+                    return Promise.resolve(
+                        filtering ?
+                            { percentile: filtering.percentile, systolic_percentile: 'pas10', diastolic_percentile: 'pad10' } :
+                            { percentile: undefined, systolic_percentile: 'pas10', diastolic_percentile: 'pad10' })
                 case (25):
-                    result = data.filter(item => item.pas_25 === sys)[0]
-                    if (!result) {
-                        return Promise.resolve({
-                            percentile: undefined,
-                            systolic_percentile: 'undefined',
-                            diastolic_percentile: 'undefined'
-                        })
-                    }
-                    return Promise.resolve({
-                        percentile: result.percentile,
-                        systolic_percentile: 'pas25',
-                        diastolic_percentile: 'pad25'
-                    })
+                    filtering = data.filter(item => item.pas_25 === sys)[0]
+                    return Promise.resolve(
+                        filtering ?
+                            { percentile: filtering.percentile, systolic_percentile: 'pas25', diastolic_percentile: 'pad25' } :
+                            { percentile: undefined, systolic_percentile: 'pas25', diastolic_percentile: 'pad25' })
                 case (50):
-                    result = data.filter(item => item.pas_50 === sys)[0]
-                    if (!result) {
-                        return Promise.resolve({
-                            percentile: undefined,
-                            systolic_percentile: 'undefined',
-                            diastolic_percentile: 'undefined'
-                        })
-                    }
-                    return Promise.resolve({
-                        percentile: result.percentile,
-                        systolic_percentile: 'pas50',
-                        diastolic_percentile: 'pad50'
-                    })
+                    filtering = data.filter(item => item.pas_50 === sys)[0]
+                    return Promise.resolve(
+                        filtering ?
+                            { percentile: filtering.percentile, systolic_percentile: 'pas50', diastolic_percentile: 'pad50' } :
+                            { percentile: undefined, systolic_percentile: 'pas50', diastolic_percentile: 'pad50' })
                 case (75):
-                    result = data.filter(item => item.pas_75 === sys)[0]
-                    if (!result) {
-                        return Promise.resolve({
-                            percentile: undefined,
-                            systolic_percentile: 'undefined',
-                            diastolic_percentile: 'undefined'
-                        })
-                    }
-                    return Promise.resolve({
-                        percentile: result.percentile,
-                        systolic_percentile: 'pas75',
-                        diastolic_percentile: 'pad75'
-                    })
+                    filtering = data.filter(item => item.pas_75 === sys)[0]
+                    return Promise.resolve(
+                        filtering ?
+                            { percentile: filtering.percentile, systolic_percentile: 'pas75', diastolic_percentile: 'pad75' } :
+                            { percentile: undefined, systolic_percentile: 'pas75', diastolic_percentile: 'pad75' })
                 case (90):
-                    result = data.filter(item => item.pas_90 === sys)[0]
-                    if (!result) {
-                        return Promise.resolve({
-                            percentile: undefined,
-                            systolic_percentile: 'undefined',
-                            diastolic_percentile: 'undefined'
-                        })
-                    }
-                    return Promise.resolve({
-                        percentile: result.percentile,
-                        systolic_percentile: 'pas90',
-                        diastolic_percentile: 'pad90'
-                    })
+                    filtering = data.filter(item => item.pas_90 === sys)[0]
+                    return Promise.resolve(
+                        filtering ?
+                            { percentile: filtering.percentile, systolic_percentile: 'pas90', diastolic_percentile: 'pad90' } :
+                            { percentile: undefined, systolic_percentile: 'pas90', diastolic_percentile: 'pad90' })
                 case (95):
-                    result = data.filter(item => item.pas_95 === sys)[0]
-                    if (!result) {
-                        return Promise.resolve({
-                            percentile: undefined,
-                            systolic_percentile: 'undefined',
-                            diastolic_percentile: 'undefined'
-                        })
-                    }
-                    return Promise.resolve({
-                        percentile: result.percentile,
-                        systolic_percentile: 'pas95',
-                        diastolic_percentile: 'pad95'
-                    })
+                    filtering = data.filter(item => item.pas_95 === sys)[0]
+                    return Promise.resolve(
+                        filtering ?
+                            { percentile: filtering.percentile, systolic_percentile: 'pas95', diastolic_percentile: 'pad95' } :
+                            { percentile: undefined, systolic_percentile: 'pas95', diastolic_percentile: 'pad95' })
                 default:
                     throw Error('Value not mapped for age-height percentile')
             }
