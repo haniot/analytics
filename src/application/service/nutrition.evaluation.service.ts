@@ -372,15 +372,13 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             if (!bmiPerAgeHeight) return Promise.resolve(result)
 
             const ageHeightPercentile = await this.getBloodPressurePercentile(gender, age, bmiPerAgeHeight.percentile!, sys)
+            result.systolic_percentile = ageHeightPercentile.systolic_percentile
+            result.diastolic_percentile = ageHeightPercentile.diastolic_percentile
+
             if (!ageHeightPercentile.percentile) {
-                result.systolic_percentile = ageHeightPercentile.systolic_percentile
-                result.diastolic_percentile = ageHeightPercentile.diastolic_percentile
                 result.classification = 'undefined'
                 return Promise.resolve(result)
             }
-
-            result.systolic_percentile = ageHeightPercentile.systolic_percentile
-            result.diastolic_percentile = ageHeightPercentile.diastolic_percentile
             result.classification = this.getBloodPressurePercentileClassification(ageHeightPercentile)
             return Promise.resolve(result)
         } catch (err) {
