@@ -163,6 +163,9 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             result.overweight_indicator =
                 this.getOverweightIndicator(info.measurements.waist_circumference, info.measurements.height)
 
+            // Set Taylor Cut Point
+            result.taylor_cut_point
+
             // Set Heart Rate
             result.heart_rate = this.getHeartRate(info.measurements.heart_rate)
 
@@ -321,6 +324,8 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     private getWaistHeightRelation(waist: number, height: number) {
         return parseFloat((waist / height).toFixed(2))
     }
+
+    // Taylor Cut Point
 
     // Heart Rate Functions
     private getHeartRate(dataSet: Array<any>): HeartRate {

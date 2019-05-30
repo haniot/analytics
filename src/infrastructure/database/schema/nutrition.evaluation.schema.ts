@@ -79,6 +79,16 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
                 required: 'Classification of overweight indicator is required!'
             }
         },
+        taylor_cut_point: {
+            waist_circumference: {
+                type: Number,
+                description: 'Value of waist circumference measurement is required!'
+            },
+            classification: {
+                type: String,
+                required: 'Classification of taylor cut point is required!'
+            }
+        },
         heart_rate: {
             min: {
                 type: Number,

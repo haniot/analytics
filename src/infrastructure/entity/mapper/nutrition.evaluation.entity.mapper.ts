@@ -22,6 +22,7 @@ import { FeedingHabitsRecord } from '../../../application/domain/model/feeding.h
 import { MedicalRecord } from '../../../application/domain/model/medical.record'
 import { SleepHabit } from '../../../application/domain/model/sleep.habit'
 import { Patient } from '../../../application/domain/model/patient'
+import { TaylorCutPoint } from '../../../application/domain/model/taylor.cut.point'
 
 @injectable()
 export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionEvaluation, NutritionEvaluationEntity> {
@@ -40,6 +41,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
             result.nutritional_status = new NutritionStatus().fromJSON(json.nutritional_status)
         if (json.overweight_indicator !== undefined)
             result.overweight_indicator = new OverweightIndicator().fromJSON(json.overweight_indicator)
+        if (json.taylor_cut_point) result.taylor_cut_point = new TaylorCutPoint().fromJSON(json.taylor_cut_point)
         if (json.heart_rate !== undefined) result.heart_rate = new HeartRate().fromJSON(json.heart_rate)
         if (json.blood_glucose !== undefined) result.blood_glucose = new BloodGlucose().fromJSON(json.blood_glucose)
         if (json.blood_pressure !== undefined) result.blood_pressure = new BloodPressure().fromJSON(json.blood_pressure)
@@ -71,6 +73,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (item.health_professional_id !== undefined) result.health_professional_id = item.health_professional_id
         if (item.nutritional_status !== undefined) result.nutritional_status = item.nutritional_status.toJSON()
         if (item.overweight_indicator !== undefined) result.overweight_indicator = item.overweight_indicator.toJSON()
+        if (item.taylor_cut_point !== undefined) result.taylor_cut_point = item.taylor_cut_point.toJSON()
         if (item.heart_rate !== undefined) result.heart_rate = item.heart_rate.toJSON()
         if (item.blood_glucose !== undefined) result.blood_glucose = item.blood_glucose.toJSON()
         if (item.blood_pressure !== undefined) result.blood_pressure = item.blood_pressure.toJSON()
