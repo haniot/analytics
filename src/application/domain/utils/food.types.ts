@@ -6,6 +6,6 @@ export enum FoodTypes {
     MILK = 'milk',
     BEAN = 'bean',
     FRUITS = 'fruits',
-    CANDY_SUGAR_COOKIE = 'candy_suggar_cookie',
+    CANDY_SUGAR_COOKIE = 'candy_sugar_cookie',
     BURGER_SAUSAGE = 'burger_sausage'
 }

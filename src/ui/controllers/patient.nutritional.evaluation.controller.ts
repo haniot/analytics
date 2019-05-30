@@ -36,7 +36,8 @@ export class PatientNutritionalEvaluationController {
             if (!evaluation.patient) evaluation.patient = new Patient()
             evaluation.patient.id = req.params.patient_id
             if (!evaluation.measurements) evaluation.measurements = []
-            evaluation.measurements = req.body.measurements.map(item => this.jsonToModel(item))
+            if (evaluation.measurements.length)
+                evaluation.measurements = req.body.measurements.map(item => this.jsonToModel(item))
             const result: NutritionEvaluation = await this._service.addEvaluation(evaluation)
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
         } catch (err) {
