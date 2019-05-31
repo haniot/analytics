@@ -35,6 +35,10 @@ export class TaylorCutPoint implements IJSONSerializable, IJSONDeserializable<Ta
     }
 
     public toJSON(): any {
+        return {
+            waist_circumference: this.waist_circumference,
+            classification: this.classification
+        }
     }
 
 }

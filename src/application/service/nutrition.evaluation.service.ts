@@ -35,6 +35,9 @@ import { ValidationException } from '../domain/exception/validation.exception'
 import { BloodPressurePerSysDias } from '../domain/model/blood.pressure.per.sys.dias'
 import { IFileRepository } from '../port/files.repository.interface'
 import { NutritionEvaluationRequestValidator } from '../domain/validator/nutrition.evaluation.request.validator'
+import { TaylorCutPointValues } from '../domain/utils/taylor.cut.point.values'
+import { TaylorCutPointClassificationTypes } from '../domain/utils/taylor.cut.point.classification.types'
+import { TaylorCutPoint } from '../domain/model/taylor.cut.point'
 
 @injectable()
 export class NutritionEvaluationService implements INutritionEvaluationService {
@@ -164,18 +167,17 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                 this.getOverweightIndicator(info.measurements.waist_circumference, info.measurements.height)
 
             // Set Taylor Cut Point
-            result.taylor_cut_point
+            result.taylor_cut_point =
+                this.getTaylorCutPoint(info.patient.age.value, info.patient.gender, info.measurements.waist_circumference)
 
             // Set Heart Rate
             result.heart_rate = this.getHeartRate(info.measurements.heart_rate)
 
             // Set Blood Glucose
-
             result.blood_glucose =
                 this.getBloodGlucose(info.measurements.blood_glucose.value, info.measurements.blood_glucose.meal)
 
             // Set Blood Pressure
-
             result.blood_pressure = await this.getBloodPressure(
                 info.patient.age.value,
                 info.patient.gender,
@@ -326,6 +328,17 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     // Taylor Cut Point
+    private getTaylorCutPoint(age: number, gender: string, waist: number): TaylorCutPoint {
+        let cutPointReference = TaylorCutPointValues.boys.filter(item => item.age === age)[0]
+        if (gender === GenderTypes.FEMALE) {
+            cutPointReference = TaylorCutPointValues.girls.filter(item => item.age === age)[0]
+        }
+        return new TaylorCutPoint().fromJSON({
+            waist_circumference: waist,
+            classification: waist <= cutPointReference.cut_point ?
+                TaylorCutPointClassificationTypes.NORMAL : TaylorCutPointClassificationTypes.OUT_OF_NORMALITY
+        })
+    }
 
     // Heart Rate Functions
     private getHeartRate(dataSet: Array<any>): HeartRate {
@@ -412,55 +425,84 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             data = bloodPressurePerSysDias.age_systolic_diastolic_percentile_girls!.filter(item => item.age === age)
         }
 
-        let filtering
+        const percentile_50 = data.filter(item => item.percentile === 50)[0]
+        const percentile_90 = data.filter(item => item.percentile === 90)[0]
+        const percentile_95 = data.filter(item => item.percentile === 95)[0]
+        const percentile_99 = data.filter(item => item.percentile === 99)[0]
 
+        const result = {
+            percentile: 0,
+            systolic_percentile: '',
+            diastolic_percentile: ''
+        }
         try {
             switch (percentile) {
                 case (5):
-                    filtering = data.filter(item => item.age === age && item.pas_5 === sys)[0]
-                    return Promise.resolve(
-                        filtering ?
-                            { percentile: filtering.percentile, systolic_percentile: 'pas5', diastolic_percentile: 'pad5' } :
-                            { percentile: undefined, systolic_percentile: 'pas5', diastolic_percentile: 'pad5' })
+                    result.systolic_percentile = 'pas5'
+                    result.diastolic_percentile = 'pad5'
+                    if (this.betweenTwoNumbers(sys, percentile_50.pas_5!, percentile_90.pas_5!)) result.percentile = 50
+                    else if (this.betweenTwoNumbers(sys, percentile_90.pas_5!, percentile_95.pas_5!)) result.percentile = 90
+                    else if (this.betweenTwoNumbers(sys, percentile_95.pas_5!, percentile_99.pas_5!)) result.percentile = 95
+                    else if (percentile_99.pas_5! <= sys) result.percentile = 99
+                    else result.percentile = undefined!
+                    break
                 case (10):
-                    filtering = data.filter(item => item.pas_10 === sys)[0]
-                    return Promise.resolve(
-                        filtering ?
-                            { percentile: filtering.percentile, systolic_percentile: 'pas10', diastolic_percentile: 'pad10' } :
-                            { percentile: undefined, systolic_percentile: 'pas10', diastolic_percentile: 'pad10' })
+                    result.systolic_percentile = 'pas10'
+                    result.diastolic_percentile = 'pad10'
+                    if (this.betweenTwoNumbers(sys, percentile_50.pas_10!, percentile_90.pas_10!)) result.percentile = 50
+                    else if (this.betweenTwoNumbers(sys, percentile_90.pas_10!, percentile_95.pas_10!)) result.percentile = 90
+                    else if (this.betweenTwoNumbers(sys, percentile_95.pas_10!, percentile_99.pas_10!)) result.percentile = 95
+                    else if (percentile_99.pas_10! <= sys) result.percentile = 99
+                    else result.percentile = undefined!
+                    break
                 case (25):
-                    filtering = data.filter(item => item.pas_25 === sys)[0]
-                    return Promise.resolve(
-                        filtering ?
-                            { percentile: filtering.percentile, systolic_percentile: 'pas25', diastolic_percentile: 'pad25' } :
-                            { percentile: undefined, systolic_percentile: 'pas25', diastolic_percentile: 'pad25' })
+                    result.systolic_percentile = 'pas25'
+                    result.diastolic_percentile = 'pad25'
+                    if (this.betweenTwoNumbers(sys, percentile_50.pas_25!, percentile_90.pas_25!)) result.percentile = 50
+                    else if (this.betweenTwoNumbers(sys, percentile_90.pas_25!, percentile_95.pas_25!)) result.percentile = 90
+                    else if (this.betweenTwoNumbers(sys, percentile_95.pas_25!, percentile_99.pas_25!)) result.percentile = 95
+                    else if (percentile_99.pas_25! <= sys) result.percentile = 99
+                    else result.percentile = undefined!
+                    break
                 case (50):
-                    filtering = data.filter(item => item.pas_50 === sys)[0]
-                    return Promise.resolve(
-                        filtering ?
-                            { percentile: filtering.percentile, systolic_percentile: 'pas50', diastolic_percentile: 'pad50' } :
-                            { percentile: undefined, systolic_percentile: 'pas50', diastolic_percentile: 'pad50' })
+                    result.systolic_percentile = 'pas50'
+                    result.diastolic_percentile = 'pad50'
+                    if (this.betweenTwoNumbers(sys, percentile_50.pas_50!, percentile_90.pas_50!)) result.percentile = 50
+                    else if (this.betweenTwoNumbers(sys, percentile_90.pas_50!, percentile_95.pas_50!)) result.percentile = 90
+                    else if (this.betweenTwoNumbers(sys, percentile_95.pas_50!, percentile_99.pas_50!)) result.percentile = 95
+                    else if (percentile_99.pas_50! <= sys) result.percentile = 99
+                    else result.percentile = undefined!
+                    break
                 case (75):
-                    filtering = data.filter(item => item.pas_75 === sys)[0]
-                    return Promise.resolve(
-                        filtering ?
-                            { percentile: filtering.percentile, systolic_percentile: 'pas75', diastolic_percentile: 'pad75' } :
-                            { percentile: undefined, systolic_percentile: 'pas75', diastolic_percentile: 'pad75' })
+                    result.systolic_percentile = 'pas75'
+                    result.diastolic_percentile = 'pad75'
+                    if (this.betweenTwoNumbers(sys, percentile_50.pas_75!, percentile_90.pas_75!)) result.percentile = 50
+                    else if (this.betweenTwoNumbers(sys, percentile_90.pas_75!, percentile_95.pas_75!)) result.percentile = 90
+                    else if (this.betweenTwoNumbers(sys, percentile_95.pas_75!, percentile_99.pas_75!)) result.percentile = 95
+                    else if (percentile_99.pas_75! <= sys) result.percentile = 99
+                    break
                 case (90):
-                    filtering = data.filter(item => item.pas_90 === sys)[0]
-                    return Promise.resolve(
-                        filtering ?
-                            { percentile: filtering.percentile, systolic_percentile: 'pas90', diastolic_percentile: 'pad90' } :
-                            { percentile: undefined, systolic_percentile: 'pas90', diastolic_percentile: 'pad90' })
+                    result.systolic_percentile = 'pas90'
+                    result.diastolic_percentile = 'pad90'
+                    if (this.betweenTwoNumbers(sys, percentile_50.pas_90!, percentile_90.pas_90!)) result.percentile = 50
+                    else if (this.betweenTwoNumbers(sys, percentile_90.pas_90!, percentile_95.pas_90!)) result.percentile = 90
+                    else if (this.betweenTwoNumbers(sys, percentile_95.pas_90!, percentile_99.pas_90!)) result.percentile = 95
+                    else if (percentile_99.pas_90! <= sys) result.percentile = 99
+                    else result.percentile = undefined!
+                    break
                 case (95):
-                    filtering = data.filter(item => item.pas_95 === sys)[0]
-                    return Promise.resolve(
-                        filtering ?
-                            { percentile: filtering.percentile, systolic_percentile: 'pas95', diastolic_percentile: 'pad95' } :
-                            { percentile: undefined, systolic_percentile: 'pas95', diastolic_percentile: 'pad95' })
+                    result.systolic_percentile = 'pas95'
+                    result.diastolic_percentile = 'pad95'
+                    if (this.betweenTwoNumbers(sys, percentile_50.pas_95!, percentile_90.pas_95!)) result.percentile = 50
+                    else if (this.betweenTwoNumbers(sys, percentile_90.pas_95!, percentile_95.pas_95!)) result.percentile = 90
+                    else if (this.betweenTwoNumbers(sys, percentile_95.pas_95!, percentile_99.pas_95!)) result.percentile = 95
+                    else if (percentile_99.pas_95! <= sys) result.percentile = 99
+                    else result.percentile = undefined!
+                    break
                 default:
                     throw Error('Value not mapped for age-height percentile')
             }
+            return Promise.resolve(result)
         } catch (err) {
             throw new ValidationException('Value not mapped for age-height percentile.',
                 `The age-height percentile ${percentile} does not contains relation with the systolic ` +
@@ -509,4 +551,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         }
     }
 
+    private betweenTwoNumbers(value: number, greatEqual: number, less: number): boolean {
+        return greatEqual <= value && value < less
+    }
 }

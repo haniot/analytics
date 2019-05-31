@@ -43,7 +43,7 @@ const girlsCutPoints = [
     }
 ]
 
-export const cutPoints = {
+export const TaylorCutPointValues = {
     boys: boysCutPoints,
     girls: girlsCutPoints
 }
