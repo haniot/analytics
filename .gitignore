@@ -35,7 +35,6 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-package-lock.json
 
 # TypeScript v1 declaration files
 typings/
@@ -61,7 +60,21 @@ typings/
 # next.js build output
 .next
 
-# Typescript
-dist
-# Webstorm IDE
+# IDE
 .idea
+.vscode
+
+# Directory files dist
+dist
+
+# Docs
+docs
+
+# certificates and keys directories and files
+.certs
+*.pem
+*.crt
+*.key
+*.csr
+*.cert
+certs
