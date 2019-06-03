@@ -7,9 +7,12 @@ WORKDIR /usr/src/analytics
 # install app dependencies
 COPY package.json /usr/src/analytics/
 RUN npm install
+
+# Bundle app source
 COPY . /usr/src/analytics
+RUN npm run build
 
 EXPOSE 6000
 EXPOSE 6001
 
-ENTRYPOINT  npm run build && npm start
+CMD ["npm", "start"]
