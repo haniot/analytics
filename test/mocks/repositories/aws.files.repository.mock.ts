@@ -6,6 +6,6 @@ export class AwsFilesRepositoryMock implements IEvaluationFilesManagerRepository
     }
 
     public upload(file: any): Promise<string> {
-        return Promise.resolve(file.link)
+        return Promise.resolve('https://repo.com/file.any')
     }
 }

@@ -17,7 +17,7 @@ export class OdontologicEvaluationRepositoryMock implements IOdontologicEvaluati
     }
 
     public create(item: OdontologicEvaluation): Promise<OdontologicEvaluation> {
-        return Promise.resolve(this.evaluation)
+        return Promise.resolve(item.total_patients === 1 ? this.evaluation : undefined!)
     }
 
     public delete(id: string): Promise<boolean> {
