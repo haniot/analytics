@@ -2,10 +2,11 @@ import { Entity } from './entity'
 import { JsonUtils } from '../utils/json.utils'
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
+import { DatetimeValidator } from '../validator/date.time.validator'
 
 export class QuestionnaireRecord extends Entity implements IJSONSerializable, IJSONDeserializable<QuestionnaireRecord> {
     private _patient_id?: string
-    private _created_at?: string
+    private _created_at?: Date
     private _type?: string
 
     constructor() {
@@ -20,11 +21,11 @@ export class QuestionnaireRecord extends Entity implements IJSONSerializable, IJ
         this._patient_id = value
     }
 
-    get created_at(): string | undefined {
+    get created_at(): Date | undefined {
         return this._created_at
     }
 
-    set created_at(value: string | undefined) {
+    set created_at(value: Date | undefined) {
         this._created_at = value
     }
 
@@ -36,6 +37,11 @@ export class QuestionnaireRecord extends Entity implements IJSONSerializable, IJ
         this._type = value
     }
 
+    public convertDatetimeString(value: string): Date {
+        DatetimeValidator.validate(value)
+        return new Date(value)
+    }
+
     public fromJSON(json: any): QuestionnaireRecord {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
@@ -44,7 +50,7 @@ export class QuestionnaireRecord extends Entity implements IJSONSerializable, IJ
 
         if (json.id !== undefined) super.id = this.id
         if (json.patient_id !== undefined) this.patient_id = json.patient_id
-        if (json.created_at !== undefined) this.created_at = json.created_at
+        if (json.created_at !== undefined) this.created_at = this.convertDatetimeString(json.created_at)
         if (json.type !== undefined) this.type = json.type
 
         return this

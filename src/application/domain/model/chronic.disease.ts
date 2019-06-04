@@ -31,7 +31,7 @@ export class ChronicDisease implements IJSONSerializable, IJSONDeserializable<Ch
         if (json.type !== undefined) this.type = json.type
         if (json.disease_history !== undefined) this.disease_history = json.disease_history
 
-        return this.toJSON()
+        return this
     }
 
     public toJSON(): any {

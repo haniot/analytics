@@ -82,7 +82,8 @@ export class FeedingHabitsRecord
         return {
             ...super.toJSON(),
             ...{
-                weekly_feeding_habits: this.weekly_feeding_habits,
+                weekly_feeding_habits: this.weekly_feeding_habits && this.weekly_feeding_habits ?
+                    this.weekly_feeding_habits.map(item => item.toJSON()) : undefined,
                 daily_water_glasses: this.daily_water_glasses,
                 six_month_breast_feeding: this.six_month_breast_feeding,
                 food_allergy_intolerance: this.food_allergy_intolerance,

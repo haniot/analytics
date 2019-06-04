@@ -88,7 +88,7 @@ export class NutritionCounseling implements IJSONSerializable, IJSONDeserializab
                 this.overweight_obesity_counseling : undefined,
             insulin_resistance_diabetes_counseling:
                 this.insulin_resistance_diabetes_counseling && this.insulin_resistance_diabetes_counseling.length ?
-                    this.thinness_counseling : undefined,
+                    this.insulin_resistance_diabetes_counseling : undefined,
             hypertension_counseling: this.hypertension_counseling && this.hypertension_counseling.length ?
                 this.hypertension_counseling : undefined
 

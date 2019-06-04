@@ -6,6 +6,15 @@ import { AwsFilesRepositoryMock } from '../../mocks/repositories/aws.files.repos
 import { assert } from 'chai'
 import { Query } from '../../../src/infrastructure/repository/query/query'
 import { OdontologicEvaluationRequest } from '../../../src/application/domain/model/odontologic.evaluation.request'
+import { MeasurementTypes } from '../../../src/application/domain/utils/measurement.types'
+import { HeightMeasurement } from '../../../src/application/domain/model/height.measurement'
+import { HeartRateMeasurement } from '../../../src/application/domain/model/heart.rate.measurement'
+import { BloodPressureMeasurement } from '../../../src/application/domain/model/blood.pressure.measurement'
+import { WeightMeasurement } from '../../../src/application/domain/model/weight.measurement'
+import { BloodGlucoseMeasurement } from '../../../src/application/domain/model/blood.glucose.measurement'
+import { BodyTemperatureMeasurement } from '../../../src/application/domain/model/body.temperature.measurement'
+import { WaistCircumferenceMeasurement } from '../../../src/application/domain/model/waist.circumference.measurement'
+import { FatMeasurement } from '../../../src/application/domain/model/fat.measurement'
 
 describe('Services: OdontologicService', () => {
     const evaluation: OdontologicEvaluation = new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
@@ -13,7 +22,7 @@ describe('Services: OdontologicService', () => {
 
     const request: OdontologicEvaluationRequest =
         new OdontologicEvaluationRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
-    request.measurements = DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.measurements
+    request.measurements = DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.measurements.map(item => jsonToModel(item))
 
     const service = new OdontologicEvaluationService(
         new OdontologicEvaluationRepositoryMock(),
@@ -201,3 +210,39 @@ describe('Services: OdontologicService', () => {
         })
     })
 })
+
+function jsonToModel(item: any): any {
+    if (item.type) {
+        switch (item.type) {
+            case MeasurementTypes.HEIGHT:
+                return new HeightMeasurement().fromJSON(item)
+            case MeasurementTypes.HEART_RATE:
+                return new HeartRateMeasurement().fromJSON(item)
+            case MeasurementTypes.BLOOD_PRESSURE:
+                return new BloodPressureMeasurement().fromJSON(item)
+            case MeasurementTypes.WEIGHT:
+                if (item.fat !== undefined) {
+                    item.fat = {
+                        ...item.fat,
+                        ...{
+                            device_id: item.device_id,
+                            timestamp: item.timestamp,
+                            user_id: item.user_id
+                        }
+                    }
+                }
+                return new WeightMeasurement().fromJSON(item)
+            case MeasurementTypes.BLOOD_GLUCOSE:
+                return new BloodGlucoseMeasurement().fromJSON(item)
+            case MeasurementTypes.BODY_TEMPERATURE:
+                return new BodyTemperatureMeasurement().fromJSON(item)
+            case MeasurementTypes.WAIST_CIRCUMFERENCE:
+                return new WaistCircumferenceMeasurement().fromJSON(item)
+            case MeasurementTypes.FAT:
+                return new FatMeasurement().fromJSON(item)
+            default:
+                return item
+        }
+    }
+    return undefined
+}
