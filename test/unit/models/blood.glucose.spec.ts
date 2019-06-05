@@ -57,7 +57,6 @@ describe('Models: BloodGlucose', () => {
         it('should return a json with all parameters', () => {
             const model: BloodGlucose = new BloodGlucose().fromJSON(DefaultEntityMock.BLOOD_GLUCOSE)
             const result = model.toJSON()
-            console.log(result)
             assert.propertyVal(result, 'value', DefaultEntityMock.BLOOD_GLUCOSE.value)
             assert.propertyVal(result, 'meal', DefaultEntityMock.BLOOD_GLUCOSE.meal)
             assert.propertyVal(result, 'classification', DefaultEntityMock.BLOOD_GLUCOSE.classification)

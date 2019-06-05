@@ -8,7 +8,6 @@ describe('Models: Measurement', () => {
             it('should return a complete model for pass all parameters', () => {
                 const result: Measurement = new Measurement().fromJSON(DefaultEntityMock.MEASUREMENT)
                 assert.propertyVal(result, 'unit', DefaultEntityMock.MEASUREMENT.unit)
-                assert.propertyVal(result, 'user_id', DefaultEntityMock.MEASUREMENT.user_id)
                 assert.propertyVal(result, 'device_id', DefaultEntityMock.MEASUREMENT.device_id)
             })
 
@@ -24,7 +23,6 @@ describe('Models: Measurement', () => {
             it('should return a complete model for pass all parameters', () => {
                 const result: Measurement = new Measurement().fromJSON(JSON.stringify(DefaultEntityMock.MEASUREMENT))
                 assert.propertyVal(result, 'unit', DefaultEntityMock.MEASUREMENT.unit)
-                assert.propertyVal(result, 'user_id', DefaultEntityMock.MEASUREMENT.user_id)
                 assert.propertyVal(result, 'device_id', DefaultEntityMock.MEASUREMENT.device_id)
             })
 
@@ -49,7 +47,6 @@ describe('Models: Measurement', () => {
             const model: Measurement = new Measurement().fromJSON(DefaultEntityMock.MEASUREMENT)
             const result = model.toJSON()
             assert.propertyVal(result, 'unit', DefaultEntityMock.MEASUREMENT.unit)
-            assert.propertyVal(result, 'user_id', DefaultEntityMock.MEASUREMENT.user_id)
             assert.propertyVal(result, 'device_id', DefaultEntityMock.MEASUREMENT.device_id)
         })
     })

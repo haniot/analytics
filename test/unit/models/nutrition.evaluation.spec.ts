@@ -100,7 +100,6 @@ describe('Models: NutritionEvaluation', () => {
     describe('toJSON()', () => {
         it('should return a json with all parameters', () => {
             const result = data.toJSON()
-            console.log(result)
             assert.deepPropertyVal(result, 'status', DefaultEntityMock.NUTRITION_EVALUATION.status)
             // assert.deepPropertyVal(result, 'patient',  DefaultEntityMock.NUTRITION_EVALUATION.patient)
             assert.deepPropertyVal(result, 'nutritional_status',  DefaultEntityMock.NUTRITION_EVALUATION.nutritional_status)

@@ -1,27 +1,27 @@
-import { OdontologicEvaluationRepoModel } from '../../../src/infrastructure/database/schema/odontologic.evaluation.schema'
-import { OdontologicEvaluationRepository } from '../../../src/infrastructure/repository/odontologic.evaluation.repository'
 import { EntityMapperMock } from '../../mocks/models/entity.mapper.mock'
 import { CustomLoggerMock } from '../../mocks/custom.logger.mock'
-import { OdontologicEvaluation } from '../../../src/application/domain/model/odontologic.evaluation'
 import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
 import { assert } from 'chai'
 import sinon from 'sinon'
 import { Query } from '../../../src/infrastructure/repository/query/query'
+import { NutritionEvaluationRepoModel } from '../../../src/infrastructure/database/schema/nutrition.evaluation.schema'
+import { NutritionEvaluationRepository } from '../../../src/infrastructure/repository/nutrition.evaluation.repository'
+import { NutritionEvaluation } from '../../../src/application/domain/model/nutrition.evaluation'
 
 require('sinon-mongoose')
 
-describe('Repositories: OdontologicRepository', () => {
-    const modelFake: any = OdontologicEvaluationRepoModel
-    const repo = new OdontologicEvaluationRepository(modelFake, new EntityMapperMock(), new CustomLoggerMock())
-    const evaluation: OdontologicEvaluation = new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
-    evaluation.id = DefaultEntityMock.ODONTOLOGIC_EVALUATION.id
+describe('Repositories: NutritionRepository', () => {
+    const modelFake: any = NutritionEvaluationRepoModel
+    const repo = new NutritionEvaluationRepository(modelFake, new EntityMapperMock(), new CustomLoggerMock())
+    const evaluation: NutritionEvaluation = new NutritionEvaluation().fromJSON(DefaultEntityMock.NUTRITION_EVALUATION)
+    evaluation.id = DefaultEntityMock.NUTRITION_EVALUATION.id
 
     afterEach(() => {
         sinon.restore()
     })
 
     describe('create()', () => {
-        context('when save a odontologic evaluation', () => {
+        context('when save a nutrition evaluation', () => {
             it('should return the saved evaluation', () => {
                 sinon
                     .mock(modelFake)
@@ -33,16 +33,23 @@ describe('Repositories: OdontologicRepository', () => {
                     .then(res => {
                         assert.propertyVal(res, 'type', evaluation.type)
                         assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
-                        assert.propertyVal(res, 'total_patients', evaluation.total_patients)
-                        assert.propertyVal(res, 'file_csv', evaluation.file_csv)
-                        assert.propertyVal(res, 'file_xls', evaluation.file_xls)
-                        assert.propertyVal(res, 'health_professional_id', evaluation.health_professional_id)
-                        assert.propertyVal(res, 'pilotstudy_id', evaluation.pilotstudy_id)
+                        assert.deepPropertyVal(res, 'patient', evaluation.patient)
+                        assert.deepPropertyVal(res, 'nutritional_status', evaluation.nutritional_status)
+                        assert.deepPropertyVal(res, 'overweight_indicator', evaluation.overweight_indicator)
+                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
+                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
+                        assert.deepPropertyVal(res, 'heart_rate', evaluation.heart_rate)
+                        assert.deepPropertyVal(res, 'blood_glucose', evaluation.blood_glucose)
+                        assert.deepPropertyVal(res, 'blood_pressure', evaluation.blood_pressure)
+                        assert.deepPropertyVal(res, 'counseling', evaluation.counseling)
+                        assert.deepPropertyVal(res, 'physical_activity_habits', evaluation.physical_activity_habits)
+                        assert.deepPropertyVal(res, 'feeding_habits_record', evaluation.feeding_habits_record)
+                        assert.deepPropertyVal(res, 'medical_record', evaluation.medical_record)
                     })
             })
         })
 
-        context('when the odontologic evaluation is not created', () => {
+        context('when the nutrition evaluation is not created', () => {
             it('should return undefined', () => {
                 it('should return the saved evaluation', () => {
                     sinon
@@ -77,7 +84,7 @@ describe('Repositories: OdontologicRepository', () => {
     })
 
     describe('find()', () => {
-        context('when get all odontologic evaluations', () => {
+        context('when get all nutrition evaluations', () => {
             it('should return a list of evaluations', () => {
                 sinon
                     .mock(modelFake)
@@ -98,16 +105,23 @@ describe('Repositories: OdontologicRepository', () => {
                         assert.lengthOf(res, 1)
                         assert.propertyVal(res[0], 'type', evaluation.type)
                         assert.deepPropertyVal(res[0], 'created_at', evaluation.created_at)
-                        assert.propertyVal(res[0], 'total_patients', evaluation.total_patients)
-                        assert.propertyVal(res[0], 'file_csv', evaluation.file_csv)
-                        assert.propertyVal(res[0], 'file_xls', evaluation.file_xls)
-                        assert.propertyVal(res[0], 'health_professional_id', evaluation.health_professional_id)
-                        assert.propertyVal(res[0], 'pilotstudy_id', evaluation.pilotstudy_id)
+                        assert.deepPropertyVal(res[0], 'patient', evaluation.patient)
+                        assert.deepPropertyVal(res[0], 'nutritional_status', evaluation.nutritional_status)
+                        assert.deepPropertyVal(res[0], 'overweight_indicator', evaluation.overweight_indicator)
+                        assert.deepPropertyVal(res[0], 'taylor_cut_point', evaluation.taylor_cut_point)
+                        assert.deepPropertyVal(res[0], 'taylor_cut_point', evaluation.taylor_cut_point)
+                        assert.deepPropertyVal(res[0], 'heart_rate', evaluation.heart_rate)
+                        assert.deepPropertyVal(res[0], 'blood_glucose', evaluation.blood_glucose)
+                        assert.deepPropertyVal(res[0], 'blood_pressure', evaluation.blood_pressure)
+                        assert.deepPropertyVal(res[0], 'counseling', evaluation.counseling)
+                        assert.deepPropertyVal(res[0], 'physical_activity_habits', evaluation.physical_activity_habits)
+                        assert.deepPropertyVal(res[0], 'feeding_habits_record', evaluation.feeding_habits_record)
+                        assert.deepPropertyVal(res[0], 'medical_record', evaluation.medical_record)
                     })
             })
         })
 
-        context('when there no odontologic evaluations', () => {
+        context('when there no nutrition evaluations', () => {
             it('should return a empty list', () => {
                 sinon
                     .mock(modelFake)
@@ -155,7 +169,7 @@ describe('Repositories: OdontologicRepository', () => {
     })
 
     describe('findOne()', () => {
-        context('when get a unique odontologic evaluation', () => {
+        context('when get a unique nutrition evaluation', () => {
             it('should return the evaluation', () => {
                 sinon
                     .mock(modelFake)
@@ -169,16 +183,23 @@ describe('Repositories: OdontologicRepository', () => {
                     .then(res => {
                         assert.propertyVal(res, 'type', evaluation.type)
                         assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
-                        assert.propertyVal(res, 'total_patients', evaluation.total_patients)
-                        assert.propertyVal(res, 'file_csv', evaluation.file_csv)
-                        assert.propertyVal(res, 'file_xls', evaluation.file_xls)
-                        assert.propertyVal(res, 'health_professional_id', evaluation.health_professional_id)
-                        assert.propertyVal(res, 'pilotstudy_id', evaluation.pilotstudy_id)
+                        assert.deepPropertyVal(res, 'patient', evaluation.patient)
+                        assert.deepPropertyVal(res, 'nutritional_status', evaluation.nutritional_status)
+                        assert.deepPropertyVal(res, 'overweight_indicator', evaluation.overweight_indicator)
+                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
+                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
+                        assert.deepPropertyVal(res, 'heart_rate', evaluation.heart_rate)
+                        assert.deepPropertyVal(res, 'blood_glucose', evaluation.blood_glucose)
+                        assert.deepPropertyVal(res, 'blood_pressure', evaluation.blood_pressure)
+                        assert.deepPropertyVal(res, 'counseling', evaluation.counseling)
+                        assert.deepPropertyVal(res, 'physical_activity_habits', evaluation.physical_activity_habits)
+                        assert.deepPropertyVal(res, 'feeding_habits_record', evaluation.feeding_habits_record)
+                        assert.deepPropertyVal(res, 'medical_record', evaluation.medical_record)
                     })
             })
         })
 
-        context('when the odontologic evaluation is not found', () => {
+        context('when the nutrition evaluation is not found', () => {
             it('should return undefined', () => {
                 sinon
                     .mock(modelFake)
@@ -215,7 +236,7 @@ describe('Repositories: OdontologicRepository', () => {
     })
 
     describe('update()', () => {
-        context('when update a odontologic evaluation', () => {
+        context('when update a nutrition evaluation', () => {
             it('should return the updated evaluation', () => {
                 sinon
                     .mock(modelFake)
@@ -228,16 +249,23 @@ describe('Repositories: OdontologicRepository', () => {
                     .then(res => {
                         assert.propertyVal(res, 'type', evaluation.type)
                         assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
-                        assert.propertyVal(res, 'total_patients', evaluation.total_patients)
-                        assert.propertyVal(res, 'file_csv', evaluation.file_csv)
-                        assert.propertyVal(res, 'file_xls', evaluation.file_xls)
-                        assert.propertyVal(res, 'health_professional_id', evaluation.health_professional_id)
-                        assert.propertyVal(res, 'pilotstudy_id', evaluation.pilotstudy_id)
+                        assert.deepPropertyVal(res, 'patient', evaluation.patient)
+                        assert.deepPropertyVal(res, 'nutritional_status', evaluation.nutritional_status)
+                        assert.deepPropertyVal(res, 'overweight_indicator', evaluation.overweight_indicator)
+                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
+                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
+                        assert.deepPropertyVal(res, 'heart_rate', evaluation.heart_rate)
+                        assert.deepPropertyVal(res, 'blood_glucose', evaluation.blood_glucose)
+                        assert.deepPropertyVal(res, 'blood_pressure', evaluation.blood_pressure)
+                        assert.deepPropertyVal(res, 'counseling', evaluation.counseling)
+                        assert.deepPropertyVal(res, 'physical_activity_habits', evaluation.physical_activity_habits)
+                        assert.deepPropertyVal(res, 'feeding_habits_record', evaluation.feeding_habits_record)
+                        assert.deepPropertyVal(res, 'medical_record', evaluation.medical_record)
                     })
             })
         })
 
-        context('when the odontologic evaluation is not updated', () => {
+        context('when the nutrition evaluation is not updated', () => {
             it('should return undefined', () => {
                 sinon
                     .mock(modelFake)
@@ -272,7 +300,7 @@ describe('Repositories: OdontologicRepository', () => {
     })
 
     describe('delete()', () => {
-        context('when delete a odontologic evaluation', () => {
+        context('when delete a nutrition evaluation', () => {
             it('should return true', () => {
                 sinon
                     .mock(modelFake)
@@ -289,7 +317,7 @@ describe('Repositories: OdontologicRepository', () => {
             })
         })
 
-        context('when the odontologic evaluation is not deleted', () => {
+        context('when the nutrition evaluation is not deleted', () => {
             it('should return false', () => {
                 sinon
                     .mock(modelFake)

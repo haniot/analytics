@@ -3,17 +3,18 @@ import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
 import { assert } from 'chai'
 
 describe('Models: OdontologicEvaluation', () => {
+    const data: OdontologicEvaluation = new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
+
     describe('fromJSON()', () => {
         context('when transform json to model', () => {
             it('should return a complete model for pass all parameters', () => {
                 const result: OdontologicEvaluation =
                     new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
-                assert.propertyVal(result, 'file_csv', DefaultEntityMock.ODONTOLOGIC_EVALUATION.file_csv)
-                assert.propertyVal(result, 'file_xls', DefaultEntityMock.ODONTOLOGIC_EVALUATION.file_xls)
-                // assert.deepPropertyVal(result, 'created_at', DefaultEntityMock.ODONTOLOGIC_EVALUATION.created_at)
-                assert.propertyVal(result, 'total_patients', DefaultEntityMock.ODONTOLOGIC_EVALUATION.total_patients)
-                assert.propertyVal(
-                    result, 'health_professional_id', DefaultEntityMock.ODONTOLOGIC_EVALUATION.health_professional_id)
+                assert.propertyVal(result, 'file_csv', data.file_csv)
+                assert.propertyVal(result, 'file_xls', data.file_xls)
+                assert.deepPropertyVal(result, 'created_at', data.created_at)
+                assert.propertyVal(result, 'total_patients', data.total_patients)
+                assert.propertyVal(result, 'health_professional_id', data.health_professional_id)
             })
 
             it('should return a incomplete model for not pass all parameters', () => {
@@ -30,10 +31,10 @@ describe('Models: OdontologicEvaluation', () => {
             it('should return a complete model for pass all parameters', () => {
                 const result: OdontologicEvaluation =
                     new OdontologicEvaluation().fromJSON(JSON.stringify(DefaultEntityMock.ODONTOLOGIC_EVALUATION))
-                assert.propertyVal(result, 'file_csv', DefaultEntityMock.ODONTOLOGIC_EVALUATION.file_csv)
-                assert.propertyVal(result, 'file_xls', DefaultEntityMock.ODONTOLOGIC_EVALUATION.file_xls)
-                // assert.deepPropertyVal(result, 'created_at', DefaultEntityMock.ODONTOLOGIC_EVALUATION.created_at)
-                assert.propertyVal(result, 'total_patients', DefaultEntityMock.ODONTOLOGIC_EVALUATION.total_patients)
+                assert.propertyVal(result, 'file_csv', data.file_csv)
+                assert.propertyVal(result, 'file_xls', data.file_xls)
+                assert.deepPropertyVal(result, 'created_at', data.created_at)
+                assert.propertyVal(result, 'total_patients', data.total_patients)
                 assert.propertyVal(
                     result, 'health_professional_id', DefaultEntityMock.ODONTOLOGIC_EVALUATION.health_professional_id)
             })
@@ -60,12 +61,10 @@ describe('Models: OdontologicEvaluation', () => {
 
     describe('toJSON()', () => {
         it('should return a json with all parameters', () => {
-            const model: OdontologicEvaluation =
-                new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
-            const result = model.toJSON()
+            const result = data.toJSON()
             assert.propertyVal(result, 'file_csv', DefaultEntityMock.ODONTOLOGIC_EVALUATION.file_csv)
             assert.propertyVal(result, 'file_xls', DefaultEntityMock.ODONTOLOGIC_EVALUATION.file_xls)
-            // assert.deepPropertyVal(result, 'created_at', DefaultEntityMock.ODONTOLOGIC_EVALUATION.created_at)
+            assert.deepPropertyVal(result, 'created_at', data.created_at)
             assert.propertyVal(result, 'total_patients', DefaultEntityMock.ODONTOLOGIC_EVALUATION.total_patients)
             assert.propertyVal(
                 result, 'health_professional_id', DefaultEntityMock.ODONTOLOGIC_EVALUATION.health_professional_id)

@@ -16,7 +16,7 @@ export abstract class DefaultEntityMock {
         file_xls: 'https://repo.com/file.xls',
         health_professional_id: '5c86d00cfc25e7036d51d652',
         pilotstudy_id: '5c86d00c2239a48ea20a0134',
-        created_at: '2018-11-19T14:40:00'
+        created_at: '2018-11-19T14:40:00Z'
     }
 
     public static ODONTOLOGIC_EVALUATION_REQUEST = {
@@ -450,7 +450,6 @@ export abstract class DefaultEntityMock {
         },
         measurements: [
             {
-                id: '5cb488278cf5f9e6760c14ed',
                 value: 146,
                 unit: 'mg/dl',
                 meal: 'preprandial',
@@ -460,7 +459,6 @@ export abstract class DefaultEntityMock {
                 device_id: '5ca790f77aefffa37a17b605'
             },
             {
-                id: '5cb48827217ee2910ea11e84',
                 systolic: 121,
                 diastolic: 78,
                 pulse: 80,
@@ -471,7 +469,6 @@ export abstract class DefaultEntityMock {
                 device_id: '5ca790f77aefffa37a17b605'
             },
             {
-                id: '5cb4b2fd02eb7733b03db810',
                 value: 36,
                 unit: '°C',
                 type: 'body_temperature',
@@ -480,7 +477,6 @@ export abstract class DefaultEntityMock {
                 device_id: '5ca790f77aefffa37a17b605'
             },
             {
-                id: '5cb4882751b5f21ba364ba6f',
                 value: 20,
                 unit: '%',
                 type: 'fat',
@@ -489,7 +485,6 @@ export abstract class DefaultEntityMock {
                 device_id: '5ca790f77aefffa37a17b605'
             },
             {
-                id: '5cb488277b26234cfe2635da',
                 dataset: [
                     {
                         value: 90,
@@ -518,7 +513,6 @@ export abstract class DefaultEntityMock {
                 device_id: '5ca790f77aefffa37a17b605'
             },
             {
-                id: '5cb488279ea138bd6abf936a',
                 value: 155,
                 unit: 'cm',
                 type: 'height',
@@ -527,7 +521,6 @@ export abstract class DefaultEntityMock {
                 device_id: '5ca790f77aefffa37a17b605'
             },
             {
-                id: '5cb488279ea138bd6abf936a',
                 value: 70,
                 unit: 'cm',
                 type: 'waist_circumference',
@@ -536,7 +529,6 @@ export abstract class DefaultEntityMock {
                 device_id: '5ca790f77aefffa37a17b605'
             },
             {
-                id: '5cb4882751b5f21ba364ba6f',
                 value: 50,
                 unit: 'kg',
                 type: 'weight',
@@ -550,7 +542,6 @@ export abstract class DefaultEntityMock {
             }
         ],
         physical_activity_habits: {
-            id: '5c9137f2cdff19618c05cf31',
             created_at: '2018-11-19T14:40:00',
             school_activity_freq: 'four_more_per_week',
             weekly_activities: [
@@ -559,7 +550,6 @@ export abstract class DefaultEntityMock {
             ]
         },
         feeding_habits_record: {
-            id: '5c9137f233b9b49d1c881189',
             created_at: '2018-11-19T14:40:00',
             weekly_feeding_habits: [
                 {
@@ -608,7 +598,6 @@ export abstract class DefaultEntityMock {
             breakfast_daily_frequency: 'everyday'
         },
         medical_record: {
-            id: '5c9137f29293b51a067711c8',
             created_at: '2018-11-19T14:40:00',
             chronic_diseases: [
                 {
@@ -826,6 +815,7 @@ export abstract class DefaultEntityMock {
             }
         }
     }
+
     public static PHYSICAL_ACTIVITY_HABITS = {
         school_activity_freq: 'four_more_per_week',
         weekly_activities: [
@@ -933,8 +923,7 @@ export abstract class DefaultEntityMock {
     /* Measurement*/
     public static MEASUREMENT = {
         unit: 'mmHg',
-        device_id: '5ca790f77aefffa37a17b605',
-        user_id: '5c9137f2b8d3921ff3028378'
+        device_id: '5ca790f77aefffa37a17b605'
     }
 
     public static BLOOD_PRESSURE_MEASUREMENT = {

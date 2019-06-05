@@ -1,17 +1,12 @@
-import { Entity } from './entity'
 import { JsonUtils } from '../utils/json.utils'
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { DatetimeValidator } from '../validator/date.time.validator'
 
-export class QuestionnaireRecord extends Entity implements IJSONSerializable, IJSONDeserializable<QuestionnaireRecord> {
+export class QuestionnaireRecord implements IJSONSerializable, IJSONDeserializable<QuestionnaireRecord> {
     private _patient_id?: string
     private _created_at?: Date
     private _type?: string
-
-    constructor() {
-        super()
-    }
 
     get patient_id(): string | undefined {
         return this._patient_id
@@ -48,7 +43,6 @@ export class QuestionnaireRecord extends Entity implements IJSONSerializable, IJ
             json = JSON.parse(json)
         }
 
-        if (json.id !== undefined) super.id = this.id
         if (json.patient_id !== undefined) this.patient_id = json.patient_id
         if (json.created_at !== undefined) this.created_at = this.convertDatetimeString(json.created_at)
         if (json.type !== undefined) this.type = json.type
@@ -58,7 +52,6 @@ export class QuestionnaireRecord extends Entity implements IJSONSerializable, IJ
 
     public toJSON(): any {
         return {
-            id: super.id,
             created_at: this.created_at ? new Date(this.created_at).toISOString() : undefined
         }
     }
