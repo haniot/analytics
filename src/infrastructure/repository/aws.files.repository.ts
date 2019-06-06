@@ -11,7 +11,8 @@ export class AwsFilesRepository implements IEvaluationFilesManagerRepository<Eva
     constructor() {
         this._sdk = new AWS.S3({
             accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            region: process.env.AWS_BUCKET_REGION
         })
         this._bucket_name = process.env.AWS_BUCKET_NAME
     }
