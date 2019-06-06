@@ -165,11 +165,11 @@ export class AgeSystolicDiastolicPercentile implements IJSONSerializable, IJSOND
         if (json.pas_95 !== undefined) this.pas_95 = json.pas_95
         if (json.pad_5 !== undefined) this.pad_5 = json.pad_5
         if (json.pad_10 !== undefined) this.pad_10 = json.pad_10
-        if (json.pad_25 !== undefined) this.pad_25 = json.pas_25
-        if (json.pad_50 !== undefined) this.pad_50 = json.pas_50
-        if (json.pad_75 !== undefined) this.pad_75 = json.pas_75
-        if (json.pad_90 !== undefined) this.pad_90 = json.pas_90
-        if (json.pad_95 !== undefined) this.pad_95 = json.pas_95
+        if (json.pad_25 !== undefined) this.pad_25 = json.pad_25
+        if (json.pad_50 !== undefined) this.pad_50 = json.pad_50
+        if (json.pad_75 !== undefined) this.pad_75 = json.pad_75
+        if (json.pad_90 !== undefined) this.pad_90 = json.pad_90
+        if (json.pad_95 !== undefined) this.pad_95 = json.pad_95
         return this
     }
 

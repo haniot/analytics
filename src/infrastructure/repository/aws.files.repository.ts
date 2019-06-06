@@ -26,7 +26,10 @@ export class AwsFilesRepository implements IEvaluationFilesManagerRepository<Eva
             }
 
             this._sdk.upload(params, (err, data) => {
-                if (err) return reject({ message: 'Could not save odontologic evaluation file. Please try again later....' })
+                if (err) return reject({
+                    message: 'Could not save odontologic evaluation file. Please try again later....',
+                    description: err.message ? err.message : ''
+                })
                 return resolve(data.Location)
             })
         })

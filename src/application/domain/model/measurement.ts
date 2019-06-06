@@ -1,17 +1,12 @@
-import { Entity } from './entity'
 import { JsonUtils } from '../utils/json.utils'
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
-export class Measurement extends Entity implements IJSONSerializable, IJSONDeserializable<Measurement> {
+export class Measurement implements IJSONSerializable, IJSONDeserializable<Measurement> {
     private _unit?: string
     private _type?: string
     private _device_id?: string
     private _user_id?: string
-
-    public constructor() {
-        super()
-    }
 
     get unit(): string | undefined {
         return this._unit
@@ -60,7 +55,6 @@ export class Measurement extends Entity implements IJSONSerializable, IJSONDeser
 
     public toJSON(): any {
         return {
-            id: super.id,
             unit: this.unit,
             type: this.type,
             device_id: this.device_id,

@@ -365,6 +365,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
 
     private getBloodGlucoseClassification(value: number, meal: string): string {
         const bloodGlucoseLevels = BloodGlucoseZones.zones[meal]
+        if (!bloodGlucoseLevels) return BloodGlucoseClassificationTypes.UNDEFINED
         if (bloodGlucoseLevels.good.min < value && value < bloodGlucoseLevels.good.max) {
             return BloodGlucoseClassificationTypes.GOOD
         } else if (bloodGlucoseLevels.great.min < value && value < bloodGlucoseLevels.great.max) {

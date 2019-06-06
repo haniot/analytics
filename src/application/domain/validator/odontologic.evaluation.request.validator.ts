@@ -52,7 +52,7 @@ export class OdontologicEvaluationRequestValidator {
             throw new ValidationException('Required fields were not provided...',
                 'Odontologic Evaluation Request validation: '
                     .concat(fields.join(', '))
-                    .concat(` from patient ${item.patient!.name} required!`))
+                    .concat(` from patient ${item.patient!.name} evaluation required!`))
         }
     }
 }

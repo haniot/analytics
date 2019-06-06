@@ -39,7 +39,10 @@ export class MedicalRecord
     public toJSON(): any {
         return {
             ...super.toJSON(),
-            ...{ chronic_diseases: this.chronic_diseases && this.chronic_diseases.length ? this.chronic_diseases : undefined }
+            ...{
+                chronic_diseases: this.chronic_diseases && this.chronic_diseases.length ?
+                    this.chronic_diseases.map(item => item.toJSON()) : undefined
+            }
         }
     }
 }
