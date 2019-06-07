@@ -117,12 +117,14 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
                 if (evaluation.file_csv) {
                     await this._awsFilesRepo.delete(path.basename(evaluation.file_csv))
                         .then(res => this._logger.info(`${path.basename(evaluation.file_csv!)} deleted successful.`))
-                        .catch(err => this._logger.error(err.message))
+                        .catch(err => this._logger.error(`Error at delete the file ${path.basename(evaluation.file_csv!)}: `
+                            .concat(err.message)))
                 }
                 if (evaluation.file_xls) {
                     await this._awsFilesRepo.delete(path.basename(evaluation.file_xls))
                         .then(res => this._logger.info(`${path.basename(evaluation.file_xls!)} deleted successful.`))
-                        .catch(err => this._logger.error(err.message))
+                        .catch(err => this._logger.error(`Error at delete the file ${path.basename(evaluation.file_xls!)}: `
+                            .concat(err.message)))
                 }
             }
             return Promise.resolve(result)
