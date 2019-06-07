@@ -37,15 +37,18 @@ export class AwsFilesRepository implements IEvaluationFilesManagerRepository<Eva
 
     }
 
-    public async delete(file: EvaluationFile): Promise<any> {
+    public async delete(file: string): Promise<any> {
         return new Promise((resolve, reject) => {
             const params: any = {
                 Bucket: this._bucket_name,
-                Key: file.name
+                Key: file
             }
 
             this._sdk.deleteObject(params, (err, data) => {
-                if (err) return reject({ message: 'Could not delete odontologic evaluation file. Please try again later....' })
+                if (err) return reject({
+                    message: 'Could not delete odontologic evaluation file. Please try again later....',
+                    description: err.message ? err.message : ''
+                })
                 return resolve(true)
             })
         })

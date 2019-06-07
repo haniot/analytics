@@ -38,6 +38,7 @@ import { EvaluationTypes } from '../domain/utils/evaluation.types'
 import { Query } from '../../infrastructure/repository/query/query'
 import { CreateOdontologicEvaluationValidator } from '../domain/validator/create.odontologic.evaluation.validator'
 import { OdontologicEvaluationRequestValidator } from '../domain/validator/odontologic.evaluation.request.validator'
+import { ILogger } from '../../utils/custom.logger'
 
 @injectable()
 export class OdontologicEvaluationService implements IOdontologicEvaluationService {
@@ -45,7 +46,8 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         @inject(Identifier.ODONTOLOGIC_EVALUATION_REPOSITORY)
         readonly _odontologicEvaluationRepo: IOdontologicEvaluationRepository,
         @inject(Identifier.AWS_FILES_REPOSITORY)
-        readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>
+        readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>,
+        @inject(Identifier.LOGGER) readonly _logger: ILogger
     ) {
     }
 
@@ -95,8 +97,8 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
             const evaluation: OdontologicEvaluation = await this.generateEvaluation(item)
             const result = await this.add(evaluation)
             if (!result) {
-                await this._awsFilesRepo.delete(new EvaluationFile().fromJSON({ name: path.basename(evaluation.file_csv!) }))
-                await this._awsFilesRepo.delete(new EvaluationFile().fromJSON({ name: path.basename(evaluation.file_xls!) }))
+                await this._awsFilesRepo.delete(path.basename(evaluation.file_csv!))
+                await this._awsFilesRepo.delete(path.basename(evaluation.file_xls!))
             }
             return Promise.resolve(result)
         } catch (err) {
@@ -109,11 +111,19 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
             ObjectIdValidator.validate(pilotId)
             ObjectIdValidator.validate(evaluationId)
             const evaluation: OdontologicEvaluation =
-                await this._odontologicEvaluationRepo.findOne(new Query().fromJSON({ _id: evaluationId }))
-            const result = this._odontologicEvaluationRepo.delete(evaluationId)
+                await this.getById(evaluationId, new Query())
+            const result = await this._odontologicEvaluationRepo.delete(evaluationId)
             if (result) {
-                await this._awsFilesRepo.delete(new EvaluationFile().fromJSON({ name: path.basename(evaluation.file_csv!) }))
-                await this._awsFilesRepo.delete(new EvaluationFile().fromJSON({ name: path.basename(evaluation.file_xls!) }))
+                if (evaluation.file_csv) {
+                    await this._awsFilesRepo.delete(path.basename(evaluation.file_csv))
+                        .then(res => this._logger.info(`${path.basename(evaluation.file_csv!)} deleted successful.`))
+                        .catch(err => this._logger.error(err.message))
+                }
+                if (evaluation.file_xls) {
+                    await this._awsFilesRepo.delete(path.basename(evaluation.file_xls))
+                        .then(res => this._logger.info(`${path.basename(evaluation.file_xls!)} deleted successful.`))
+                        .catch(err => this._logger.error(err.message))
+                }
             }
             return Promise.resolve(result)
         } catch (err) {
