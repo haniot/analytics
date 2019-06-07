@@ -12,6 +12,7 @@ export class MedicalRecordValidator {
             else if (!value.disease_history) fields.push('chronic_disease.disease_history')
             else ChronicDiseaseValidator.validate(value)
         })
+        if (!item.created_at) fields.push('created_at')
 
         fields = [...new Set(fields)]
         if (fields.length > 0) {

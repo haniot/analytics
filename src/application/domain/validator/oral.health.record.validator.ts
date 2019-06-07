@@ -18,6 +18,7 @@ export class OralHealthRecordValidator {
                 else ToothTypesValidator.validate(value.tooth_type)
             })
         }
+        if (!item.created_at) fields.push('created_at')
 
         fields = [...new Set(fields)]
         if (fields.length > 0) {

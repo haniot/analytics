@@ -12,6 +12,7 @@ export class SociodemographicRecordValidator {
         if (!item.mother_scholarity) fields.push('mother_scholarity')
         else ScholarityLevelTypesValidator.validate(item.mother_scholarity)
         if (!item.people_in_home) fields.push('people_in_home')
+        if (!item.created_at) fields.push('created_at')
 
         fields = [...new Set(fields)]
         if (fields.length > 0) {

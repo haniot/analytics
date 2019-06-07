@@ -33,6 +33,7 @@ export class FamilyCohesionRecordValidator {
         else FamilyCohesionFrequencyTypesValidator
             .validate(item.family_union_relevance_freq, 'family_union_relevance_freq')
         if (!item.family_cohesion_result) fields.push('family_cohesion_result')
+        if (!item.created_at) fields.push('created_at')
 
         fields = [...new Set(fields)]
         if (fields.length > 0) {
