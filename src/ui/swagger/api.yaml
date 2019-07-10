@@ -21,6 +21,8 @@ tags:
     description: Operations for the evaluations resource.
   - name: nutritional.evaluations
     description: Operations for the nutritional evaluations resource.
+  # - name: dentistry.evaluations
+  #   description: Operations for the dentistry evaluations resource. (GET)
   - name: patients.nutritional.evaluations
     description: Operations for the nutritional evaluations resource from a pilot study.
   - name: patients.nutritional.evaluations.counselings
@@ -29,14 +31,11 @@ tags:
     description: Operations for the nutritional evaluations resource from a pilot study.
   - name: healthprofessionals.nutritional.evaluations
     description: Operations for the nutritional evaluation resource from a health professional.
-  - name: pilotstudies.odontological.evaluations
-    description: Operations for the odontological evaluations resource from a pilot study.
 paths:
 
   # evaluations
   /evaluations:
     get:
-      deprecated: true
       tags:
         - evaluations
       summary: Recovers all evaluations.

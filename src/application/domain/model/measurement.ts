@@ -57,8 +57,7 @@ export class Measurement implements IJSONSerializable, IJSONDeserializable<Measu
         return {
             unit: this.unit,
             type: this.type,
-            device_id: this.device_id,
-            user_id: this.user_id
+            device_id: this.device_id
         }
     }
 }
