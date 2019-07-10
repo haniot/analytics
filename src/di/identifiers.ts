@@ -8,15 +8,17 @@ export abstract class Identifier {
 
     // Controllers
     public static readonly HOME_CONTROLLER: any = Symbol.for('HomeController')
-    public static readonly EVALUATION_CONTROLLER: any = Symbol.for('EvaluationController')
-    public static readonly NUTRITIONAL_EVALUATION_CONTROLLER: any = Symbol.for('NutritionalEvaluationController')
-    public static readonly PILOT_STUDY_NUTRITIONAL_EVALUATION_CONTROLLER: any =
-        Symbol.for('PilotStudyNutritionalEvaluationController')
-    public static readonly HEALTH_NUTRITIONAL_EVALUATION_CONTROLLER: any =
+    public static readonly EVALUATIONS_CONTROLLER: any = Symbol.for('EvaluationsController')
+    public static readonly NUTRITIONAL_EVALUATIONS_CONTROLLER: any = Symbol.for('NutritionalEvaluationsController')
+    public static readonly PILOT_STUDIES_NUTRITIONAL_EVALUATIONS_CONTROLLER: any =
+        Symbol.for('PilotStudiesNutritionalEvaluationsController')
+    public static readonly HEALTH_NUTRITIONAL_EVALUATIONS_CONTROLLER: any =
         Symbol.for('HealthNutritionalEvaluationController')
-    public static readonly PATIENT_NUTRITIONAL_EVALUATION_CONTROLLER: any = Symbol.for('PatientNutritionalEvaluationController')
-    public static readonly PATIENT_ODONTOLOGIC_EVALUATION_CONTROLLER: any =
-        Symbol.for('PilotStudyOdontologicalEvaluationController')
+    public static readonly PATIENTS_NUTRITIONAL_EVALUATIONS_CONTROLLER: any = Symbol.for('PatientsNutritionalEvaluationsController')
+    public static readonly PATIENTS_NUTRITIONAL_EVALUATIONS_COUNSELINGS_CONTROLLER: any =
+        Symbol.for('PatientsNutritionalEvaluationsCounselingsController')
+    public static readonly PATIENTS_ODONTOLOGIC_EVALUATIONS_CONTROLLER: any =
+        Symbol.for('PilotStudiesOdontologicalEvaluationsController')
 
     // Services
     public static readonly NUTRITION_EVALUATION_SERVICE: any = Symbol.for('NutritionEvaluationService')

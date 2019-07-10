@@ -23,7 +23,7 @@ import { Patient } from '../../application/domain/model/patient'
 import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
 
 @controller('/pilotstudies/:pilotstudy_id/odontological/evaluations')
-export class PilotStudyOdontologicalEvaluationController {
+export class PilotStudiesOdontologicalEvaluationsController {
     constructor(
         @inject(Identifier.ODONTOLOGIC_EVALUATION_SERVICE) private readonly _service: IOdontologicEvaluationService
     ) {

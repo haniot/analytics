@@ -15,7 +15,7 @@ import { Patient } from '../../application/domain/model/patient'
 import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
 
 @controller('/patients/:patient_id/nutritional/evaluations')
-export class PatientNutritionalEvaluationController {
+export class PatientsNutritionalEvaluationsController {
     constructor(
         @inject(Identifier.NUTRITION_EVALUATION_SERVICE) private readonly _service: INutritionEvaluationService
     ) {

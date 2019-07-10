@@ -9,7 +9,7 @@ import { Query } from '../../infrastructure/repository/query/query'
 import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
 
 @controller('/nutritional/evaluations')
-export class NutritionalEvaluationController {
+export class NutritionalEvaluationsController {
     constructor(
         @inject(Identifier.NUTRITION_EVALUATION_SERVICE) private readonly _service: INutritionEvaluationService
     ) {

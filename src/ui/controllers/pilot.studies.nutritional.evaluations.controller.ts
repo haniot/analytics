@@ -9,7 +9,7 @@ import { ApiExceptionManager } from '../exception/api.exception.manager'
 import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
 
 @controller('/pilotstudies/:pilotstudy_id/nutritional/evaluations')
-export class PilotStudyNutritionalEvaluationController {
+export class PilotStudiesNutritionalEvaluationsController {
     constructor(
         @inject(Identifier.NUTRITION_EVALUATION_SERVICE) private readonly _service: INutritionEvaluationService
     ) {
