@@ -18,6 +18,8 @@ export class EvaluationController {
     public async getAllEvaluations(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
             const result: Array<any> = await this._service.getAll(new Query().fromJSON(req.query))
+            const count: number = await this._service.count(new Query())
+            res.setHeader('X-Total-Count', count)
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)

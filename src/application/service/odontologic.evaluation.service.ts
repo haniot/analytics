@@ -91,6 +91,10 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         throw Error('Not implemented!')
     }
 
+    public count(query: IQuery): Promise<number> {
+        return this._odontologicEvaluationRepo.count(query)
+    }
+
     public async addEvaluation(item: Array<OdontologicEvaluationRequest>): Promise<OdontologicEvaluation> {
         try {
             item.forEach(request => OdontologicEvaluationRequestValidator.validate(request))

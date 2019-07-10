@@ -102,6 +102,10 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         throw Error('Not implemented!')
     }
 
+    public count(query: IQuery): Promise<number> {
+        return this._nutritionEvaluationRepo.count(query)
+    }
+
     public async addEvaluation(item: NutritionEvaluationRequest): Promise<NutritionEvaluation> {
         try {
             NutritionEvaluationRequestValidator.validate(item)
@@ -555,4 +559,5 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     private betweenTwoNumbers(value: number, greatEqual: number, less: number): boolean {
         return greatEqual <= value && value < less
     }
+
 }

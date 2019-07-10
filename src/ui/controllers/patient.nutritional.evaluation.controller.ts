@@ -12,6 +12,7 @@ import { Strings } from '../../utils/strings'
 import { ApiException } from '../exception/api.exception'
 import { NutritionCouncil } from '../../application/domain/model/nutrition.council'
 import { Patient } from '../../application/domain/model/patient'
+import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
 
 @controller('/patients/:patient_id/nutritional/evaluations')
 export class PatientNutritionalEvaluationController {
@@ -44,6 +45,14 @@ export class PatientNutritionalEvaluationController {
             const query: Query = new Query().fromJSON(req.query)
             query.addFilter({ 'patient.id': req.params.patient_id })
             const result: Array<NutritionEvaluation> = await this._service.getAll(query)
+            const count: number =
+                await this._service.count(new Query().fromJSON({
+                    filters: {
+                        'patient.id': req.params.patient_id,
+                        'type': EvaluationTypes.NUTRITION
+                    }
+                }))
+            res.setHeader('X-Total-Count', count)
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)

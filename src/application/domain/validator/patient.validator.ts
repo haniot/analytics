@@ -13,8 +13,7 @@ export class PatientValidator {
         else GenderTypesValidator.validate(user.gender)
         if (!user.birth_date) fields.push('birth_date')
         else DateValidator.validate(user.birth_date)
-        if (!user.pilotstudy_id) fields.push('pilotstudy_id')
-        else ObjectIdValidator.validate(user.pilotstudy_id)
+        if (user.pilotstudy_id) ObjectIdValidator.validate(user.pilotstudy_id)
 
         if (fields.length > 0) {
             throw new ValidationException('Required fields were not provided...',

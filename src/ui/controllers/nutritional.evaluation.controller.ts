@@ -6,6 +6,7 @@ import { Identifier } from '../../di/identifiers'
 import { INutritionEvaluationService } from '../../application/port/nutrition.evaluation.service.interface'
 import { ApiExceptionManager } from '../exception/api.exception.manager'
 import { Query } from '../../infrastructure/repository/query/query'
+import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
 
 @controller('/nutritional/evaluations')
 export class NutritionalEvaluationController {
@@ -19,6 +20,8 @@ export class NutritionalEvaluationController {
         try {
             const query: Query = new Query().fromJSON(req.query)
             const result: Array<any> = await this._service.getAll(query)
+            const count: number = await this._service.count(new Query().fromJSON({ filters: { type: EvaluationTypes.NUTRITION } }))
+            res.setHeader('X-Total-Count', count)
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
