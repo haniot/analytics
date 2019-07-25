@@ -1,12 +1,12 @@
 import { IEntityMapper } from '../../port/entity.mapper.interface'
-import { OdontologicEvaluationEntity } from '../odontologic.evaluation.entity'
-import { OdontologicEvaluation } from '../../../application/domain/model/odontologic.evaluation'
+import { DataEntity } from '../data.entity'
+import { Data } from '../../../application/domain/model/data'
 import { injectable } from 'inversify'
 
 @injectable()
-export class OdontologicEvaluationEntityMapper implements IEntityMapper<OdontologicEvaluation, OdontologicEvaluationEntity> {
-    public jsonToModel(json: any): OdontologicEvaluation {
-        const result: OdontologicEvaluation = new OdontologicEvaluation()
+export class DataEntityMapper implements IEntityMapper<Data, DataEntity> {
+    public jsonToModel(json: any): Data {
+        const result: Data = new Data()
 
         if (!json) return result
         if (json.id !== undefined) result.id = json.id
@@ -21,12 +21,12 @@ export class OdontologicEvaluationEntityMapper implements IEntityMapper<Odontolo
         return result
     }
 
-    public modelEntityToModel(item: OdontologicEvaluationEntity): OdontologicEvaluation {
+    public modelEntityToModel(item: DataEntity): Data {
         throw Error('Not implemented!')
     }
 
-    public modelToModelEntity(item: OdontologicEvaluation): OdontologicEvaluationEntity {
-        const result: OdontologicEvaluationEntity = new OdontologicEvaluationEntity()
+    public modelToModelEntity(item: Data): DataEntity {
+        const result: DataEntity = new DataEntity()
 
         if (item.id !== undefined) result.id = item.id
         if (item.created_at !== undefined) result.created_at = item.created_at
@@ -41,7 +41,7 @@ export class OdontologicEvaluationEntityMapper implements IEntityMapper<Odontolo
     }
 
     public transform(item: any): any {
-        if (item instanceof OdontologicEvaluation) return this.modelToModelEntity(item)
+        if (item instanceof Data) return this.modelToModelEntity(item)
         return this.jsonToModel(item) // json
     }
 

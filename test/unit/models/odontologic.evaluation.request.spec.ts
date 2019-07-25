@@ -1,15 +1,15 @@
-import { OdontologicEvaluationRequest } from '../../../src/application/domain/model/odontologic.evaluation.request'
+import { DataRequest } from '../../../src/application/domain/model/data.request'
 import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
 import { assert } from 'chai'
 
-describe('Models: OdontologicEvaluationRequest', () => {
-    const data: OdontologicEvaluationRequest =
-        new OdontologicEvaluationRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
+describe('Models: DataRequest', () => {
+    const data: DataRequest =
+        new DataRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
     describe('fromJSON()', () => {
         context('when transform json to model', () => {
             it('should return a complete model for pass all parameters', () => {
-                const result: OdontologicEvaluationRequest =
-                    new OdontologicEvaluationRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
+                const result: DataRequest =
+                    new DataRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
                 assert.propertyVal(result, 'pilotstudy_id', data.pilotstudy_id)
                 assert.deepPropertyVal(result, 'patient', data.patient)
                 assert.deepPropertyVal(result, 'measurements', data.measurements)
@@ -22,7 +22,7 @@ describe('Models: OdontologicEvaluationRequest', () => {
             })
 
             it('should return a incomplete model for not pass all parameters', () => {
-                const result: OdontologicEvaluationRequest = new OdontologicEvaluationRequest().fromJSON({})
+                const result: DataRequest = new DataRequest().fromJSON({})
                 assert.propertyVal(result, 'pilotstudy_id', undefined)
                 assert.deepPropertyVal(result, 'patient', undefined)
                 assert.deepPropertyVal(result, 'measurements', undefined)
@@ -37,8 +37,8 @@ describe('Models: OdontologicEvaluationRequest', () => {
 
         context('when pass a json as string', () => {
             it('should return a complete model for pass all parameters', () => {
-                const result: OdontologicEvaluationRequest =
-                    new OdontologicEvaluationRequest().fromJSON(JSON.stringify(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST))
+                const result: DataRequest =
+                    new DataRequest().fromJSON(JSON.stringify(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST))
                 assert.propertyVal(result, 'pilotstudy_id', data.pilotstudy_id)
                 assert.deepPropertyVal(result, 'patient', data.patient)
                 assert.deepPropertyVal(result, 'measurements', data.measurements)
@@ -51,7 +51,7 @@ describe('Models: OdontologicEvaluationRequest', () => {
             })
 
             it('should return a incomplete model for not pass all parameters', () => {
-                const result: OdontologicEvaluationRequest = new OdontologicEvaluationRequest().fromJSON('')
+                const result: DataRequest = new DataRequest().fromJSON('')
                 assert.propertyVal(result, 'pilotstudy_id', undefined)
                 assert.deepPropertyVal(result, 'patient', undefined)
                 assert.deepPropertyVal(result, 'measurements', undefined)
@@ -64,7 +64,7 @@ describe('Models: OdontologicEvaluationRequest', () => {
             })
 
             it('should return a incomplete model for pass invalid json string', () => {
-                const result: OdontologicEvaluationRequest = new OdontologicEvaluationRequest().fromJSON('invalid')
+                const result: DataRequest = new DataRequest().fromJSON('invalid')
                 assert.propertyVal(result, 'pilotstudy_id', undefined)
                 assert.deepPropertyVal(result, 'patient', undefined)
                 assert.deepPropertyVal(result, 'measurements', undefined)
@@ -80,8 +80,8 @@ describe('Models: OdontologicEvaluationRequest', () => {
 
     describe('toJSON()', () => {
         it('should return a json with all parameters', () => {
-            const model: OdontologicEvaluationRequest =
-                new OdontologicEvaluationRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
+            const model: DataRequest =
+                new DataRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
             const result = model.toJSON()
             assert.propertyVal(result, 'pilotstudy_id', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.pilotstudy_id)
             // assert.deepPropertyVal(result, 'patient', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.patient)

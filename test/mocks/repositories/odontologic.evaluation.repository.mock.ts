@@ -1,14 +1,14 @@
-import { IOdontologicEvaluationRepository } from '../../../src/application/port/odontologic.evaluation.repository.interface'
+import { IDataRepository } from '../../../src/application/port/data.repository.interface'
 import { IQuery } from '../../../src/application/port/query.interface'
-import { OdontologicEvaluation } from '../../../src/application/domain/model/odontologic.evaluation'
+import { Data } from '../../../src/application/domain/model/data'
 import { DefaultEntityMock } from '../models/default.entity.mock'
 
-export class OdontologicEvaluationRepositoryMock implements IOdontologicEvaluationRepository {
+export class OdontologicEvaluationRepositoryMock implements IDataRepository {
 
-    private evaluation: OdontologicEvaluation
+    private evaluation: Data
 
     constructor() {
-        this.evaluation = new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
+        this.evaluation = new Data().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
         this.evaluation.id = DefaultEntityMock.ODONTOLOGIC_EVALUATION.id
     }
 
@@ -16,7 +16,7 @@ export class OdontologicEvaluationRepositoryMock implements IOdontologicEvaluati
         return Promise.resolve(1)
     }
 
-    public create(item: OdontologicEvaluation): Promise<OdontologicEvaluation> {
+    public create(item: Data): Promise<Data> {
         return Promise.resolve(item.total_patients === 1 ? this.evaluation : undefined!)
     }
 
@@ -24,15 +24,15 @@ export class OdontologicEvaluationRepositoryMock implements IOdontologicEvaluati
         return Promise.resolve(true)
     }
 
-    public find(query: IQuery): Promise<Array<OdontologicEvaluation>> {
+    public find(query: IQuery): Promise<Array<Data>> {
         return Promise.resolve([this.evaluation])
     }
 
-    public findOne(query: IQuery): Promise<OdontologicEvaluation> {
+    public findOne(query: IQuery): Promise<Data> {
         return Promise.resolve(this.evaluation)
     }
 
-    public update(item: OdontologicEvaluation): Promise<OdontologicEvaluation> {
+    public update(item: Data): Promise<Data> {
         return Promise.resolve(this.evaluation)
     }
 

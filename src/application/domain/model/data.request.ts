@@ -8,7 +8,7 @@ import { SociodemographicRecord } from './sociodemographic.record'
 import { FamilyCohesionRecord } from './family.cohesion.record'
 import { OralHealthRecord } from './oral.health.record'
 
-export class OdontologicEvaluationRequest implements IJSONSerializable, IJSONDeserializable<OdontologicEvaluationRequest> {
+export class DataRequest implements IJSONSerializable, IJSONDeserializable<DataRequest> {
     private _patient?: Patient
     private _measurements?: Array<any>
     private _feeding_habits_record?: FeedingHabitsRecord
@@ -91,7 +91,7 @@ export class OdontologicEvaluationRequest implements IJSONSerializable, IJSONDes
         this._pilotstudy_id = value
     }
 
-    public fromJSON(json: any): OdontologicEvaluationRequest {
+    public fromJSON(json: any): DataRequest {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

@@ -1,4 +1,4 @@
-export class OdontologicEvaluationEntity {
+export class DataEntity {
     public id?: string
     public type?: string
     public created_at?: Date

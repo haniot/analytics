@@ -8,7 +8,7 @@ import { Query } from '../../infrastructure/repository/query/query'
 import { ApiExceptionManager } from '../exception/api.exception.manager'
 import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
 
-@controller('/pilotstudies/:pilotstudy_id/nutritional/evaluations')
+@controller('/v1/pilotstudies/:pilotstudy_id/nutritional/evaluations')
 export class PilotStudiesNutritionalEvaluationsController {
     constructor(
         @inject(Identifier.NUTRITION_EVALUATION_SERVICE) private readonly _service: INutritionEvaluationService

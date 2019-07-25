@@ -1,8 +1,8 @@
 import { inject, injectable } from 'inversify'
-import { IOdontologicEvaluationService } from '../port/odontologic.evaluation.service.interface'
+import { IDataService } from '../port/data.service.interface'
 import { IQuery } from '../port/query.interface'
-import { OdontologicEvaluation } from '../domain/model/odontologic.evaluation'
-import { OdontologicEvaluationRequest } from '../domain/model/odontologic.evaluation.request'
+import { Data } from '../domain/model/data'
+import { DataRequest } from '../domain/model/data.request'
 import { MeasurementTypes } from '../domain/utils/measurement.types'
 import { FeedingHabitsRecord } from '../domain/model/feeding.habits.record'
 import { SleepHabit } from '../domain/model/sleep.habit'
@@ -22,7 +22,7 @@ import { BreastFeedingTypes } from '../domain/utils/breast.feeding.types'
 import { FoodAllergyIntoleranceTypes } from '../domain/utils/food.allergy.intolerance.types'
 import { DailyFeedingFrequencyTypes } from '../domain/utils/daily.feeding.frequency.types'
 import { Identifier } from '../../di/identifiers'
-import { IOdontologicEvaluationRepository } from '../port/odontologic.evaluation.repository.interface'
+import { IDataRepository } from '../port/data.repository.interface'
 import { WeeklyFoodRecord } from '../domain/model/weekly.food.record'
 import { FoodTypes } from '../domain/utils/food.types'
 import { SevenDaysFeedingFrequencyTypes } from '../domain/utils/seven.days.feeding.frequency.types'
@@ -41,17 +41,17 @@ import { OdontologicEvaluationRequestValidator } from '../domain/validator/odont
 import { ILogger } from '../../utils/custom.logger'
 
 @injectable()
-export class OdontologicEvaluationService implements IOdontologicEvaluationService {
+export class DataService implements IDataService {
     constructor(
-        @inject(Identifier.ODONTOLOGIC_EVALUATION_REPOSITORY)
-        readonly _odontologicEvaluationRepo: IOdontologicEvaluationRepository,
+        @inject(Identifier.DATA_REPOSITORY)
+        readonly _odontologicEvaluationRepo: IDataRepository,
         @inject(Identifier.AWS_FILES_REPOSITORY)
         readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>,
         @inject(Identifier.LOGGER) readonly _logger: ILogger
     ) {
     }
 
-    public add(item: OdontologicEvaluation): Promise<OdontologicEvaluation> {
+    public add(item: Data): Promise<Data> {
         try {
             CreateOdontologicEvaluationValidator.validate(item)
         } catch (err) {
@@ -60,7 +60,7 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         return this._odontologicEvaluationRepo.create(item)
     }
 
-    public getAll(query: IQuery): Promise<Array<OdontologicEvaluation>> {
+    public getAll(query: IQuery): Promise<Array<Data>> {
         try {
             const pilotId = query.toJSON().filters.pilotstudy_id
             if (pilotId) ObjectIdValidator.validate(pilotId)
@@ -71,7 +71,7 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         return this._odontologicEvaluationRepo.find(query)
     }
 
-    public getById(id: string, query: IQuery): Promise<OdontologicEvaluation> {
+    public getById(id: string, query: IQuery): Promise<Data> {
         try {
             ObjectIdValidator.validate(id)
             const pilotId = query.toJSON().filters.pilotstudy_id
@@ -87,7 +87,7 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         throw Error('Not implemented!')
     }
 
-    public update(item: OdontologicEvaluation): Promise<OdontologicEvaluation> {
+    public update(item: Data): Promise<Data> {
         throw Error('Not implemented!')
     }
 
@@ -95,10 +95,10 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         return this._odontologicEvaluationRepo.count(query)
     }
 
-    public async addEvaluation(item: Array<OdontologicEvaluationRequest>): Promise<OdontologicEvaluation> {
+    public async addEvaluation(item: Array<DataRequest>): Promise<Data> {
         try {
             item.forEach(request => OdontologicEvaluationRequestValidator.validate(request))
-            const evaluation: OdontologicEvaluation = await this.generateEvaluation(item)
+            const evaluation: Data = await this.generateEvaluation(item)
             const result = await this.add(evaluation)
             if (!result) {
                 await this._awsFilesRepo.delete(path.basename(evaluation.file_csv!))
@@ -114,7 +114,7 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         try {
             ObjectIdValidator.validate(pilotId)
             ObjectIdValidator.validate(evaluationId)
-            const evaluation: OdontologicEvaluation =
+            const evaluation: Data =
                 await this.getById(evaluationId, new Query())
             const result = await this._odontologicEvaluationRepo.delete(evaluationId)
             if (result) {
@@ -137,7 +137,7 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         }
     }
 
-    private async generateEvaluation(requests: Array<OdontologicEvaluationRequest>): Promise<OdontologicEvaluation> {
+    private async generateEvaluation(requests: Array<DataRequest>): Promise<Data> {
         try {
             const evaluationData = requests.map(item => this.getEvaluationData(item))
 
@@ -154,7 +154,7 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
                 file: readFileSync('./file.xls')
             }))
 
-            const result: OdontologicEvaluation = new OdontologicEvaluation().fromJSON({
+            const result: Data = new Data().fromJSON({
                 total_patients: evaluationData.length,
                 file_csv: csv_url,
                 file_xls: xls_url,
@@ -171,7 +171,7 @@ export class OdontologicEvaluationService implements IOdontologicEvaluationServi
         }
     }
 
-    private getEvaluationData(request: OdontologicEvaluationRequest): any {
+    private getEvaluationData(request: DataRequest): any {
         const patient: any = request.patient!.toJSON()
         const height = request.measurements!
             .filter(item => item.type === MeasurementTypes.HEIGHT)[0].toJSON()

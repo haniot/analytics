@@ -1,11 +1,11 @@
 import HttpStatus from 'http-status-codes'
-import { controller, httpDelete, httpGet, httpPost, request, response } from 'inversify-express-utils'
+import { controller, httpGet, httpPost, request, response } from 'inversify-express-utils'
 import { inject } from 'inversify'
 import { Identifier } from '../../di/identifiers'
 import { Request, Response } from 'express'
 import { ApiExceptionManager } from '../exception/api.exception.manager'
-import { IOdontologicEvaluationService } from '../../application/port/odontologic.evaluation.service.interface'
-import { OdontologicEvaluationRequest } from '../../application/domain/model/odontologic.evaluation.request'
+import { IDataService } from '../../application/port/data.service.interface'
+import { DataRequest } from '../../application/domain/model/data.request'
 import { MeasurementTypes } from '../../application/domain/utils/measurement.types'
 import { HeightMeasurement } from '../../application/domain/model/height.measurement'
 import { HeartRateMeasurement } from '../../application/domain/model/heart.rate.measurement'
@@ -15,33 +15,31 @@ import { BloodGlucoseMeasurement } from '../../application/domain/model/blood.gl
 import { BodyTemperatureMeasurement } from '../../application/domain/model/body.temperature.measurement'
 import { WaistCircumferenceMeasurement } from '../../application/domain/model/waist.circumference.measurement'
 import { FatMeasurement } from '../../application/domain/model/fat.measurement'
-import { OdontologicEvaluation } from '../../application/domain/model/odontologic.evaluation'
+import { Data } from '../../application/domain/model/data'
 import { Query } from '../../infrastructure/repository/query/query'
-import { ApiException } from '../exception/api.exception'
-import { Strings } from '../../utils/strings'
 import { Patient } from '../../application/domain/model/patient'
 import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
 
-@controller('/pilotstudies/:pilotstudy_id/odontological/evaluations')
-export class PilotStudiesOdontologicalEvaluationsController {
+@controller('/v1/pilotstudies/:pilotstudy_id/data')
+export class PilotStudiesDataController {
     constructor(
-        @inject(Identifier.ODONTOLOGIC_EVALUATION_SERVICE) private readonly _service: IOdontologicEvaluationService
+        @inject(Identifier.DATA_SERVICE) private readonly _service: IDataService
     ) {
     }
 
     @httpPost('/')
     public async addOdontologicEvaluationFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
-            const requests: Array<OdontologicEvaluationRequest> =
+            const requests: Array<DataRequest> =
                 req.body.map(item => {
-                    const evaluation = new OdontologicEvaluationRequest().fromJSON(item)
+                    const evaluation = new DataRequest().fromJSON(item)
                     if (!evaluation.patient) evaluation.patient = new Patient()
                     evaluation.pilotstudy_id = req.params.pilotstudy_id
                     if (!evaluation.measurements) evaluation.measurements = []
                     evaluation.measurements = item.measurements.map(measurement => this.jsonToModel(measurement))
                     return evaluation
                 })
-            const result: OdontologicEvaluation = await this._service.addEvaluation(requests)
+            const result: Data = await this._service.addEvaluation(requests)
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
@@ -57,7 +55,7 @@ export class PilotStudiesOdontologicalEvaluationsController {
         try {
             const query: Query = new Query().fromJSON(req.query)
             query.addFilter({ pilotstudy_id: req.params.pilotstudy_id })
-            const result: Array<OdontologicEvaluation> = await this._service.getAll(query)
+            const result: Array<Data> = await this._service.getAll(query)
             const count: number =
                 await this._service.count(new Query().fromJSON({
                     filters: {
@@ -76,36 +74,7 @@ export class PilotStudiesOdontologicalEvaluationsController {
         }
     }
 
-    @httpGet('/:evaluation_id')
-    public async getOdontologicalEvaluationFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
-        try {
-            const query: Query = new Query().fromJSON(req.query)
-            query.addFilter({ pilotstudy_id: req.params.pilotstudy_id })
-            const result: OdontologicEvaluation = await this._service.getById(req.params.evaluation_id, query)
-            if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
-            return res.status(HttpStatus.OK).send(this.toJSONView(result))
-        } catch (err) {
-            const handlerError = ApiExceptionManager.build(err)
-            return res.status(handlerError.code)
-                .send(handlerError.toJson())
-        } finally {
-            req.query = {}
-        }
-    }
-
-    @httpDelete('/:evaluation_id')
-    public async removeOdontologicalEvaluationFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
-        try {
-            await this._service.removeEvaluation(req.params.pilotstudy_id, req.params.evaluation_id)
-            return res.status(HttpStatus.NO_CONTENT).send()
-        } catch (err) {
-            const handlerError = ApiExceptionManager.build(err)
-            return res.status(handlerError.code)
-                .send(handlerError.toJson())
-        }
-    }
-
-    private toJSONView(item: OdontologicEvaluation | Array<OdontologicEvaluation>): object {
+    private toJSONView(item: Data | Array<Data>): object {
         if (item instanceof Array) return item.map(evaluation => {
             evaluation.pilotstudy_id = undefined
             return evaluation.toJSON()
@@ -148,13 +117,5 @@ export class PilotStudiesOdontologicalEvaluationsController {
             }
         }
         return undefined
-    }
-
-    private getMessageNotFound(): object {
-        return new ApiException(
-            HttpStatus.NOT_FOUND,
-            Strings.NUTRITION_EVALUATION.NOT_FOUND,
-            Strings.NUTRITION_EVALUATION.NOT_FOUND_DESCRIPTION
-        ).toJson()
     }
 }

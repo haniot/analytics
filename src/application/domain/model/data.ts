@@ -5,7 +5,7 @@ import { JsonUtils } from '../utils/json.utils'
 import { EvaluationTypes } from '../utils/evaluation.types'
 import { DatetimeValidator } from '../validator/date.time.validator'
 
-export class OdontologicEvaluation extends Entity implements IJSONSerializable, IJSONDeserializable<OdontologicEvaluation> {
+export class Data extends Entity implements IJSONSerializable, IJSONDeserializable<Data> {
     private _type?: string
     private _created_at?: Date
     private _total_patients?: number
@@ -80,7 +80,7 @@ export class OdontologicEvaluation extends Entity implements IJSONSerializable, 
         return new Date(value)
     }
 
-    public fromJSON(json: any): OdontologicEvaluation {
+    public fromJSON(json: any): Data {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)

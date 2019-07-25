@@ -1,11 +1,11 @@
-import { OdontologicEvaluation } from '../../../src/application/domain/model/odontologic.evaluation'
+import { Data } from '../../../src/application/domain/model/data'
 import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
-import { OdontologicEvaluationService } from '../../../src/application/service/odontologic.evaluation.service'
+import { DataService } from '../../../src/application/service/data.service'
 import { OdontologicEvaluationRepositoryMock } from '../../mocks/repositories/odontologic.evaluation.repository.mock'
 import { AwsFilesRepositoryMock } from '../../mocks/repositories/aws.files.repository.mock'
 import { assert } from 'chai'
 import { Query } from '../../../src/infrastructure/repository/query/query'
-import { OdontologicEvaluationRequest } from '../../../src/application/domain/model/odontologic.evaluation.request'
+import { DataRequest } from '../../../src/application/domain/model/data.request'
 import { MeasurementTypes } from '../../../src/application/domain/utils/measurement.types'
 import { HeightMeasurement } from '../../../src/application/domain/model/height.measurement'
 import { HeartRateMeasurement } from '../../../src/application/domain/model/heart.rate.measurement'
@@ -15,19 +15,18 @@ import { BloodGlucoseMeasurement } from '../../../src/application/domain/model/b
 import { BodyTemperatureMeasurement } from '../../../src/application/domain/model/body.temperature.measurement'
 import { WaistCircumferenceMeasurement } from '../../../src/application/domain/model/waist.circumference.measurement'
 import { FatMeasurement } from '../../../src/application/domain/model/fat.measurement'
+import { CustomLoggerMock } from '../../mocks/custom.logger.mock'
 
 describe('Services: OdontologicService', () => {
-    const evaluation: OdontologicEvaluation = new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
+    const evaluation: Data = new Data().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
     evaluation.id = DefaultEntityMock.ODONTOLOGIC_EVALUATION.id
 
-    const request: OdontologicEvaluationRequest =
-        new OdontologicEvaluationRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
+    const request: DataRequest =
+        new DataRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
     request.measurements = DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.measurements.map(item => jsonToModel(item))
 
-    const service = new OdontologicEvaluationService(
-        new OdontologicEvaluationRepositoryMock(),
-        new AwsFilesRepositoryMock()
-    )
+    const service = new DataService(
+        new OdontologicEvaluationRepositoryMock(), new AwsFilesRepositoryMock(), new CustomLoggerMock())
 
     describe('add', () => {
         context('when save a new odontologic evaluation', () => {
@@ -47,7 +46,7 @@ describe('Services: OdontologicService', () => {
 
         context('when there are validation errors', () => {
             it('should throw an error for invalid parameters', () => {
-                return service.add(new OdontologicEvaluation())
+                return service.add(new Data())
                     .catch(err => {
                         assert.propertyVal(err, 'message', 'Required fields were not provided...')
                         assert.propertyVal(err, 'description', 'Nutritional Evaluation validation: total_patients, file_csv, ' +

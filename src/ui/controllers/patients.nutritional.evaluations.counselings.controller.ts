@@ -10,7 +10,7 @@ import { Strings } from '../../utils/strings'
 import { ApiException } from '../exception/api.exception'
 import { NutritionCouncil } from '../../application/domain/model/nutrition.council'
 
-@controller('/patients/:patient_id/nutritional/evaluations/:evaluation_id/counselings')
+@controller('/v1/patients/:patient_id/nutritional/evaluations/:evaluation_id/counselings')
 export class PatientsNutritionalEvaluationsCounselingsController {
     constructor(
         @inject(Identifier.NUTRITION_EVALUATION_SERVICE) private readonly _service: INutritionEvaluationService
@@ -37,11 +37,7 @@ export class PatientsNutritionalEvaluationsCounselingsController {
     }
 
     private toJSONView(item: NutritionEvaluation | Array<NutritionEvaluation>): object {
-        if (item instanceof Array) return item.map(evaluation => {
-            evaluation.health_professional_id = undefined
-            evaluation.pilotstudy_id = undefined
-            return evaluation.toJSON()
-        })
+        if (item instanceof Array) return item.map(evaluation => this.toJSONView(evaluation))
         item.health_professional_id = undefined
         item.pilotstudy_id = undefined
         return item.toJSON()

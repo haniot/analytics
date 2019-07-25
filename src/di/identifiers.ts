@@ -8,25 +8,23 @@ export abstract class Identifier {
 
     // Controllers
     public static readonly HOME_CONTROLLER: any = Symbol.for('HomeController')
-    public static readonly EVALUATIONS_CONTROLLER: any = Symbol.for('EvaluationsController')
-    public static readonly NUTRITIONAL_EVALUATIONS_CONTROLLER: any = Symbol.for('NutritionalEvaluationsController')
+    public static readonly PATIENTS_NUTRITIONAL_EVALUATIONS_CONTROLLER: any = Symbol.for('PatientsNutritionalEvaluationsController')
+    public static readonly PATIENTS_NUTRITIONAL_EVALUATIONS_COUNSELINGS_CONTROLLER: any =
+        Symbol.for('PatientsNutritionalEvaluationsCounselingsController')
     public static readonly PILOT_STUDIES_NUTRITIONAL_EVALUATIONS_CONTROLLER: any =
         Symbol.for('PilotStudiesNutritionalEvaluationsController')
     public static readonly HEALTH_NUTRITIONAL_EVALUATIONS_CONTROLLER: any =
         Symbol.for('HealthNutritionalEvaluationController')
-    public static readonly PATIENTS_NUTRITIONAL_EVALUATIONS_CONTROLLER: any = Symbol.for('PatientsNutritionalEvaluationsController')
-    public static readonly PATIENTS_NUTRITIONAL_EVALUATIONS_COUNSELINGS_CONTROLLER: any =
-        Symbol.for('PatientsNutritionalEvaluationsCounselingsController')
-    public static readonly PATIENTS_ODONTOLOGIC_EVALUATIONS_CONTROLLER: any =
-        Symbol.for('PilotStudiesOdontologicalEvaluationsController')
+    public static readonly PILOT_STUDIES_DATA_CONTROLLER: any =
+        Symbol.for('PilotStudiesDataController')
 
     // Services
     public static readonly NUTRITION_EVALUATION_SERVICE: any = Symbol.for('NutritionEvaluationService')
-    public static readonly ODONTOLOGIC_EVALUATION_SERVICE: any = Symbol.for('OdontologicEvaluationService')
+    public static readonly DATA_SERVICE: any = Symbol.for('DataService')
 
     // Repositories
     public static readonly NUTRITION_EVALUATION_REPOSITORY: any = Symbol.for('NutritionEvaluationRepository')
-    public static readonly ODONTOLOGIC_EVALUATION_REPOSITORY: any = Symbol.for('OdontologicEvaluationRepository')
+    public static readonly DATA_REPOSITORY: any = Symbol.for('DataRepository')
     public static readonly AWS_FILES_REPOSITORY: any = Symbol.for('AwsFilesRepository')
     public static readonly BLOOD_PRESSURE_PER_AGE_HEIGHT_REPOSITORY: any =
         Symbol.for('BloodPressurePerAgeHeightRepository')
@@ -37,11 +35,11 @@ export abstract class Identifier {
 
     // Models
     public static readonly NUTRITION_EVALUATION_REPO_MODEL: any = Symbol.for('NutritionEvaluationRepoModel')
-    public static readonly ODONTOLOGIC_EVALUATION_REPO_MODEL: any = Symbol.for('OdontologicEvaluationRepoModel')
+    public static readonly DATA_REPO_MODEL: any = Symbol.for('DataRepoModel')
 
     // Mappers
     public static readonly NUTRITION_EVALUATION_ENTITY_MAPPER: any = Symbol.for('NutritionEvaluationEntityMapper')
-    public static readonly ODONTOLOGIC_EVALUATION_ENTITY_MAPPER: any = Symbol.for('OdontologicEvaluationEntityMapper')
+    public static readonly DATA_ENTITY_MAPPER: any = Symbol.for('DataEntityMapper')
 
     // Background Services
     public static readonly MONGODB_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryMongodb')

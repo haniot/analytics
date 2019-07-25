@@ -3,7 +3,7 @@ import Mongoose, { Schema } from 'mongoose'
 interface IOdontologicEvaluation extends Mongoose.Document {
 }
 
-const ontologicEvaluationSchema = new Mongoose.Schema({
+const dataSchema = new Mongoose.Schema({
         type: { type: String },
         created_at: { type: Date },
         total_patients: {
@@ -40,5 +40,5 @@ const ontologicEvaluationSchema = new Mongoose.Schema({
     }
 )
 
-export const OdontologicEvaluationRepoModel =
-    Mongoose.model<IOdontologicEvaluation>('OdontologicEvaluation', ontologicEvaluationSchema, 'evaluations')
+export const DataRepoModel =
+    Mongoose.model<IOdontologicEvaluation>('Data', dataSchema, 'data')

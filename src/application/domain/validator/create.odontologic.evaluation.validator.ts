@@ -1,9 +1,9 @@
-import { OdontologicEvaluation } from '../model/odontologic.evaluation'
+import { Data } from '../model/data'
 import { ValidationException } from '../exception/validation.exception'
 import { ObjectIdValidator } from './object.id.validator'
 
 export class CreateOdontologicEvaluationValidator {
-    public static validate(item: OdontologicEvaluation): void | ValidationException {
+    public static validate(item: Data): void | ValidationException {
         const fields: Array<string> = []
 
         if (!item.total_patients) fields.push('total_patients')

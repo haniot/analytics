@@ -1,15 +1,15 @@
-import { OdontologicEvaluation } from '../../../src/application/domain/model/odontologic.evaluation'
+import { Data } from '../../../src/application/domain/model/data'
 import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
 import { assert } from 'chai'
 
-describe('Models: OdontologicEvaluation', () => {
-    const data: OdontologicEvaluation = new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
+describe('Models: Data', () => {
+    const data: Data = new Data().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
 
     describe('fromJSON()', () => {
         context('when transform json to model', () => {
             it('should return a complete model for pass all parameters', () => {
-                const result: OdontologicEvaluation =
-                    new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
+                const result: Data =
+                    new Data().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
                 assert.propertyVal(result, 'file_csv', data.file_csv)
                 assert.propertyVal(result, 'file_xls', data.file_xls)
                 assert.deepPropertyVal(result, 'created_at', data.created_at)
@@ -18,7 +18,7 @@ describe('Models: OdontologicEvaluation', () => {
             })
 
             it('should return a incomplete model for not pass all parameters', () => {
-                const result: OdontologicEvaluation = new OdontologicEvaluation().fromJSON({})
+                const result: Data = new Data().fromJSON({})
                 assert.propertyVal(result, 'file_csv', undefined)
                 assert.propertyVal(result, 'file_xls', undefined)
                 assert.deepPropertyVal(result, 'created_at', undefined)
@@ -29,8 +29,8 @@ describe('Models: OdontologicEvaluation', () => {
 
         context('when pass a json as string', () => {
             it('should return a complete model for pass all parameters', () => {
-                const result: OdontologicEvaluation =
-                    new OdontologicEvaluation().fromJSON(JSON.stringify(DefaultEntityMock.ODONTOLOGIC_EVALUATION))
+                const result: Data =
+                    new Data().fromJSON(JSON.stringify(DefaultEntityMock.ODONTOLOGIC_EVALUATION))
                 assert.propertyVal(result, 'file_csv', data.file_csv)
                 assert.propertyVal(result, 'file_xls', data.file_xls)
                 assert.deepPropertyVal(result, 'created_at', data.created_at)
@@ -40,7 +40,7 @@ describe('Models: OdontologicEvaluation', () => {
             })
 
             it('should return a incomplete model for not pass all parameters', () => {
-                const result: OdontologicEvaluation = new OdontologicEvaluation().fromJSON('')
+                const result: Data = new Data().fromJSON('')
                 assert.propertyVal(result, 'file_csv', undefined)
                 assert.propertyVal(result, 'file_xls', undefined)
                 assert.deepPropertyVal(result, 'created_at', undefined)
@@ -49,7 +49,7 @@ describe('Models: OdontologicEvaluation', () => {
             })
 
             it('should return a incomplete model for pass invalid json string', () => {
-                const result: OdontologicEvaluation = new OdontologicEvaluation().fromJSON('invalid')
+                const result: Data = new Data().fromJSON('invalid')
                 assert.propertyVal(result, 'file_csv', undefined)
                 assert.propertyVal(result, 'file_xls', undefined)
                 assert.deepPropertyVal(result, 'created_at', undefined)

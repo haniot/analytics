@@ -1,8 +1,8 @@
-import { OdontologicEvaluationRepoModel } from '../../../src/infrastructure/database/schema/odontologic.evaluation.schema'
-import { OdontologicEvaluationRepository } from '../../../src/infrastructure/repository/odontologic.evaluation.repository'
+import { DataRepoModel } from '../../../src/infrastructure/database/schema/data.schema'
+import { DataRepository } from '../../../src/infrastructure/repository/data.repository'
 import { EntityMapperMock } from '../../mocks/models/entity.mapper.mock'
 import { CustomLoggerMock } from '../../mocks/custom.logger.mock'
-import { OdontologicEvaluation } from '../../../src/application/domain/model/odontologic.evaluation'
+import { Data } from '../../../src/application/domain/model/data'
 import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
 import { assert } from 'chai'
 import sinon from 'sinon'
@@ -11,9 +11,9 @@ import { Query } from '../../../src/infrastructure/repository/query/query'
 require('sinon-mongoose')
 
 describe('Repositories: OdontologicRepository', () => {
-    const modelFake: any = OdontologicEvaluationRepoModel
-    const repo = new OdontologicEvaluationRepository(modelFake, new EntityMapperMock(), new CustomLoggerMock())
-    const evaluation: OdontologicEvaluation = new OdontologicEvaluation().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
+    const modelFake: any = DataRepoModel
+    const repo = new DataRepository(modelFake, new EntityMapperMock(), new CustomLoggerMock())
+    const evaluation: Data = new Data().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
     evaluation.id = DefaultEntityMock.ODONTOLOGIC_EVALUATION.id
 
     afterEach(() => {
