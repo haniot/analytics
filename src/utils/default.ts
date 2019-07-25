@@ -15,8 +15,7 @@ export abstract class Default {
     public static readonly PORT_HTTP: number = 6000
     public static readonly PORT_HTTPS: number = 6001
     public static readonly SWAGGER_PATH: string = './src/ui/swagger/api.yaml'
-    public static readonly SWAGGER_URI: string = 'https://api.swaggerhub.com/apis/haniot/haniot-analytics-service/1.0.0/' +
-        'swagger.json'
+    public static readonly SWAGGER_URI: string = 'https://api.swaggerhub.com/apis/haniot/analytics-service/v1/swagger.json'
     public static readonly LOGO_URI: string = 'http://nutes.uepb.edu.br/wp-content/uploads/2014/01/icon.fw_.png'
 
     // MongoDB
@@ -32,6 +31,5 @@ export abstract class Default {
     // To generate self-signed certificates, see: https://devcenter.heroku.com/articles/ssl-certificate-self
     public static readonly SSL_KEY_PATH: string = '.certs/server.key'
     public static readonly SSL_CERT_PATH: string = '.certs/server.crt'
-
     public static readonly IP_WHITELIST: Array<string> = ['*']
 }

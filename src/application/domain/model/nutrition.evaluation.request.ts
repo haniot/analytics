@@ -8,13 +8,12 @@ import { JsonUtils } from '../utils/json.utils'
 import { SleepHabit } from './sleep.habit'
 import { MeasurementTypes } from '../utils/measurement.types'
 import { HeightMeasurement } from './height.measurement'
-import { HeartRateMeasurement } from './heart.rate.measurement'
 import { BloodPressureMeasurement } from './blood.pressure.measurement'
 import { WeightMeasurement } from './weight.measurement'
 import { BloodGlucoseMeasurement } from './blood.glucose.measurement'
 import { BodyTemperatureMeasurement } from './body.temperature.measurement'
 import { WaistCircumferenceMeasurement } from './waist.circumference.measurement'
-import { FatMeasurement } from './fat.measurement'
+import { BodyFatMeasurement } from './body.fat.measurement'
 
 export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeserializable<NutritionEvaluationRequest> {
     private _patient?: Patient
@@ -129,8 +128,6 @@ export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeser
             switch (item.type) {
                 case MeasurementTypes.HEIGHT:
                     return new HeightMeasurement().fromJSON(item)
-                case MeasurementTypes.HEART_RATE:
-                    return new HeartRateMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_PRESSURE:
                     return new BloodPressureMeasurement().fromJSON(item)
                 case MeasurementTypes.WEIGHT:
@@ -152,7 +149,7 @@ export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeser
                 case MeasurementTypes.WAIST_CIRCUMFERENCE:
                     return new WaistCircumferenceMeasurement().fromJSON(item)
                 case MeasurementTypes.FAT:
-                    return new FatMeasurement().fromJSON(item)
+                    return new BodyFatMeasurement().fromJSON(item)
                 default:
                     return item
             }

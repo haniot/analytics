@@ -3,7 +3,6 @@ import { ValidationException } from '../exception/validation.exception'
 import { EvaluationStatusTypesValidator } from './evaluation.status.types.validator'
 import { NutritionStatusValidator } from './nutrition.status.validator'
 import { OverweightIndicatorValidator } from './overweight.indicator.validator'
-import { HeartRateValidator } from './heart.rate.validator'
 import { BloodGlucoseValidator } from './blood.glucose.validator'
 import { BloodPressureValidator } from './blood.pressure.validator'
 import { MeasurementsValidator } from './measurements.validator'
@@ -25,8 +24,6 @@ export class CreateNutritionEvaluationValidator {
         else NutritionStatusValidator.validate(item.nutritional_status)
         if (!item.overweight_indicator) fields.push('overweight_indicator')
         else OverweightIndicatorValidator.validate(item.overweight_indicator)
-        if (!item.heart_rate) fields.push('heart_rate')
-        else HeartRateValidator.validate(item.heart_rate)
         if (!item.blood_glucose) fields.push('blood_glucose')
         else BloodGlucoseValidator.validate(item.blood_glucose)
         if (!item.blood_pressure) fields.push('blood_pressure')

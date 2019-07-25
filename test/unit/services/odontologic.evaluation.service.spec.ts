@@ -14,7 +14,7 @@ import { WeightMeasurement } from '../../../src/application/domain/model/weight.
 import { BloodGlucoseMeasurement } from '../../../src/application/domain/model/blood.glucose.measurement'
 import { BodyTemperatureMeasurement } from '../../../src/application/domain/model/body.temperature.measurement'
 import { WaistCircumferenceMeasurement } from '../../../src/application/domain/model/waist.circumference.measurement'
-import { FatMeasurement } from '../../../src/application/domain/model/fat.measurement'
+import { BodyFatMeasurement } from '../../../src/application/domain/model/body.fat.measurement'
 import { CustomLoggerMock } from '../../mocks/custom.logger.mock'
 
 describe('Services: OdontologicService', () => {
@@ -238,7 +238,7 @@ function jsonToModel(item: any): any {
             case MeasurementTypes.WAIST_CIRCUMFERENCE:
                 return new WaistCircumferenceMeasurement().fromJSON(item)
             case MeasurementTypes.FAT:
-                return new FatMeasurement().fromJSON(item)
+                return new BodyFatMeasurement().fromJSON(item)
             default:
                 return item
         }

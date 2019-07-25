@@ -2,7 +2,6 @@ import { ValidationException } from '../exception/validation.exception'
 import { MeasurementTypesValidator } from './measurement.types.validator'
 import { DatetimeValidator } from './date.time.validator'
 import { ObjectIdValidator } from './object.id.validator'
-import { FatMeasurementValidator } from './fat.measurement.validator'
 import { WeightMeasurement } from '../model/weight.measurement'
 
 export class WeightMeasurementValidator {
@@ -16,7 +15,6 @@ export class WeightMeasurementValidator {
         if (!item.timestamp) fields.push('timestamp')
         else DatetimeValidator.validate(item.timestamp)
         if (item.device_id) ObjectIdValidator.validate(item.device_id)
-        if (item.fat) FatMeasurementValidator.validate(item.fat)
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',

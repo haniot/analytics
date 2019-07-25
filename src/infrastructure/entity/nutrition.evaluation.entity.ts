@@ -5,7 +5,6 @@ export class NutritionEvaluationEntity extends EvaluationEntity {
     public nutritional_status?: any
     public overweight_indicator?: any
     public taylor_cut_point?: any
-    public heart_rate?: any
     public blood_glucose?: any
     public blood_pressure?: any
     public counseling?: any

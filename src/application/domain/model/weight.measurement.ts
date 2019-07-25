@@ -2,13 +2,12 @@ import { Measurement } from './measurement'
 import { MeasurementTypes } from '../utils/measurement.types'
 import { JsonUtils } from '../utils/json.utils'
 import { IJSONSerializable } from '../utils/json.serializable.interface'
-import { FatMeasurement } from './fat.measurement'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 
 export class WeightMeasurement extends Measurement implements IJSONSerializable, IJSONDeserializable<WeightMeasurement> {
     private _value?: number
     private _timestamp?: string
-    private _fat?: FatMeasurement
+    private _body_fat?: number
 
     constructor() {
         super()
@@ -31,12 +30,12 @@ export class WeightMeasurement extends Measurement implements IJSONSerializable,
         this._timestamp = value
     }
 
-    get fat(): FatMeasurement | undefined {
-        return this._fat
+    get body_fat(): number | undefined {
+        return this._body_fat
     }
 
-    set fat(value: FatMeasurement | undefined) {
-        this._fat = value
+    set body_fat(value: number | undefined) {
+        this._body_fat = value
     }
 
     public fromJSON(json: any): WeightMeasurement {
@@ -47,7 +46,7 @@ export class WeightMeasurement extends Measurement implements IJSONSerializable,
         super.fromJSON(json)
         if (json.value !== undefined) this.value = json.value
         if (json.timestamp !== undefined) this.timestamp = json.timestamp
-        if (json.fat !== undefined) this.fat = new FatMeasurement().fromJSON(json.fat)
+        if (json.body_fat !== undefined) this.body_fat = json.body_fat
         return this
     }
 
@@ -57,7 +56,7 @@ export class WeightMeasurement extends Measurement implements IJSONSerializable,
             ...{
                 value: this.value,
                 timestamp: this.timestamp,
-                fat: this.fat ? { value: this.fat.value, unit: this.fat.unit } : undefined
+                fat: this.body_fat
             }
         }
     }

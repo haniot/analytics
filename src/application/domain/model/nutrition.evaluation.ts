@@ -2,7 +2,6 @@ import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { NutritionStatus } from './nutrition.status'
 import { OverweightIndicator } from './overweight.indicator'
-import { HeartRate } from './heart.rate'
 import { BloodGlucose } from './blood.glucose'
 import { JsonUtils } from '../utils/json.utils'
 import { Evaluation } from './evaluation'
@@ -21,7 +20,6 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
     private _nutritional_status?: NutritionStatus
     private _overweight_indicator?: OverweightIndicator
     private _taylor_cut_point?: TaylorCutPoint
-    private _heart_rate?: HeartRate
     private _blood_glucose?: BloodGlucose
     private _blood_pressure?: BloodPressure
     private _counseling?: Counseling
@@ -66,14 +64,6 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
 
     set taylor_cut_point(value: TaylorCutPoint | undefined) {
         this._taylor_cut_point = value
-    }
-
-    get heart_rate(): HeartRate | undefined {
-        return this._heart_rate
-    }
-
-    set heart_rate(value: HeartRate | undefined) {
-        this._heart_rate = value
     }
 
     get blood_glucose(): BloodGlucose | undefined {
@@ -153,7 +143,6 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
         if (json.overweight_indicator !== undefined)
             this.overweight_indicator = new OverweightIndicator().fromJSON(json.overweight_indicator)
         if (json.taylor_cut_point !== undefined) this.taylor_cut_point = new TaylorCutPoint().fromJSON(json.taylor_cut_point)
-        if (json.heart_rate !== undefined) this.heart_rate = new HeartRate().fromJSON(json.heart_rate)
         if (json.blood_glucose !== undefined) this.blood_glucose = new BloodGlucose().fromJSON(json.blood_glucose)
         if (json.blood_pressure !== undefined) this.blood_pressure = new BloodPressure().fromJSON(json.blood_pressure)
         if (json.counseling !== undefined) this.counseling = new Counseling().fromJSON(json.counseling)
@@ -174,7 +163,6 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
                 nutritional_status: this.nutritional_status ? this.nutritional_status.toJSON() : undefined,
                 overweight_indicator: this.overweight_indicator ? this.overweight_indicator.toJSON() : undefined,
                 taylor_cut_point: this.taylor_cut_point ? this.taylor_cut_point.toJSON() : undefined,
-                heart_rate: this.heart_rate ? this.heart_rate.toJSON() : undefined,
                 blood_glucose: this.blood_glucose ? this.blood_glucose.toJSON() : undefined,
                 blood_pressure: this.blood_pressure ? this.blood_pressure.toJSON() : undefined,
                 counseling: this.counseling ? this.counseling.toJSON() : [],

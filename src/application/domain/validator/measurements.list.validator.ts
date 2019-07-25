@@ -3,7 +3,6 @@ import { MeasurementTypes } from '../utils/measurement.types'
 import { BloodGlucoseMeasurementValidator } from './blood.glucose.measurement.validator'
 import { BloodPressureMeasurementValidator } from './blood.pressure.measurement.validator'
 import { BodyTemperatureMeasurementValidator } from './body.temperature.measurement.validator'
-import { HeartRateMeasurementValidator } from './heart.rate.measurement.validator'
 import { HeightMeasurementValidator } from './height.measurement.validator'
 import { WaistCircumferenceMeasurementValidator } from './waist.circumference.measurement.validator'
 import { WeightMeasurementValidator } from './weight.measurement.validator'
@@ -22,9 +21,6 @@ export class MeasurementsListValidator {
                     break
                 case(MeasurementTypes.BODY_TEMPERATURE):
                     BodyTemperatureMeasurementValidator.validate(measurement)
-                    break
-                case(MeasurementTypes.HEART_RATE):
-                    HeartRateMeasurementValidator.validate(measurement)
                     break
                 case(MeasurementTypes.HEIGHT):
                     HeightMeasurementValidator.validate(measurement)

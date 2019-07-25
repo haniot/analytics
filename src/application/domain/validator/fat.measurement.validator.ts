@@ -2,10 +2,10 @@ import { ValidationException } from '../exception/validation.exception'
 import { MeasurementTypesValidator } from './measurement.types.validator'
 import { DatetimeValidator } from './date.time.validator'
 import { ObjectIdValidator } from './object.id.validator'
-import { FatMeasurement } from '../model/fat.measurement'
+import { BodyFatMeasurement } from '../model/body.fat.measurement'
 
 export class FatMeasurementValidator {
-    public static validate(item: FatMeasurement): void | ValidationException {
+    public static validate(item: BodyFatMeasurement): void | ValidationException {
         const fields: Array<string> = []
 
         if (!item.value) fields.push('value')

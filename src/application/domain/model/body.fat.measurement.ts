@@ -1,10 +1,17 @@
+import { Measurement } from './measurement'
+import { MeasurementTypes } from '../utils/measurement.types'
+import { JsonUtils } from '../utils/json.utils'
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
-import { JsonUtils } from '../utils/json.utils'
 
-export class DataSetItem implements IJSONSerializable, IJSONDeserializable<DataSetItem> {
+export class BodyFatMeasurement extends Measurement implements IJSONSerializable, IJSONDeserializable<BodyFatMeasurement> {
     private _value?: number
     private _timestamp?: string
+
+    constructor() {
+        super()
+        super.type = MeasurementTypes.FAT
+    }
 
     get value(): number | undefined {
         return this._value
@@ -22,12 +29,13 @@ export class DataSetItem implements IJSONSerializable, IJSONDeserializable<DataS
         this._timestamp = value
     }
 
-    public fromJSON(json: any): DataSetItem {
+    public fromJSON(json: any): BodyFatMeasurement {
         if (!json) return this
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)
         }
 
+        super.fromJSON(json)
         if (json.value !== undefined) this.value = json.value
         if (json.timestamp !== undefined) this.timestamp = json.timestamp
         return this
@@ -35,9 +43,11 @@ export class DataSetItem implements IJSONSerializable, IJSONDeserializable<DataS
 
     public toJSON(): any {
         return {
-            value: this.value,
-            timestamp: this.timestamp
+            ...super.toJSON(),
+            ...{
+                value: this.value,
+                timestamp: this.timestamp
+            }
         }
     }
-
 }

@@ -8,13 +8,12 @@ import { IDataService } from '../../application/port/data.service.interface'
 import { DataRequest } from '../../application/domain/model/data.request'
 import { MeasurementTypes } from '../../application/domain/utils/measurement.types'
 import { HeightMeasurement } from '../../application/domain/model/height.measurement'
-import { HeartRateMeasurement } from '../../application/domain/model/heart.rate.measurement'
 import { BloodPressureMeasurement } from '../../application/domain/model/blood.pressure.measurement'
 import { WeightMeasurement } from '../../application/domain/model/weight.measurement'
 import { BloodGlucoseMeasurement } from '../../application/domain/model/blood.glucose.measurement'
 import { BodyTemperatureMeasurement } from '../../application/domain/model/body.temperature.measurement'
 import { WaistCircumferenceMeasurement } from '../../application/domain/model/waist.circumference.measurement'
-import { FatMeasurement } from '../../application/domain/model/fat.measurement'
+import { BodyFatMeasurement } from '../../application/domain/model/body.fat.measurement'
 import { Data } from '../../application/domain/model/data'
 import { Query } from '../../infrastructure/repository/query/query'
 import { Patient } from '../../application/domain/model/patient'
@@ -88,8 +87,6 @@ export class PilotStudiesDataController {
             switch (item.type) {
                 case MeasurementTypes.HEIGHT:
                     return new HeightMeasurement().fromJSON(item)
-                case MeasurementTypes.HEART_RATE:
-                    return new HeartRateMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_PRESSURE:
                     return new BloodPressureMeasurement().fromJSON(item)
                 case MeasurementTypes.WEIGHT:
@@ -111,7 +108,7 @@ export class PilotStudiesDataController {
                 case MeasurementTypes.WAIST_CIRCUMFERENCE:
                     return new WaistCircumferenceMeasurement().fromJSON(item)
                 case MeasurementTypes.FAT:
-                    return new FatMeasurement().fromJSON(item)
+                    return new BodyFatMeasurement().fromJSON(item)
                 default:
                     return item
             }

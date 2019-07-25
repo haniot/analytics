@@ -1,7 +1,6 @@
 import { ValidationException } from '../exception/validation.exception'
 import { MeasurementTypes } from '../utils/measurement.types'
 import { HeightMeasurementValidator } from './height.measurement.validator'
-import { HeartRateMeasurementValidator } from './heart.rate.measurement.validator'
 import { WeightMeasurementValidator } from './weight.measurement.validator'
 import { BloodGlucoseMeasurementValidator } from './blood.glucose.measurement.validator'
 import { FatMeasurementValidator } from './fat.measurement.validator'
@@ -16,9 +15,6 @@ export class MeasurementsValidator {
             switch (item.type) {
                 case MeasurementTypes.HEIGHT:
                     HeightMeasurementValidator.validate(item)
-                    break
-                case MeasurementTypes.HEART_RATE:
-                    HeartRateMeasurementValidator.validate(item)
                     break
                 case MeasurementTypes.BLOOD_PRESSURE:
                     BloodPressureMeasurementValidator.validate(item)
