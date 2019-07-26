@@ -5,7 +5,7 @@ import { OdontologicEvaluationRepositoryMock } from '../../mocks/repositories/od
 import { AwsFilesRepositoryMock } from '../../mocks/repositories/aws.files.repository.mock'
 import { assert } from 'chai'
 import { Query } from '../../../src/infrastructure/repository/query/query'
-import { DataRequest } from '../../../src/application/domain/model/data.request'
+import { DataRequestParameters } from '../../../src/application/domain/model/data.request.parameters'
 import { MeasurementTypes } from '../../../src/application/domain/utils/measurement.types'
 import { HeightMeasurement } from '../../../src/application/domain/model/height.measurement'
 import { HeartRateMeasurement } from '../../../src/application/domain/model/heart.rate.measurement'
@@ -21,8 +21,8 @@ describe('Services: OdontologicService', () => {
     const evaluation: Data = new Data().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
     evaluation.id = DefaultEntityMock.ODONTOLOGIC_EVALUATION.id
 
-    const request: DataRequest =
-        new DataRequest().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
+    const request: DataRequestParameters =
+        new DataRequestParameters().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
     request.measurements = DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.measurements.map(item => jsonToModel(item))
 
     const service = new DataService(
@@ -237,7 +237,7 @@ function jsonToModel(item: any): any {
                 return new BodyTemperatureMeasurement().fromJSON(item)
             case MeasurementTypes.WAIST_CIRCUMFERENCE:
                 return new WaistCircumferenceMeasurement().fromJSON(item)
-            case MeasurementTypes.FAT:
+            case MeasurementTypes.BODY_FAT:
                 return new BodyFatMeasurement().fromJSON(item)
             default:
                 return item

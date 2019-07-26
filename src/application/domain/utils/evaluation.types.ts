@@ -1,4 +1,3 @@
 export enum EvaluationTypes {
-    NUTRITION = 'nutrition',
-    ODONTOLOGIC = 'odontologic'
+    NUTRITION = 'nutrition'
 }

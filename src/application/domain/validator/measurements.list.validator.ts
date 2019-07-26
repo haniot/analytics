@@ -31,7 +31,7 @@ export class MeasurementsListValidator {
                 case(MeasurementTypes.WEIGHT):
                     WeightMeasurementValidator.validate(measurement)
                     break
-                case(MeasurementTypes.FAT):
+                case(MeasurementTypes.BODY_FAT):
                     FatMeasurementValidator.validate(measurement)
                     break
                 default:

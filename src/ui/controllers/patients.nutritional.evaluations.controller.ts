@@ -13,6 +13,7 @@ import { ApiException } from '../exception/api.exception'
 import { NutritionCouncil } from '../../application/domain/model/nutrition.council'
 import { Patient } from '../../application/domain/model/patient'
 import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
+import { NutritionEvaluationList } from '../model/nutrition.evaluation.list'
 
 @controller('/v1/patients/:patient_id/nutritional/evaluations')
 export class PatientsNutritionalEvaluationsController {
@@ -53,7 +54,7 @@ export class PatientsNutritionalEvaluationsController {
                     }
                 }))
             res.setHeader('X-Total-Count', count)
-            return res.status(HttpStatus.OK).send(this.toJSONView(result))
+            return res.status(HttpStatus.OK).send(this.toJSONViewList(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
@@ -111,15 +112,17 @@ export class PatientsNutritionalEvaluationsController {
         }
     }
 
-    private toJSONView(item: NutritionEvaluation | Array<NutritionEvaluation>): object {
-        if (item instanceof Array) return item.map(evaluation => {
-            evaluation.health_professional_id = undefined
-            evaluation.pilotstudy_id = undefined
-            return evaluation.toJSON()
-        })
+    private toJSONView(item: NutritionEvaluation): object {
         item.health_professional_id = undefined
         item.pilotstudy_id = undefined
         return item.toJSON()
+    }
+
+    private toJSONViewList(item: Array<NutritionEvaluation>): object {
+        return item.map(evaluation => {
+            const itemNew: NutritionEvaluationList = new NutritionEvaluationList().fromModel(evaluation)
+            return itemNew.toJSON()
+        })
     }
 
     private getMessageNotFound(): object {

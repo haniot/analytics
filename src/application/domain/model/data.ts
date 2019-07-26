@@ -2,7 +2,6 @@ import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { Entity } from './entity'
 import { JsonUtils } from '../utils/json.utils'
-import { EvaluationTypes } from '../utils/evaluation.types'
 import { DatetimeValidator } from '../validator/date.time.validator'
 
 export class Data extends Entity implements IJSONSerializable, IJSONDeserializable<Data> {
@@ -11,12 +10,12 @@ export class Data extends Entity implements IJSONSerializable, IJSONDeserializab
     private _total_patients?: number
     private _file_csv?: string
     private _file_xls?: string
-    private _health_professional_id?: string
     private _pilotstudy_id?: string
+    private _patients?: Array<string>
+    private _data_types?: Array<string>
 
     constructor() {
         super()
-        this.type = EvaluationTypes.ODONTOLOGIC
     }
 
     get type(): string | undefined {
@@ -59,20 +58,28 @@ export class Data extends Entity implements IJSONSerializable, IJSONDeserializab
         this._file_xls = value
     }
 
-    get health_professional_id(): string | undefined {
-        return this._health_professional_id
-    }
-
-    set health_professional_id(value: string | undefined) {
-        this._health_professional_id = value
-    }
-
     get pilotstudy_id(): string | undefined {
         return this._pilotstudy_id
     }
 
     set pilotstudy_id(value: string | undefined) {
         this._pilotstudy_id = value
+    }
+
+    get patients(): Array<string> | undefined {
+        return this._patients
+    }
+
+    set patients(value: Array<string> | undefined) {
+        this._patients = value
+    }
+
+    get data_types(): Array<string> | undefined {
+        return this._data_types
+    }
+
+    set data_types(value: Array<string> | undefined) {
+        this._data_types = value
     }
 
     public convertDatetimeString(value: string): Date {
@@ -90,8 +97,9 @@ export class Data extends Entity implements IJSONSerializable, IJSONDeserializab
         if (json.total_patients !== undefined) this.total_patients = json.total_patients
         if (json.file_csv !== undefined) this.file_csv = json.file_csv
         if (json.file_xls !== undefined) this.file_xls = json.file_xls
-        if (json.health_professional_id !== undefined) this.health_professional_id = json.health_professional_id
         if (json.pilotstudy_id !== undefined) this.pilotstudy_id = json.pilotstudy_id
+        if (json.patients !== undefined && json.patients instanceof Array) this.patients = json.patients
+        if (json.data_types !== undefined && json.data_types instanceof Array) this.data_types = json.data_types
         return this
     }
 
@@ -102,8 +110,9 @@ export class Data extends Entity implements IJSONSerializable, IJSONDeserializab
             total_patients: this.total_patients,
             file_csv: this.file_csv,
             file_xls: this.file_xls,
-            health_professional_id: this.health_professional_id,
-            pilotstudy_id: this.pilotstudy_id
+            pilotstudy_id: this.pilotstudy_id,
+            data_types: this.data_types && this.data_types.length ? this.data_types : undefined,
+            patients: this.patients && this.patients.length ? this.patients : undefined
         }
     }
 

@@ -31,7 +31,7 @@ export class MeasurementsValidator {
                 case MeasurementTypes.WAIST_CIRCUMFERENCE:
                     WaistCircumferenceMeasurementValidator.validate(item)
                     break
-                case MeasurementTypes.FAT:
+                case MeasurementTypes.BODY_FAT:
                     FatMeasurementValidator.validate(item)
                     break
                 default:

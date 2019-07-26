@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify'
 import { IDataService } from '../port/data.service.interface'
 import { IQuery } from '../port/query.interface'
 import { Data } from '../domain/model/data'
-import { DataRequest } from '../domain/model/data.request'
+import { DataRequestParameters } from '../domain/model/data.request.parameters'
 import { MeasurementTypes } from '../domain/utils/measurement.types'
 import { FeedingHabitsRecord } from '../domain/model/feeding.habits.record'
 import { SleepHabit } from '../domain/model/sleep.habit'
@@ -34,30 +34,29 @@ import * as path from 'path'
 import { IEvaluationFilesManagerRepository } from '../port/evaluation.files.manager.repository.interface'
 import { EvaluationFile } from '../domain/model/evaluation.file'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
-import { EvaluationTypes } from '../domain/utils/evaluation.types'
 import { Query } from '../../infrastructure/repository/query/query'
-import { CreateOdontologicEvaluationValidator } from '../domain/validator/create.odontologic.evaluation.validator'
+import { CreateDataValidator } from '../domain/validator/create.data.validator'
 import { OdontologicEvaluationRequestValidator } from '../domain/validator/odontologic.evaluation.request.validator'
 import { ILogger } from '../../utils/custom.logger'
+import { DataRequest } from '../domain/model/data.request'
+import { ValidationException } from '../domain/exception/validation.exception'
 
 @injectable()
 export class DataService implements IDataService {
     constructor(
-        @inject(Identifier.DATA_REPOSITORY)
-        readonly _odontologicEvaluationRepo: IDataRepository,
-        @inject(Identifier.AWS_FILES_REPOSITORY)
-        readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>,
+        @inject(Identifier.DATA_REPOSITORY) readonly _dataRepo: IDataRepository,
+        @inject(Identifier.AWS_FILES_REPOSITORY) readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>,
         @inject(Identifier.LOGGER) readonly _logger: ILogger
     ) {
     }
 
     public add(item: Data): Promise<Data> {
         try {
-            CreateOdontologicEvaluationValidator.validate(item)
+            CreateDataValidator.validate(item)
         } catch (err) {
             return Promise.reject(err)
         }
-        return this._odontologicEvaluationRepo.create(item)
+        return this._dataRepo.create(item)
     }
 
     public getAll(query: IQuery): Promise<Array<Data>> {
@@ -67,20 +66,11 @@ export class DataService implements IDataService {
         } catch (err) {
             return Promise.reject(err)
         }
-        query.addFilter({ type: EvaluationTypes.ODONTOLOGIC })
-        return this._odontologicEvaluationRepo.find(query)
+        return this._dataRepo.find(query)
     }
 
     public getById(id: string, query: IQuery): Promise<Data> {
-        try {
-            ObjectIdValidator.validate(id)
-            const pilotId = query.toJSON().filters.pilotstudy_id
-            if (pilotId) ObjectIdValidator.validate(pilotId)
-        } catch (err) {
-            return Promise.reject(err)
-        }
-        query.addFilter({ _id: id, type: EvaluationTypes.ODONTOLOGIC })
-        return this._odontologicEvaluationRepo.findOne(query)
+        throw Error('Not implemented!')
     }
 
     public remove(id: string): Promise<boolean> {
@@ -92,10 +82,48 @@ export class DataService implements IDataService {
     }
 
     public count(query: IQuery): Promise<number> {
-        return this._odontologicEvaluationRepo.count(query)
+        return this._dataRepo.count(query)
     }
 
-    public async addEvaluation(item: Array<DataRequest>): Promise<Data> {
+    public async requestData(pilotId: string, item: DataRequest): Promise<any> {
+        try {
+            ObjectIdValidator.validate(pilotId)
+            if (!item.data_types || !item.data_types.length) {
+                throw new ValidationException('You must select at least one data type to request data from a pilot study.')
+            }
+
+            /**
+             * Generate a task for request the data object by communication channel
+             * Before get the necessary data, generate the data object and submit it to external service (AWS)
+             * After that, save the information in database.
+             *
+             */
+
+            /**
+             * For now, a mock is being generated with the values referring to the data request.
+             */
+
+            const data: Data = new Data().fromJSON({
+                total_patients: item.patients && item.patients.length ? item.patients.length : 1,
+                file_csv: `ps-${pilotId}-${new Date().getTime()}.csv`,
+                file_xls: `ps-${pilotId}-${new Date().getTime()}.xls`,
+                pilotstudy_id: pilotId,
+                patients: item.patients ? item.patients : undefined,
+                data_types: item.data_types ? item.data_types : undefined
+            })
+            await this.add(data)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+        const estimate = new Date()
+        estimate.setMinutes(estimate.getMinutes() + 5) // Five minutes estimated to generate data.
+        return Promise.resolve({
+            status: 'pending',
+            completion_estimate: estimate
+        })
+    }
+
+    public async addEvaluation(item: Array<DataRequestParameters>): Promise<Data> {
         try {
             item.forEach(request => OdontologicEvaluationRequestValidator.validate(request))
             const evaluation: Data = await this.generateEvaluation(item)
@@ -114,9 +142,8 @@ export class DataService implements IDataService {
         try {
             ObjectIdValidator.validate(pilotId)
             ObjectIdValidator.validate(evaluationId)
-            const evaluation: Data =
-                await this.getById(evaluationId, new Query())
-            const result = await this._odontologicEvaluationRepo.delete(evaluationId)
+            const evaluation: Data = await this.getById(evaluationId, new Query())
+            const result = await this._dataRepo.delete(evaluationId)
             if (result) {
                 if (evaluation.file_csv) {
                     await this._awsFilesRepo.delete(path.basename(evaluation.file_csv))
@@ -137,13 +164,20 @@ export class DataService implements IDataService {
         }
     }
 
-    private async generateEvaluation(requests: Array<DataRequest>): Promise<Data> {
+    private async generateEvaluation(requests: Array<DataRequestParameters>): Promise<Data> {
         try {
             const evaluationData = requests.map(item => this.getEvaluationData(item))
 
             await this.generateCsvEvaluation(evaluationData)
             await this.generateXlsEvaluation(evaluationData)
 
+            /**
+             * File name format:
+             * ps-pilotstudy_id-timestamp_now.csv/xls, where:
+             * ps: initials from pilot study
+             * pilotstudy_id: the id of pilot study
+             * timestamp_now: the time in milliseconds from the moment that the file is generated
+             */
             const csv_url: string = await this._awsFilesRepo.upload(new EvaluationFile().fromJSON({
                 name: `ps-${requests[0].pilotstudy_id}-${new Date().getTime()}.csv`,
                 file: fs.readFileSync('./file.csv')
@@ -171,7 +205,7 @@ export class DataService implements IDataService {
         }
     }
 
-    private getEvaluationData(request: DataRequest): any {
+    private getEvaluationData(request: DataRequestParameters): any {
         const patient: any = request.patient!.toJSON()
         const height = request.measurements!
             .filter(item => item.type === MeasurementTypes.HEIGHT)[0].toJSON()

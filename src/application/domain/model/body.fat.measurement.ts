@@ -10,7 +10,7 @@ export class BodyFatMeasurement extends Measurement implements IJSONSerializable
 
     constructor() {
         super()
-        super.type = MeasurementTypes.FAT
+        super.type = MeasurementTypes.BODY_FAT
     }
 
     get value(): number | undefined {

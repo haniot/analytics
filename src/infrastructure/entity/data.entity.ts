@@ -5,6 +5,7 @@ export class DataEntity {
     public total_patients?: number
     public file_csv?: string
     public file_xls?: string
-    public health_professional_id?: string
     public pilotstudy_id?: string
+    public patients?: Array<string>
+    public data_types?: Array<string>
 }

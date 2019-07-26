@@ -8,24 +8,22 @@ const dataSchema = new Mongoose.Schema({
         created_at: { type: Date },
         total_patients: {
             type: Number,
-            required: 'Total of patients in odontologic evaluation is required!'
+            required: 'Total of patients in pilot study data is required!'
         },
         file_csv: {
             type: String,
-            required: 'Link to download the .csv odontologic evaluation is required!'
+            required: 'Link to download the .csv data is required!'
         },
         file_xls: {
             type: String,
-            required: 'Link to download the .xls odontologic evaluation is required!'
-        },
-        health_professional_id: {
-            type: Schema.Types.ObjectId,
-            required: 'Id of health professional responsible for odontologic evaluation is required!'
+            required: 'Link to download the .xls data is required!'
         },
         pilotstudy_id: {
             type: Schema.Types.ObjectId,
-            required: 'Id of pilot study of odontologic evaluation is required!'
-        }
+            required: 'Id of pilot study of data is required!'
+        },
+        data_types: [{ type: String }],
+        patients: [{ type: String }]
     },
     {
         timestamps: { createdAt: 'created_at', updatedAt: false },

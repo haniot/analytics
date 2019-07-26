@@ -96,9 +96,8 @@ export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeser
         }
 
         if (json.patient !== undefined) this.patient = new Patient().fromJSON(json.patient)
-        if (json.measurements !== undefined && json.measurements instanceof Array) {
+        if (json.measurements !== undefined && json.measurements instanceof Array)
             this.measurements = json.measurements.map(item => this.jsonToModel(item))
-        }
         if (json.physical_activity_habits !== undefined)
             this.physical_activity_habits = new PhysicalActivityHabits().fromJSON(json.physical_activity_habits)
         if (json.feeding_habits_record !== undefined)
@@ -131,16 +130,6 @@ export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeser
                 case MeasurementTypes.BLOOD_PRESSURE:
                     return new BloodPressureMeasurement().fromJSON(item)
                 case MeasurementTypes.WEIGHT:
-                    if (item.fat !== undefined) {
-                        item.fat = {
-                            ...item.fat,
-                            ...{
-                                device_id: item.device_id,
-                                timestamp: item.timestamp,
-                                user_id: item.user_id
-                            }
-                        }
-                    }
                     return new WeightMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_GLUCOSE:
                     return new BloodGlucoseMeasurement().fromJSON(item)
@@ -148,7 +137,7 @@ export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeser
                     return new BodyTemperatureMeasurement().fromJSON(item)
                 case MeasurementTypes.WAIST_CIRCUMFERENCE:
                     return new WaistCircumferenceMeasurement().fromJSON(item)
-                case MeasurementTypes.FAT:
+                case MeasurementTypes.BODY_FAT:
                     return new BodyFatMeasurement().fromJSON(item)
                 default:
                     return item

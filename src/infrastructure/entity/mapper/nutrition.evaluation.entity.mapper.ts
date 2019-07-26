@@ -96,16 +96,6 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
                 case MeasurementTypes.BLOOD_PRESSURE:
                     return new BloodPressureMeasurement().fromJSON(item)
                 case MeasurementTypes.WEIGHT:
-                    if (item.fat !== undefined) {
-                        item.fat = {
-                            ...item.fat,
-                            ...{
-                                device_id: item.device_id,
-                                timestamp: item.timestamp,
-                                user_id: item.user_id
-                            }
-                        }
-                    }
                     return new WeightMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_GLUCOSE:
                     return new BloodGlucoseMeasurement().fromJSON(item)
@@ -113,7 +103,7 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
                     return new BodyTemperatureMeasurement().fromJSON(item)
                 case MeasurementTypes.WAIST_CIRCUMFERENCE:
                     return new WaistCircumferenceMeasurement().fromJSON(item)
-                case MeasurementTypes.FAT:
+                case MeasurementTypes.BODY_FAT:
                     return new BodyFatMeasurement().fromJSON(item)
                 default:
                     return item

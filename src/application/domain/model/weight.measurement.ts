@@ -56,7 +56,7 @@ export class WeightMeasurement extends Measurement implements IJSONSerializable,
             ...{
                 value: this.value,
                 timestamp: this.timestamp,
-                fat: this.body_fat
+                body_fat: this.body_fat
             }
         }
     }

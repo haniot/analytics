@@ -15,8 +15,9 @@ export class DataEntityMapper implements IEntityMapper<Data, DataEntity> {
         if (json.total_patients !== undefined) result.total_patients = json.total_patients
         if (json.file_csv !== undefined) result.file_csv = json.file_csv
         if (json.file_xls !== undefined) result.file_xls = json.file_xls
-        if (json.health_professional_id !== undefined) result.health_professional_id = json.health_professional_id
         if (json.pilotstudy_id !== undefined) result.pilotstudy_id = json.pilotstudy_id
+        if (json.patients !== undefined) result.patients = json.patients
+        if (json.data_types !== undefined) result.data_types = json.data_types
 
         return result
     }
@@ -34,8 +35,9 @@ export class DataEntityMapper implements IEntityMapper<Data, DataEntity> {
         if (item.total_patients !== undefined) result.total_patients = item.total_patients
         if (item.file_csv !== undefined) result.file_csv = item.file_csv
         if (item.file_xls !== undefined) result.file_xls = item.file_xls
-        if (item.health_professional_id !== undefined) result.health_professional_id = item.health_professional_id
         if (item.pilotstudy_id !== undefined) result.pilotstudy_id = item.pilotstudy_id
+        if (item.patients !== undefined) result.patients = item.patients
+        if (item.data_types !== undefined) result.data_types = item.data_types
 
         return result
     }
