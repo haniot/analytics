@@ -122,7 +122,6 @@ export class App {
             ))
             // manage middleware errors
             app.use((err, req, res, next) => {
-                console.log(err)
                 return res.status(err.statusCode).send({ status: err.statusCode, message: err.message })
             })
 
