@@ -56,6 +56,7 @@
     "helmet": "^3.18.0",
     "inversify": "^5.0.1",
     "inversify-express-utils": "^6.3.2",
+    "ip-allowed": "^1.1.0",
     "json2csv": "^4.5.1",
     "json2xls": "^0.1.2",
     "mongoose": "^5.5.12",
