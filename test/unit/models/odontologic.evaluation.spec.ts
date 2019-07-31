@@ -14,7 +14,6 @@ describe('Models: Data', () => {
                 assert.propertyVal(result, 'file_xls', data.file_xls)
                 assert.deepPropertyVal(result, 'created_at', data.created_at)
                 assert.propertyVal(result, 'total_patients', data.total_patients)
-                assert.propertyVal(result, 'health_professional_id', data.health_professional_id)
             })
 
             it('should return a incomplete model for not pass all parameters', () => {
@@ -23,7 +22,6 @@ describe('Models: Data', () => {
                 assert.propertyVal(result, 'file_xls', undefined)
                 assert.deepPropertyVal(result, 'created_at', undefined)
                 assert.propertyVal(result, 'total_patients', undefined)
-                assert.propertyVal(result, 'health_professional_id', undefined)
             })
         })
 
@@ -35,8 +33,6 @@ describe('Models: Data', () => {
                 assert.propertyVal(result, 'file_xls', data.file_xls)
                 assert.deepPropertyVal(result, 'created_at', data.created_at)
                 assert.propertyVal(result, 'total_patients', data.total_patients)
-                assert.propertyVal(
-                    result, 'health_professional_id', DefaultEntityMock.ODONTOLOGIC_EVALUATION.health_professional_id)
             })
 
             it('should return a incomplete model for not pass all parameters', () => {
@@ -45,7 +41,6 @@ describe('Models: Data', () => {
                 assert.propertyVal(result, 'file_xls', undefined)
                 assert.deepPropertyVal(result, 'created_at', undefined)
                 assert.propertyVal(result, 'total_patients', undefined)
-                assert.propertyVal(result, 'health_professional_id', undefined)
             })
 
             it('should return a incomplete model for pass invalid json string', () => {
@@ -54,7 +49,6 @@ describe('Models: Data', () => {
                 assert.propertyVal(result, 'file_xls', undefined)
                 assert.deepPropertyVal(result, 'created_at', undefined)
                 assert.propertyVal(result, 'total_patients', undefined)
-                assert.propertyVal(result, 'health_professional_id', undefined)
             })
         })
     })
@@ -66,8 +60,6 @@ describe('Models: Data', () => {
             assert.propertyVal(result, 'file_xls', DefaultEntityMock.ODONTOLOGIC_EVALUATION.file_xls)
             assert.deepPropertyVal(result, 'created_at', data.created_at)
             assert.propertyVal(result, 'total_patients', DefaultEntityMock.ODONTOLOGIC_EVALUATION.total_patients)
-            assert.propertyVal(
-                result, 'health_professional_id', DefaultEntityMock.ODONTOLOGIC_EVALUATION.health_professional_id)
         })
     })
 })
