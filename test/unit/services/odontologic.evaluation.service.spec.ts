@@ -22,8 +22,8 @@ describe('Services: OdontologicService', () => {
     evaluation.id = DefaultEntityMock.ODONTOLOGIC_EVALUATION.id
 
     const request: DataRequestParameters =
-        new DataRequestParameters().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
-    request.measurements = DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.measurements.map(item => jsonToModel(item))
+        new DataRequestParameters().fromJSON(DefaultEntityMock.DATA_REQUEST)
+    request.measurements = DefaultEntityMock.DATA_REQUEST.measurements.map(item => jsonToModel(item))
 
     const service = new DataService(
         new OdontologicEvaluationRepositoryMock(), new AwsFilesRepositoryMock(), new CustomLoggerMock())
@@ -178,7 +178,7 @@ describe('Services: OdontologicService', () => {
                         assert.propertyVal(err, 'message', 'Required fields were not provided...')
                         assert.propertyVal(err, 'description', 'Odontologic Evaluation Request validation: pilotstudy_id from ' +
                             'patient Elvis Aaron evaluation required!')
-                        request.pilotstudy_id = DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.pilotstudy_id
+                        request.pilotstudy_id = DefaultEntityMock.DATA_REQUEST.pilotstudy_id
                     })
             })
         })

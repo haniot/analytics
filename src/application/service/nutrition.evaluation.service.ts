@@ -9,7 +9,6 @@ import { NutritionEvaluationRequest } from '../domain/model/nutrition.evaluation
 import { CreateNutritionEvaluationValidator } from '../domain/validator/create.nutrition.evaluation.validator'
 import { NutritionCouncil } from '../domain/model/nutrition.council'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
-import { Query } from '../../infrastructure/repository/query/query'
 import { NutritionEvaluationStatusTypes } from '../domain/utils/nutrition.evaluation.status.types'
 import { OverweightClassificationTypes } from '../domain/utils/overweight.classification.types'
 import { BmiPerAgeClassificationTypes } from '../domain/utils/bmi.per.age.classification.types'
@@ -68,7 +67,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             if (pilotId) ObjectIdValidator.validate(pilotId)
             const patientId = query.toJSON().filters.patient_id
             if (patientId) ObjectIdValidator.validate(patientId)
-            const healthProfessionalId = query.toJSON().filters.healthprofessional_id
+            const healthProfessionalId = query.toJSON().filters.health_professional_id
             if (healthProfessionalId) ObjectIdValidator.validate(healthProfessionalId)
         } catch (err) {
             return Promise.reject(err)
@@ -82,8 +81,6 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             ObjectIdValidator.validate(id)
             const patientId = query.toJSON().filters.patient_id
             if (patientId) ObjectIdValidator.validate(patientId)
-            const pilotId = query.toJSON().filters.pilotstudy_id
-            if (pilotId) ObjectIdValidator.validate(pilotId)
             ObjectIdValidator.validate(id)
         } catch (err) {
             return Promise.reject(err)
@@ -119,15 +116,10 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         try {
             ObjectIdValidator.validate(patientId)
             ObjectIdValidator.validate(evaluationId)
-            const nutritionEvaluation: NutritionEvaluation =
-                await this.getById(evaluationId, new Query().fromJSON({ filters: { 'patient.id': patientId } }))
-            if (!nutritionEvaluation) return Promise.resolve(undefined!)
-            nutritionEvaluation.counseling!.definitive = counseling
-            nutritionEvaluation.status = NutritionEvaluationStatusTypes.COMPLETE
-            return await this._nutritionEvaluationRepo.update(nutritionEvaluation)
         } catch (err) {
             return Promise.reject(err)
         }
+        return await this._nutritionEvaluationRepo.updateNutritionalCounseling(patientId, evaluationId, counseling)
     }
 
     public async removeEvaluation(patientId: string, evaluationId: string): Promise<boolean> {

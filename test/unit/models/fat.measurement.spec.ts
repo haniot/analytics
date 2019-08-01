@@ -6,11 +6,11 @@ describe('Models: BodyFatMeasurement', () => {
     describe('fromJSON()', () => {
         context('when transform json to model', () => {
             it('should return a complete model for pass all parameters', () => {
-                const result: BodyFatMeasurement = new BodyFatMeasurement().fromJSON(DefaultEntityMock.FAT_MEASUREMENT)
-                assert.propertyVal(result, 'value', DefaultEntityMock.FAT_MEASUREMENT.value)
-                assert.propertyVal(result, 'unit', DefaultEntityMock.FAT_MEASUREMENT.unit)
-                assert.propertyVal(result, 'device_id', DefaultEntityMock.FAT_MEASUREMENT.device_id)
-                assert.propertyVal(result, 'timestamp', DefaultEntityMock.FAT_MEASUREMENT.timestamp)
+                const result: BodyFatMeasurement = new BodyFatMeasurement().fromJSON(DefaultEntityMock.BODY_FAT_MEASUREMENT)
+                assert.propertyVal(result, 'value', DefaultEntityMock.BODY_FAT_MEASUREMENT.value)
+                assert.propertyVal(result, 'unit', DefaultEntityMock.BODY_FAT_MEASUREMENT.unit)
+                assert.propertyVal(result, 'device_id', DefaultEntityMock.BODY_FAT_MEASUREMENT.device_id)
+                assert.propertyVal(result, 'timestamp', DefaultEntityMock.BODY_FAT_MEASUREMENT.timestamp)
             })
 
             it('should return a incomplete model for not pass all parameters', () => {
@@ -24,11 +24,11 @@ describe('Models: BodyFatMeasurement', () => {
 
         context('when pass a json as string', () => {
             it('should return a complete model for pass all parameters', () => {
-                const result: BodyFatMeasurement = new BodyFatMeasurement().fromJSON(JSON.stringify(DefaultEntityMock.FAT_MEASUREMENT))
-                assert.propertyVal(result, 'value', DefaultEntityMock.FAT_MEASUREMENT.value)
-                assert.propertyVal(result, 'unit', DefaultEntityMock.FAT_MEASUREMENT.unit)
-                assert.propertyVal(result, 'device_id', DefaultEntityMock.FAT_MEASUREMENT.device_id)
-                assert.propertyVal(result, 'timestamp', DefaultEntityMock.FAT_MEASUREMENT.timestamp)
+                const result: BodyFatMeasurement = new BodyFatMeasurement().fromJSON(JSON.stringify(DefaultEntityMock.BODY_FAT_MEASUREMENT))
+                assert.propertyVal(result, 'value', DefaultEntityMock.BODY_FAT_MEASUREMENT.value)
+                assert.propertyVal(result, 'unit', DefaultEntityMock.BODY_FAT_MEASUREMENT.unit)
+                assert.propertyVal(result, 'device_id', DefaultEntityMock.BODY_FAT_MEASUREMENT.device_id)
+                assert.propertyVal(result, 'timestamp', DefaultEntityMock.BODY_FAT_MEASUREMENT.timestamp)
             })
 
             it('should return a incomplete model for not pass all parameters', () => {
@@ -51,12 +51,12 @@ describe('Models: BodyFatMeasurement', () => {
 
     describe('toJSON()', () => {
         it('should return a json with all parameters', () => {
-            const model: BodyFatMeasurement = new BodyFatMeasurement().fromJSON(DefaultEntityMock.FAT_MEASUREMENT)
+            const model: BodyFatMeasurement = new BodyFatMeasurement().fromJSON(DefaultEntityMock.BODY_FAT_MEASUREMENT)
             const result = model.toJSON()
-            assert.propertyVal(result, 'value', DefaultEntityMock.FAT_MEASUREMENT.value)
-            assert.propertyVal(result, 'unit', DefaultEntityMock.FAT_MEASUREMENT.unit)
-            assert.propertyVal(result, 'device_id', DefaultEntityMock.FAT_MEASUREMENT.device_id)
-            assert.propertyVal(result, 'timestamp', DefaultEntityMock.FAT_MEASUREMENT.timestamp)
+            assert.propertyVal(result, 'value', DefaultEntityMock.BODY_FAT_MEASUREMENT.value)
+            assert.propertyVal(result, 'unit', DefaultEntityMock.BODY_FAT_MEASUREMENT.unit)
+            assert.propertyVal(result, 'device_id', DefaultEntityMock.BODY_FAT_MEASUREMENT.device_id)
+            assert.propertyVal(result, 'timestamp', DefaultEntityMock.BODY_FAT_MEASUREMENT.timestamp)
         })
     })
 })

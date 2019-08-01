@@ -4,12 +4,12 @@ import { assert } from 'chai'
 
 describe('Models: DataRequestParameters', () => {
     const data: DataRequestParameters =
-        new DataRequestParameters().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
+        new DataRequestParameters().fromJSON(DefaultEntityMock.DATA_REQUEST)
     describe('fromJSON()', () => {
         context('when transform json to model', () => {
             it('should return a complete model for pass all parameters', () => {
                 const result: DataRequestParameters =
-                    new DataRequestParameters().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
+                    new DataRequestParameters().fromJSON(DefaultEntityMock.DATA_REQUEST)
                 assert.propertyVal(result, 'pilotstudy_id', data.pilotstudy_id)
                 assert.deepPropertyVal(result, 'patient', data.patient)
                 assert.deepPropertyVal(result, 'measurements', data.measurements)
@@ -38,7 +38,7 @@ describe('Models: DataRequestParameters', () => {
         context('when pass a json as string', () => {
             it('should return a complete model for pass all parameters', () => {
                 const result: DataRequestParameters =
-                    new DataRequestParameters().fromJSON(JSON.stringify(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST))
+                    new DataRequestParameters().fromJSON(JSON.stringify(DefaultEntityMock.DATA_REQUEST))
                 assert.propertyVal(result, 'pilotstudy_id', data.pilotstudy_id)
                 assert.deepPropertyVal(result, 'patient', data.patient)
                 assert.deepPropertyVal(result, 'measurements', data.measurements)
@@ -81,23 +81,23 @@ describe('Models: DataRequestParameters', () => {
     describe('toJSON()', () => {
         it('should return a json with all parameters', () => {
             const model: DataRequestParameters =
-                new DataRequestParameters().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST)
+                new DataRequestParameters().fromJSON(DefaultEntityMock.DATA_REQUEST)
             const result = model.toJSON()
-            assert.propertyVal(result, 'pilotstudy_id', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.pilotstudy_id)
-            // assert.deepPropertyVal(result, 'patient', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.patient)
-            // assert.deepPropertyVal(result, 'measurements', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.measurements)
+            assert.propertyVal(result, 'pilotstudy_id', DefaultEntityMock.DATA_REQUEST.pilotstudy_id)
+            // assert.deepPropertyVal(result, 'patient', DefaultEntityMock.DATA_REQUEST.patient)
+            // assert.deepPropertyVal(result, 'measurements', DefaultEntityMock.DATA_REQUEST.measurements)
             // assert.deepPropertyVal(
-            //     result, 'feeding_habits_record', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.feeding_habits_record)
+            //     result, 'feeding_habits_record', DefaultEntityMock.DATA_REQUEST.feeding_habits_record)
             // assert.deepPropertyVal(
-            //     result, 'sociodemographic_record', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.sociodemographic_record)
+            //     result, 'sociodemographic_record', DefaultEntityMock.DATA_REQUEST.sociodemographic_record)
             // assert.deepPropertyVal(
-            //     result, 'sleep_habit', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.sleep_habit)
+            //     result, 'sleep_habit', DefaultEntityMock.DATA_REQUEST.sleep_habit)
             // assert.deepPropertyVal(
-            //     result, 'oral_health_record', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.oral_health_record)
+            //     result, 'oral_health_record', DefaultEntityMock.DATA_REQUEST.oral_health_record)
             // assert.deepPropertyVal
-            // (result, 'family_cohesion_record', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.family_cohesion_record)
+            // (result, 'family_cohesion_record', DefaultEntityMock.DATA_REQUEST.family_cohesion_record)
             assert.propertyVal(
-                result, 'health_professional_id', DefaultEntityMock.ODONTOLOGIC_EVALUATION_REQUEST.health_professional_id)
+                result, 'health_professional_id', DefaultEntityMock.DATA_REQUEST.health_professional_id)
         })
     })
 })

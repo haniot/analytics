@@ -6,6 +6,8 @@ import { BaseRepository } from './base/base.repository'
 import { Identifier } from '../../di/identifiers'
 import { IEntityMapper } from '../port/entity.mapper.interface'
 import { ILogger } from '../../utils/custom.logger'
+import { NutritionCouncil } from '../../application/domain/model/nutrition.council'
+import { NutritionEvaluationStatusTypes } from '../../application/domain/utils/nutrition.evaluation.status.types'
 
 @injectable()
 export class NutritionEvaluationRepository extends BaseRepository<NutritionEvaluation, NutritionEvaluationEntity>
@@ -17,5 +19,20 @@ export class NutritionEvaluationRepository extends BaseRepository<NutritionEvalu
         @inject(Identifier.LOGGER) readonly _logger: ILogger
     ) {
         super(_model, _mapper, _logger)
+    }
+
+    public updateNutritionalCounseling(patientId: string, evaluationId: string, counseling: NutritionCouncil):
+        Promise<NutritionEvaluation> {
+        return new Promise<NutritionEvaluation>((resolve, reject) => {
+            return this.Model.findOneAndUpdate(
+                { _id: evaluationId },
+                { $set: { 'counseling.definitive': counseling.toJSON(), 'status': NutritionEvaluationStatusTypes.COMPLETE } },
+                { new: true })
+                .then(result => {
+                    if (!result) return resolve(undefined)
+                    return resolve(this._mapper.transform(result))
+                })
+                .catch(err => reject(this.mongoDBErrorListener(err)))
+        })
     }
 }

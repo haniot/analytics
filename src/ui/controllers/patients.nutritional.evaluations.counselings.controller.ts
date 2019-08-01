@@ -26,7 +26,7 @@ export class PatientsNutritionalEvaluationsCounselingsController {
                     req.params.evaluation_id,
                     new NutritionCouncil().fromJSON(req.body))
             if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
-            return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
+            return res.status(HttpStatus.OK).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
@@ -36,8 +36,7 @@ export class PatientsNutritionalEvaluationsCounselingsController {
         }
     }
 
-    private toJSONView(item: NutritionEvaluation | Array<NutritionEvaluation>): object {
-        if (item instanceof Array) return item.map(evaluation => this.toJSONView(evaluation))
+    private toJSONView(item: NutritionEvaluation): object {
         item.health_professional_id = undefined
         item.pilotstudy_id = undefined
         return item.toJSON()
@@ -46,8 +45,8 @@ export class PatientsNutritionalEvaluationsCounselingsController {
     private getMessageNotFound(): object {
         return new ApiException(
             HttpStatus.NOT_FOUND,
-            Strings.ODONTOLOGIC_EVALUATION.NOT_FOUND,
-            Strings.ODONTOLOGIC_EVALUATION.NOT_FOUND_DESCRIPTION
+            Strings.NUTRITION_EVALUATION.NOT_FOUND,
+            Strings.NUTRITION_EVALUATION.NOT_FOUND_DESCRIPTION
         ).toJson()
     }
 }
