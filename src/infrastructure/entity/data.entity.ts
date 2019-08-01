@@ -1,6 +1,5 @@
 export class DataEntity {
     public id?: string
-    public type?: string
     public created_at?: Date
     public total_patients?: number
     public file_csv?: string

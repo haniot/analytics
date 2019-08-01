@@ -4,21 +4,12 @@ import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { JsonUtils } from '../utils/json.utils'
 
 export class Patient extends Entity implements IJSONSerializable, IJSONDeserializable<Patient> {
-    private _pilotstudy_id?: string
     private _name?: string
     private _gender?: string
     private _birth_date?: string
 
     constructor() {
         super()
-    }
-
-    get pilotstudy_id(): string | undefined {
-        return this._pilotstudy_id
-    }
-
-    set pilotstudy_id(value: string | undefined) {
-        this._pilotstudy_id = value
     }
 
     get name(): string | undefined {
@@ -52,7 +43,6 @@ export class Patient extends Entity implements IJSONSerializable, IJSONDeseriali
         }
 
         if (json.id !== undefined) super.id = json.id
-        if (json.pilotstudy_id !== undefined) this.pilotstudy_id = json.pilotstudy_id
         if (json.name !== undefined) this.name = json.name
         if (json.gender !== undefined) this.gender = json.gender
         if (json.birth_date !== undefined) this.birth_date = json.birth_date
@@ -63,7 +53,6 @@ export class Patient extends Entity implements IJSONSerializable, IJSONDeseriali
     public toJSON(): any {
         return {
             id: super.id,
-            pilotstudy_id: this.pilotstudy_id,
             name: this.name,
             gender: this.gender,
             birth_date: this.birth_date

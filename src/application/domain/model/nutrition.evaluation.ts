@@ -165,7 +165,7 @@ export class NutritionEvaluation extends Evaluation implements IJSONSerializable
                 taylor_cut_point: this.taylor_cut_point ? this.taylor_cut_point.toJSON() : undefined,
                 blood_glucose: this.blood_glucose ? this.blood_glucose.toJSON() : undefined,
                 blood_pressure: this.blood_pressure ? this.blood_pressure.toJSON() : undefined,
-                counseling: this.counseling ? this.counseling.toJSON() : [],
+                counseling: this.counseling ? this.counseling.toJSON() : undefined,
                 measurements: this.measurements ? this.measurements.map(item => item.toJSON()) : undefined,
                 physical_activity_habits: this.physical_activity_habits ? this.physical_activity_habits.toJSON() : undefined,
                 feeding_habits_record: this.feeding_habits_record ? this.feeding_habits_record.toJSON() : undefined,

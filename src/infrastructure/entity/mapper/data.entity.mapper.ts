@@ -11,7 +11,6 @@ export class DataEntityMapper implements IEntityMapper<Data, DataEntity> {
         if (!json) return result
         if (json.id !== undefined) result.id = json.id
         if (json.created_at !== undefined) result.created_at = json.created_at
-        if (json.type !== undefined) result.type = json.type
         if (json.total_patients !== undefined) result.total_patients = json.total_patients
         if (json.file_csv !== undefined) result.file_csv = json.file_csv
         if (json.file_xls !== undefined) result.file_xls = json.file_xls
@@ -31,7 +30,6 @@ export class DataEntityMapper implements IEntityMapper<Data, DataEntity> {
 
         if (item.id !== undefined) result.id = item.id
         if (item.created_at !== undefined) result.created_at = item.created_at
-        if (item.type !== undefined) result.type = item.type
         if (item.total_patients !== undefined) result.total_patients = item.total_patients
         if (item.file_csv !== undefined) result.file_csv = item.file_csv
         if (item.file_xls !== undefined) result.file_xls = item.file_xls

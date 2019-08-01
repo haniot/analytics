@@ -5,7 +5,6 @@ import { JsonUtils } from '../utils/json.utils'
 import { DatetimeValidator } from '../validator/date.time.validator'
 
 export class Data extends Entity implements IJSONSerializable, IJSONDeserializable<Data> {
-    private _type?: string
     private _created_at?: Date
     private _total_patients?: number
     private _file_csv?: string
@@ -16,14 +15,6 @@ export class Data extends Entity implements IJSONSerializable, IJSONDeserializab
 
     constructor() {
         super()
-    }
-
-    get type(): string | undefined {
-        return this._type
-    }
-
-    set type(value: string | undefined) {
-        this._type = value
     }
 
     get created_at(): Date | undefined {

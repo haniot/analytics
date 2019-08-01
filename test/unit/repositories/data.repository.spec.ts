@@ -31,7 +31,6 @@ describe('Repositories: OdontologicRepository', () => {
 
                 return repo.create(data)
                     .then(res => {
-                        assert.propertyVal(res, 'type', data.type)
                         assert.deepPropertyVal(res, 'created_at', data.created_at)
                         assert.propertyVal(res, 'total_patients', data.total_patients)
                         assert.propertyVal(res, 'file_csv', data.file_csv)
@@ -94,7 +93,6 @@ describe('Repositories: OdontologicRepository', () => {
                     .then(res => {
                         assert.isArray(res)
                         assert.lengthOf(res, 1)
-                        assert.propertyVal(res[0], 'type', data.type)
                         assert.deepPropertyVal(res[0], 'created_at', data.created_at)
                         assert.propertyVal(res[0], 'total_patients', data.total_patients)
                         assert.propertyVal(res[0], 'file_csv', data.file_csv)
@@ -161,7 +159,6 @@ describe('Repositories: OdontologicRepository', () => {
 
                 return repo.findOne(new Query().fromJSON({ filters: { _id: data.id } }))
                     .then(res => {
-                        assert.propertyVal(res, 'type', data.type)
                         assert.deepPropertyVal(res, 'created_at', data.created_at)
                         assert.propertyVal(res, 'total_patients', data.total_patients)
                         assert.propertyVal(res, 'file_csv', data.file_csv)
@@ -217,7 +214,6 @@ describe('Repositories: OdontologicRepository', () => {
 
                 return repo.update(data)
                     .then(res => {
-                        assert.propertyVal(res, 'type', data.type)
                         assert.deepPropertyVal(res, 'created_at', data.created_at)
                         assert.propertyVal(res, 'total_patients', data.total_patients)
                         assert.propertyVal(res, 'file_csv', data.file_csv)
