@@ -30,8 +30,6 @@ describe('Repositories: BaseRepository', () => {
         new CustomLoggerMock()
     )
 
-    // const fakeObject: any = { name: 'any' }
-
     afterEach(() => {
         sinon.restore()
     })

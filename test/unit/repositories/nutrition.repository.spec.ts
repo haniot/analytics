@@ -3,18 +3,20 @@ import { CustomLoggerMock } from '../../mocks/custom.logger.mock'
 import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
 import { assert } from 'chai'
 import sinon from 'sinon'
-import { Query } from '../../../src/infrastructure/repository/query/query'
 import { NutritionEvaluationRepoModel } from '../../../src/infrastructure/database/schema/nutrition.evaluation.schema'
 import { NutritionEvaluationRepository } from '../../../src/infrastructure/repository/nutrition.evaluation.repository'
 import { NutritionEvaluation } from '../../../src/application/domain/model/nutrition.evaluation'
+import { Query } from '../../../src/infrastructure/repository/query/query'
+import { NutritionEvaluationStatusTypes } from '../../../src/application/domain/utils/nutrition.evaluation.status.types'
 
 require('sinon-mongoose')
+
+const evaluation: NutritionEvaluation = new NutritionEvaluation().fromJSON(DefaultEntityMock.NUTRITION_EVALUATION)
+evaluation.id = DefaultEntityMock.NUTRITION_EVALUATION.id
 
 describe('Repositories: NutritionRepository', () => {
     const modelFake: any = NutritionEvaluationRepoModel
     const repo = new NutritionEvaluationRepository(modelFake, new EntityMapperMock(), new CustomLoggerMock())
-    const evaluation: NutritionEvaluation = new NutritionEvaluation().fromJSON(DefaultEntityMock.NUTRITION_EVALUATION)
-    evaluation.id = DefaultEntityMock.NUTRITION_EVALUATION.id
 
     afterEach(() => {
         sinon.restore()
@@ -30,22 +32,7 @@ describe('Repositories: NutritionRepository', () => {
                     .resolves(evaluation)
 
                 return repo.create(evaluation)
-                    .then(res => {
-                        assert.propertyVal(res, 'type', evaluation.type)
-                        assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
-                        assert.deepPropertyVal(res, 'patient', evaluation.patient)
-                        assert.deepPropertyVal(res, 'nutritional_status', evaluation.nutritional_status)
-                        assert.deepPropertyVal(res, 'overweight_indicator', evaluation.overweight_indicator)
-                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
-                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
-                        assert.deepPropertyVal(res, 'heart_rate', evaluation.heart_rate)
-                        assert.deepPropertyVal(res, 'blood_glucose', evaluation.blood_glucose)
-                        assert.deepPropertyVal(res, 'blood_pressure', evaluation.blood_pressure)
-                        assert.deepPropertyVal(res, 'counseling', evaluation.counseling)
-                        assert.deepPropertyVal(res, 'physical_activity_habits', evaluation.physical_activity_habits)
-                        assert.deepPropertyVal(res, 'feeding_habits_record', evaluation.feeding_habits_record)
-                        assert.deepPropertyVal(res, 'medical_record', evaluation.medical_record)
-                    })
+                    .then(res => validate(res))
             })
         })
 
@@ -89,7 +76,6 @@ describe('Repositories: NutritionRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('find')
-                    .chain('select')
                     .chain('sort')
                     .withArgs({ created_at: 'desc' })
                     .chain('skip')
@@ -100,24 +86,7 @@ describe('Repositories: NutritionRepository', () => {
                     .resolves([evaluation])
 
                 return repo.find(new Query())
-                    .then(res => {
-                        assert.isArray(res)
-                        assert.lengthOf(res, 1)
-                        assert.propertyVal(res[0], 'type', evaluation.type)
-                        assert.deepPropertyVal(res[0], 'created_at', evaluation.created_at)
-                        assert.deepPropertyVal(res[0], 'patient', evaluation.patient)
-                        assert.deepPropertyVal(res[0], 'nutritional_status', evaluation.nutritional_status)
-                        assert.deepPropertyVal(res[0], 'overweight_indicator', evaluation.overweight_indicator)
-                        assert.deepPropertyVal(res[0], 'taylor_cut_point', evaluation.taylor_cut_point)
-                        assert.deepPropertyVal(res[0], 'taylor_cut_point', evaluation.taylor_cut_point)
-                        assert.deepPropertyVal(res[0], 'heart_rate', evaluation.heart_rate)
-                        assert.deepPropertyVal(res[0], 'blood_glucose', evaluation.blood_glucose)
-                        assert.deepPropertyVal(res[0], 'blood_pressure', evaluation.blood_pressure)
-                        assert.deepPropertyVal(res[0], 'counseling', evaluation.counseling)
-                        assert.deepPropertyVal(res[0], 'physical_activity_habits', evaluation.physical_activity_habits)
-                        assert.deepPropertyVal(res[0], 'feeding_habits_record', evaluation.feeding_habits_record)
-                        assert.deepPropertyVal(res[0], 'medical_record', evaluation.medical_record)
-                    })
+                    .then(res => validateList(res))
             })
         })
 
@@ -126,7 +95,6 @@ describe('Repositories: NutritionRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('find')
-                    .chain('select')
                     .chain('sort')
                     .withArgs({ created_at: 'desc' })
                     .chain('skip')
@@ -149,7 +117,6 @@ describe('Repositories: NutritionRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('find')
-                    .chain('select')
                     .chain('sort')
                     .withArgs({ created_at: 'desc' })
                     .chain('skip')
@@ -175,27 +142,11 @@ describe('Repositories: NutritionRepository', () => {
                     .mock(modelFake)
                     .expects('findOne')
                     .withArgs({ _id: evaluation.id })
-                    .chain('select')
                     .chain('exec')
                     .resolves(evaluation)
 
                 return repo.findOne(new Query().fromJSON({ filters: { _id: evaluation.id } }))
-                    .then(res => {
-                        assert.propertyVal(res, 'type', evaluation.type)
-                        assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
-                        assert.deepPropertyVal(res, 'patient', evaluation.patient)
-                        assert.deepPropertyVal(res, 'nutritional_status', evaluation.nutritional_status)
-                        assert.deepPropertyVal(res, 'overweight_indicator', evaluation.overweight_indicator)
-                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
-                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
-                        assert.deepPropertyVal(res, 'heart_rate', evaluation.heart_rate)
-                        assert.deepPropertyVal(res, 'blood_glucose', evaluation.blood_glucose)
-                        assert.deepPropertyVal(res, 'blood_pressure', evaluation.blood_pressure)
-                        assert.deepPropertyVal(res, 'counseling', evaluation.counseling)
-                        assert.deepPropertyVal(res, 'physical_activity_habits', evaluation.physical_activity_habits)
-                        assert.deepPropertyVal(res, 'feeding_habits_record', evaluation.feeding_habits_record)
-                        assert.deepPropertyVal(res, 'medical_record', evaluation.medical_record)
-                    })
+                    .then(res => validate(res))
             })
         })
 
@@ -205,7 +156,6 @@ describe('Repositories: NutritionRepository', () => {
                     .mock(modelFake)
                     .expects('findOne')
                     .withArgs({ _id: evaluation.id })
-                    .chain('select')
                     .chain('exec')
                     .resolves(undefined)
 
@@ -222,7 +172,6 @@ describe('Repositories: NutritionRepository', () => {
                     .mock(modelFake)
                     .expects('findOne')
                     .withArgs({ _id: evaluation.id })
-                    .chain('select')
                     .chain('exec')
                     .rejects({ message: 'An internal error has occurred in the database!' })
 
@@ -246,22 +195,7 @@ describe('Repositories: NutritionRepository', () => {
                     .resolves(evaluation)
 
                 return repo.update(evaluation)
-                    .then(res => {
-                        assert.propertyVal(res, 'type', evaluation.type)
-                        assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
-                        assert.deepPropertyVal(res, 'patient', evaluation.patient)
-                        assert.deepPropertyVal(res, 'nutritional_status', evaluation.nutritional_status)
-                        assert.deepPropertyVal(res, 'overweight_indicator', evaluation.overweight_indicator)
-                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
-                        assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
-                        assert.deepPropertyVal(res, 'heart_rate', evaluation.heart_rate)
-                        assert.deepPropertyVal(res, 'blood_glucose', evaluation.blood_glucose)
-                        assert.deepPropertyVal(res, 'blood_pressure', evaluation.blood_pressure)
-                        assert.deepPropertyVal(res, 'counseling', evaluation.counseling)
-                        assert.deepPropertyVal(res, 'physical_activity_habits', evaluation.physical_activity_habits)
-                        assert.deepPropertyVal(res, 'feeding_habits_record', evaluation.feeding_habits_record)
-                        assert.deepPropertyVal(res, 'medical_record', evaluation.medical_record)
-                    })
+                    .then(res => validate(res))
             })
         })
 
@@ -351,4 +285,110 @@ describe('Repositories: NutritionRepository', () => {
             })
         })
     })
+
+    describe('updateNutritionalCounseling()', () => {
+        context('when update a definitive nutritional counseling', () => {
+            it('should return a nutritional evaluation', () => {
+                sinon
+                    .mock(modelFake)
+                    .expects('findOneAndUpdate')
+                    .withArgs(
+                        { _id: evaluation.id },
+                        {
+                            $set: {
+                                'counseling.definitive': DefaultEntityMock.NUTRITION_EVALUATION.counseling.definitive,
+                                'status': NutritionEvaluationStatusTypes.COMPLETE
+                            }
+                        },
+                        { new: true })
+                    .resolves(evaluation)
+
+                return repo.updateNutritionalCounseling(evaluation.patient!.id!, evaluation.id!, evaluation.counseling!.definitive!)
+                    .then(res => {
+                        validate(res)
+                    })
+            })
+        })
+
+        context('when the nutrition evaluation is not updated', () => {
+            it('should return undefined', () => {
+                sinon
+                    .mock(modelFake)
+                    .expects('findOneAndUpdate')
+                    .withArgs(
+                        { _id: evaluation.id },
+                        {
+                            $set: {
+                                'counseling.definitive': DefaultEntityMock.NUTRITION_EVALUATION.counseling.definitive,
+                                'status': NutritionEvaluationStatusTypes.COMPLETE
+                            }
+                        },
+                        { new: true })
+                    .resolves(undefined)
+
+                return repo.updateNutritionalCounseling(evaluation.patient!.id!, evaluation.id!, evaluation.counseling!.definitive!)
+                    .then(res => {
+                        assert.isUndefined(res)
+                    })
+            })
+        })
+
+        context('when a database error occurs', () => {
+            it('should reject a error', () => {
+                sinon
+                    .mock(modelFake)
+                    .expects('findOneAndUpdate')
+                    .withArgs(
+                        { _id: evaluation.id },
+                        {
+                            $set: {
+                                'counseling.definitive': DefaultEntityMock.NUTRITION_EVALUATION.counseling.definitive,
+                                'status': NutritionEvaluationStatusTypes.COMPLETE
+                            }
+                        },
+                        { new: true })
+                    .rejects({ message: 'An internal error has occurred in the database!' })
+
+                return repo.updateNutritionalCounseling(evaluation.patient!.id!, evaluation.id!, evaluation.counseling!.definitive!)
+                    .catch(err => {
+                        assert.propertyVal(err, 'name', 'Error')
+                        assert.propertyVal(err, 'message', 'An internal error has occurred in the database!')
+                    })
+            })
+        })
+    })
 })
+
+function validate(res) {
+    assert.propertyVal(res, 'type', evaluation.type)
+    assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
+    assert.deepPropertyVal(res, 'patient', evaluation.patient)
+    assert.deepPropertyVal(res, 'nutritional_status', evaluation.nutritional_status)
+    assert.deepPropertyVal(res, 'overweight_indicator', evaluation.overweight_indicator)
+    assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
+    assert.deepPropertyVal(res, 'taylor_cut_point', evaluation.taylor_cut_point)
+    assert.deepPropertyVal(res, 'blood_glucose', evaluation.blood_glucose)
+    assert.deepPropertyVal(res, 'blood_pressure', evaluation.blood_pressure)
+    assert.deepPropertyVal(res, 'counseling', evaluation.counseling)
+    assert.deepPropertyVal(res, 'physical_activity_habits', evaluation.physical_activity_habits)
+    assert.deepPropertyVal(res, 'feeding_habits_record', evaluation.feeding_habits_record)
+    assert.deepPropertyVal(res, 'medical_record', evaluation.medical_record)
+}
+
+function validateList(res) {
+    assert.isArray(res)
+    assert.lengthOf(res, 1)
+    assert.propertyVal(res[0], 'type', evaluation.type)
+    assert.deepPropertyVal(res[0], 'created_at', evaluation.created_at)
+    assert.deepPropertyVal(res[0], 'patient', evaluation.patient)
+    assert.deepPropertyVal(res[0], 'nutritional_status', evaluation.nutritional_status)
+    assert.deepPropertyVal(res[0], 'overweight_indicator', evaluation.overweight_indicator)
+    assert.deepPropertyVal(res[0], 'taylor_cut_point', evaluation.taylor_cut_point)
+    assert.deepPropertyVal(res[0], 'taylor_cut_point', evaluation.taylor_cut_point)
+    assert.deepPropertyVal(res[0], 'blood_glucose', evaluation.blood_glucose)
+    assert.deepPropertyVal(res[0], 'blood_pressure', evaluation.blood_pressure)
+    assert.deepPropertyVal(res[0], 'counseling', evaluation.counseling)
+    assert.deepPropertyVal(res[0], 'physical_activity_habits', evaluation.physical_activity_habits)
+    assert.deepPropertyVal(res[0], 'feeding_habits_record', evaluation.feeding_habits_record)
+    assert.deepPropertyVal(res[0], 'medical_record', evaluation.medical_record)
+}

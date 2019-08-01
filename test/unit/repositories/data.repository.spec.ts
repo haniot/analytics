@@ -13,8 +13,8 @@ require('sinon-mongoose')
 describe('Repositories: OdontologicRepository', () => {
     const modelFake: any = DataRepoModel
     const repo = new DataRepository(modelFake, new EntityMapperMock(), new CustomLoggerMock())
-    const evaluation: Data = new Data().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
-    evaluation.id = DefaultEntityMock.ODONTOLOGIC_EVALUATION.id
+    const data: Data = new Data().fromJSON(DefaultEntityMock.DATA)
+    data.id = DefaultEntityMock.DATA.id
 
     afterEach(() => {
         sinon.restore()
@@ -26,18 +26,17 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('create')
-                    .withArgs(evaluation)
-                    .resolves(evaluation)
+                    .withArgs(data)
+                    .resolves(data)
 
-                return repo.create(evaluation)
+                return repo.create(data)
                     .then(res => {
-                        assert.propertyVal(res, 'type', evaluation.type)
-                        assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
-                        assert.propertyVal(res, 'total_patients', evaluation.total_patients)
-                        assert.propertyVal(res, 'file_csv', evaluation.file_csv)
-                        assert.propertyVal(res, 'file_xls', evaluation.file_xls)
-                        assert.propertyVal(res, 'health_professional_id', evaluation.health_professional_id)
-                        assert.propertyVal(res, 'pilotstudy_id', evaluation.pilotstudy_id)
+                        assert.propertyVal(res, 'type', data.type)
+                        assert.deepPropertyVal(res, 'created_at', data.created_at)
+                        assert.propertyVal(res, 'total_patients', data.total_patients)
+                        assert.propertyVal(res, 'file_csv', data.file_csv)
+                        assert.propertyVal(res, 'file_xls', data.file_xls)
+                        assert.propertyVal(res, 'pilotstudy_id', data.pilotstudy_id)
                     })
             })
         })
@@ -48,10 +47,10 @@ describe('Repositories: OdontologicRepository', () => {
                     sinon
                         .mock(modelFake)
                         .expects('create')
-                        .withArgs(evaluation)
+                        .withArgs(data)
                         .resolves(undefined)
 
-                    return repo.create(evaluation)
+                    return repo.create(data)
                         .then(res => {
                             assert.isUndefined(res)
                         })
@@ -64,10 +63,10 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('create')
-                    .withArgs(evaluation)
+                    .withArgs(data)
                     .rejects({ message: 'An internal error has occurred in the database!' })
 
-                return repo.create(evaluation)
+                return repo.create(data)
                     .catch(err => {
                         assert.propertyVal(err, 'name', 'Error')
                         assert.propertyVal(err, 'message', 'An internal error has occurred in the database!')
@@ -82,7 +81,6 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('find')
-                    .chain('select')
                     .chain('sort')
                     .withArgs({ created_at: 'desc' })
                     .chain('skip')
@@ -90,19 +88,18 @@ describe('Repositories: OdontologicRepository', () => {
                     .chain('limit')
                     .withArgs(100)
                     .chain('exec')
-                    .resolves([evaluation])
+                    .resolves([data])
 
                 return repo.find(new Query())
                     .then(res => {
                         assert.isArray(res)
                         assert.lengthOf(res, 1)
-                        assert.propertyVal(res[0], 'type', evaluation.type)
-                        assert.deepPropertyVal(res[0], 'created_at', evaluation.created_at)
-                        assert.propertyVal(res[0], 'total_patients', evaluation.total_patients)
-                        assert.propertyVal(res[0], 'file_csv', evaluation.file_csv)
-                        assert.propertyVal(res[0], 'file_xls', evaluation.file_xls)
-                        assert.propertyVal(res[0], 'health_professional_id', evaluation.health_professional_id)
-                        assert.propertyVal(res[0], 'pilotstudy_id', evaluation.pilotstudy_id)
+                        assert.propertyVal(res[0], 'type', data.type)
+                        assert.deepPropertyVal(res[0], 'created_at', data.created_at)
+                        assert.propertyVal(res[0], 'total_patients', data.total_patients)
+                        assert.propertyVal(res[0], 'file_csv', data.file_csv)
+                        assert.propertyVal(res[0], 'file_xls', data.file_xls)
+                        assert.propertyVal(res[0], 'pilotstudy_id', data.pilotstudy_id)
                     })
             })
         })
@@ -112,7 +109,6 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('find')
-                    .chain('select')
                     .chain('sort')
                     .withArgs({ created_at: 'desc' })
                     .chain('skip')
@@ -135,7 +131,6 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('find')
-                    .chain('select')
                     .chain('sort')
                     .withArgs({ created_at: 'desc' })
                     .chain('skip')
@@ -160,20 +155,18 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('findOne')
-                    .withArgs({ _id: evaluation.id })
-                    .chain('select')
+                    .withArgs({ _id: data.id })
                     .chain('exec')
-                    .resolves(evaluation)
+                    .resolves(data)
 
-                return repo.findOne(new Query().fromJSON({ filters: { _id: evaluation.id } }))
+                return repo.findOne(new Query().fromJSON({ filters: { _id: data.id } }))
                     .then(res => {
-                        assert.propertyVal(res, 'type', evaluation.type)
-                        assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
-                        assert.propertyVal(res, 'total_patients', evaluation.total_patients)
-                        assert.propertyVal(res, 'file_csv', evaluation.file_csv)
-                        assert.propertyVal(res, 'file_xls', evaluation.file_xls)
-                        assert.propertyVal(res, 'health_professional_id', evaluation.health_professional_id)
-                        assert.propertyVal(res, 'pilotstudy_id', evaluation.pilotstudy_id)
+                        assert.propertyVal(res, 'type', data.type)
+                        assert.deepPropertyVal(res, 'created_at', data.created_at)
+                        assert.propertyVal(res, 'total_patients', data.total_patients)
+                        assert.propertyVal(res, 'file_csv', data.file_csv)
+                        assert.propertyVal(res, 'file_xls', data.file_xls)
+                        assert.propertyVal(res, 'pilotstudy_id', data.pilotstudy_id)
                     })
             })
         })
@@ -183,12 +176,11 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('findOne')
-                    .withArgs({ _id: evaluation.id })
-                    .chain('select')
+                    .withArgs({ _id: data.id })
                     .chain('exec')
                     .resolves(undefined)
 
-                return repo.findOne(new Query().fromJSON({ filters: { _id: evaluation.id } }))
+                return repo.findOne(new Query().fromJSON({ filters: { _id: data.id } }))
                     .then(res => {
                         assert.isUndefined(res)
                     })
@@ -200,12 +192,11 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('findOne')
-                    .withArgs({ _id: evaluation.id })
-                    .chain('select')
+                    .withArgs({ _id: data.id })
                     .chain('exec')
                     .rejects({ message: 'An internal error has occurred in the database!' })
 
-                return repo.findOne(new Query().fromJSON({ filters: { _id: evaluation.id } }))
+                return repo.findOne(new Query().fromJSON({ filters: { _id: data.id } }))
                     .catch(err => {
                         assert.propertyVal(err, 'name', 'Error')
                         assert.propertyVal(err, 'message', 'An internal error has occurred in the database!')
@@ -220,19 +211,18 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('findOneAndUpdate')
-                    .withArgs({ _id: evaluation.id }, evaluation, { new: true })
+                    .withArgs({ _id: data.id }, data, { new: true })
                     .chain('exec')
-                    .resolves(evaluation)
+                    .resolves(data)
 
-                return repo.update(evaluation)
+                return repo.update(data)
                     .then(res => {
-                        assert.propertyVal(res, 'type', evaluation.type)
-                        assert.deepPropertyVal(res, 'created_at', evaluation.created_at)
-                        assert.propertyVal(res, 'total_patients', evaluation.total_patients)
-                        assert.propertyVal(res, 'file_csv', evaluation.file_csv)
-                        assert.propertyVal(res, 'file_xls', evaluation.file_xls)
-                        assert.propertyVal(res, 'health_professional_id', evaluation.health_professional_id)
-                        assert.propertyVal(res, 'pilotstudy_id', evaluation.pilotstudy_id)
+                        assert.propertyVal(res, 'type', data.type)
+                        assert.deepPropertyVal(res, 'created_at', data.created_at)
+                        assert.propertyVal(res, 'total_patients', data.total_patients)
+                        assert.propertyVal(res, 'file_csv', data.file_csv)
+                        assert.propertyVal(res, 'file_xls', data.file_xls)
+                        assert.propertyVal(res, 'pilotstudy_id', data.pilotstudy_id)
                     })
             })
         })
@@ -242,11 +232,11 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('findOneAndUpdate')
-                    .withArgs({ _id: evaluation.id }, evaluation, { new: true })
+                    .withArgs({ _id: data.id }, data, { new: true })
                     .chain('exec')
                     .resolves(undefined)
 
-                return repo.update(evaluation)
+                return repo.update(data)
                     .then(res => {
                         assert.isUndefined(res)
                     })
@@ -258,11 +248,11 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('findOneAndUpdate')
-                    .withArgs({ _id: evaluation.id }, evaluation, { new: true })
+                    .withArgs({ _id: data.id }, data, { new: true })
                     .chain('exec')
                     .rejects({ message: 'An internal error has occurred in the database!' })
 
-                return repo.update(evaluation)
+                return repo.update(data)
                     .catch(err => {
                         assert.propertyVal(err, 'name', 'Error')
                         assert.propertyVal(err, 'message', 'An internal error has occurred in the database!')
@@ -277,11 +267,11 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('findOneAndDelete')
-                    .withArgs({ _id: evaluation.id })
+                    .withArgs({ _id: data.id })
                     .chain('exec')
                     .resolves(true)
 
-                return repo.delete(evaluation.id!)
+                return repo.delete(data.id!)
                     .then(res => {
                         assert.isBoolean(res)
                         assert.isTrue(res)
@@ -294,11 +284,11 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('findOneAndDelete')
-                    .withArgs({ _id: evaluation.id })
+                    .withArgs({ _id: data.id })
                     .chain('exec')
                     .resolves(false)
 
-                return repo.delete(evaluation.id!)
+                return repo.delete(data.id!)
                     .then(res => {
                         assert.isBoolean(res)
                         assert.isFalse(res)
@@ -311,11 +301,11 @@ describe('Repositories: OdontologicRepository', () => {
                 sinon
                     .mock(modelFake)
                     .expects('findOneAndDelete')
-                    .withArgs({ _id: evaluation.id })
+                    .withArgs({ _id: data.id })
                     .chain('exec')
                     .rejects({ message: 'An internal error has occurred in the database!' })
 
-                return repo.delete(evaluation.id!)
+                return repo.delete(data.id!)
                     .catch(err => {
                         assert.propertyVal(err, 'name', 'Error')
                         assert.propertyVal(err, 'message', 'An internal error has occurred in the database!')
