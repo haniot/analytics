@@ -51,5 +51,15 @@ describe('Models: DataRequestParameters', () => {
             assert.deepPropertyVal(result, 'patients', DefaultEntityMock.DATA_REQUEST.patients)
             assert.deepPropertyVal(result, 'data_types', DefaultEntityMock.DATA_REQUEST.data_types)
         })
+
+        context('when the parameters are undefined', () => {
+            it('should return a json with undefined parameters', () => {
+                it('should return a json with all parameters', () => {
+                    const result = new DataRequestParameters().toJSON()
+                    assert.deepPropertyVal(result, 'patients', undefined)
+                    assert.deepPropertyVal(result, 'data_types', undefined)
+                })
+            })
+        })
     })
 })

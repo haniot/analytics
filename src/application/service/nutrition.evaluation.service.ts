@@ -241,7 +241,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     // Bmi Functions
-    public async getNutritionalStatus(age: string, gender: string, height: number, weight: number): Promise<NutritionStatus> {
+    private async getNutritionalStatus(age: string, gender: string, height: number, weight: number): Promise<NutritionStatus> {
         const result: NutritionStatus = new NutritionStatus()
         try {
             result.height = height

@@ -7,7 +7,7 @@ import { ApiExceptionManager } from '../exception/api.exception.manager'
 import { IDataService } from '../../application/port/data.service.interface'
 import { Data } from '../../application/domain/model/data'
 import { Query } from '../../infrastructure/repository/query/query'
-import { DataRequest } from '../../application/domain/model/data.request'
+import { DataRequestParameters } from '../../application/domain/model/data.request.parameters'
 
 @controller('/v1/pilotstudies/:pilotstudy_id/data')
 export class PilotStudiesDataController {
@@ -19,7 +19,8 @@ export class PilotStudiesDataController {
     @httpPost('/')
     public async requestPilotStudyData(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
-            const result: Data = await this._service.requestData(req.params.pilotstudy_id, new DataRequest().fromJSON(req.body))
+            const result: Data = await this._service.requestData(req.params.pilotstudy_id,
+                new DataRequestParameters().fromJSON(req.body))
             return res.status(HttpStatus.ACCEPTED).send(result)
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)

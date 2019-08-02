@@ -3,21 +3,15 @@ import { IQuery } from '../../../src/application/port/query.interface'
 import { Data } from '../../../src/application/domain/model/data'
 import { DefaultEntityMock } from '../models/default.entity.mock'
 
-export class OdontologicEvaluationRepositoryMock implements IDataRepository {
+const data: Data = new Data().fromJSON(DefaultEntityMock.DATA)
 
-    private evaluation: Data
-
-    constructor() {
-        this.evaluation = new Data().fromJSON(DefaultEntityMock.ODONTOLOGIC_EVALUATION)
-        this.evaluation.id = DefaultEntityMock.ODONTOLOGIC_EVALUATION.id
-    }
-
+export class DataRepositoryMock implements IDataRepository {
     public count(query: IQuery): Promise<number> {
         return Promise.resolve(1)
     }
 
     public create(item: Data): Promise<Data> {
-        return Promise.resolve(item.total_patients === 1 ? this.evaluation : undefined!)
+        return Promise.resolve(data)
     }
 
     public delete(id: string): Promise<boolean> {
@@ -25,15 +19,15 @@ export class OdontologicEvaluationRepositoryMock implements IDataRepository {
     }
 
     public find(query: IQuery): Promise<Array<Data>> {
-        return Promise.resolve([this.evaluation])
+        return Promise.resolve([data])
     }
 
     public findOne(query: IQuery): Promise<Data> {
-        return Promise.resolve(this.evaluation)
+        return Promise.resolve(data)
     }
 
     public update(item: Data): Promise<Data> {
-        return Promise.resolve(this.evaluation)
+        return Promise.resolve(data)
     }
 
 }

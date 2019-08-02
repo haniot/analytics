@@ -15,6 +15,7 @@ export abstract class DefaultEntityMock {
         file_csv: 'https://repo.com/file.csv',
         file_xls: 'https://repo.com/file.xls',
         created_at: '2018-11-19T14:40:00',
+        pilotstudy_id: '5c86d00c2239a48ea20a0134',
         data_types: [
             'blood_glucose',
             'blood_pressure',
@@ -433,50 +434,7 @@ export abstract class DefaultEntityMock {
     public static BLOOD_GLUCOSE = {
         value: 99,
         meal: 'prepandial',
-        classification: 'great',
-        zones: [{
-            preprandial: {
-                good: {
-                    min: 65,
-                    max: 100
-                },
-                great: {
-                    min: 90,
-                    max: 145
-                }
-            },
-            postprandial: {
-                good: {
-                    min: 80,
-                    max: 126
-                },
-                great: {
-                    min: 90,
-                    max: 180
-                }
-            },
-            bedtime: {
-                good: {
-                    min: 80,
-                    max: 126
-                },
-                great: {
-                    min: 90,
-                    max: 180
-                }
-            },
-            glycated_hemoglobin: {
-                good: {
-                    min: 4.5,
-                    max: 6.5
-                },
-                great: {
-                    min: 5.7,
-                    max: 7.5
-                }
-            }
-        }
-        ]
+        classification: 'great'
     }
 
     public static BLOOD_PRESSURE = {
@@ -527,6 +485,11 @@ export abstract class DefaultEntityMock {
     }
 
     /* Questionnaires*/
+
+    public static QUESTIONNAIRE_RECORD: any = {
+        type: 'any'
+    }
+
     public static BMI_PER_AGE = {
         bmi_per_age_boys: [DefaultEntityMock.AGE_BMI_PERCENTILE],
         bmi_per_age_girls: [DefaultEntityMock.AGE_BMI_PERCENTILE]
