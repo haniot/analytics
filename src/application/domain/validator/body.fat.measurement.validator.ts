@@ -4,7 +4,7 @@ import { DatetimeValidator } from './date.time.validator'
 import { ObjectIdValidator } from './object.id.validator'
 import { BodyFatMeasurement } from '../model/body.fat.measurement'
 
-export class FatMeasurementValidator {
+export class BodyFatMeasurementValidator {
     public static validate(item: BodyFatMeasurement): void | ValidationException {
         const fields: Array<string> = []
 
@@ -18,7 +18,7 @@ export class FatMeasurementValidator {
 
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',
-                'Fat Measurement validation: '.concat(fields.join(', ')).concat(' required!'))
+                'Body Fat Measurement validation: '.concat(fields.join(', ')).concat(' required!'))
         }
     }
 }

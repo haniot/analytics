@@ -635,7 +635,7 @@ export abstract class DefaultEntityMock {
     public static BODY_FAT_MEASUREMENT = {
         value: 20,
         unit: '%',
-        type: 'fat',
+        type: 'body_fat',
         timestamp: '2018-11-17T14:40:00Z',
         device_id: '5ca790f77aefffa37a17b605'
     }

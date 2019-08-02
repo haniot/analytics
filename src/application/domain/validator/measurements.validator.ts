@@ -3,7 +3,7 @@ import { MeasurementTypes } from '../utils/measurement.types'
 import { HeightMeasurementValidator } from './height.measurement.validator'
 import { WeightMeasurementValidator } from './weight.measurement.validator'
 import { BloodGlucoseMeasurementValidator } from './blood.glucose.measurement.validator'
-import { FatMeasurementValidator } from './fat.measurement.validator'
+import { BodyFatMeasurementValidator } from './body.fat.measurement.validator'
 import { WaistCircumferenceMeasurementValidator } from './waist.circumference.measurement.validator'
 import { BodyTemperatureMeasurementValidator } from './body.temperature.measurement.validator'
 import { Strings } from '../../../utils/strings'
@@ -32,7 +32,7 @@ export class MeasurementsValidator {
                     WaistCircumferenceMeasurementValidator.validate(item)
                     break
                 case MeasurementTypes.BODY_FAT:
-                    FatMeasurementValidator.validate(item)
+                    BodyFatMeasurementValidator.validate(item)
                     break
                 default:
                     throw new ValidationException(Strings.ENUM_VALIDATOR.NOT_MAPPED(`type: ${item.type}`),

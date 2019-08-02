@@ -6,7 +6,7 @@ import { BodyTemperatureMeasurementValidator } from './body.temperature.measurem
 import { HeightMeasurementValidator } from './height.measurement.validator'
 import { WaistCircumferenceMeasurementValidator } from './waist.circumference.measurement.validator'
 import { WeightMeasurementValidator } from './weight.measurement.validator'
-import { FatMeasurementValidator } from './fat.measurement.validator'
+import { BodyFatMeasurementValidator } from './body.fat.measurement.validator'
 import { Strings } from '../../../utils/strings'
 
 export class MeasurementsListValidator {
@@ -32,7 +32,7 @@ export class MeasurementsListValidator {
                     WeightMeasurementValidator.validate(measurement)
                     break
                 case(MeasurementTypes.BODY_FAT):
-                    FatMeasurementValidator.validate(measurement)
+                    BodyFatMeasurementValidator.validate(measurement)
                     break
                 default:
                     throw new ValidationException(
