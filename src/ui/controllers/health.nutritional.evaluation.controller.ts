@@ -6,8 +6,11 @@ import { INutritionEvaluationService } from '../../application/port/nutrition.ev
 import { Request, Response } from 'express'
 import { Query } from '../../infrastructure/repository/query/query'
 import { ApiExceptionManager } from '../exception/api.exception.manager'
+import { EvaluationTypes } from '../../application/domain/utils/evaluation.types'
+import { NutritionEvaluation } from '../../application/domain/model/nutrition.evaluation'
+import { NutritionEvaluationList } from '../model/nutrition.evaluation.list'
 
-@controller('/healthprofessionals/:healthprofessional_id/nutritional/evaluations')
+@controller('/v1/healthprofessionals/:healthprofessional_id/nutritional/evaluations')
 export class HealthNutritionalEvaluationController {
     constructor(
         @inject(Identifier.NUTRITION_EVALUATION_SERVICE) private readonly _service: INutritionEvaluationService
@@ -21,7 +24,11 @@ export class HealthNutritionalEvaluationController {
             const query: Query = new Query().fromJSON(req.query)
             query.addFilter({ health_professional_id: req.params.healthprofessional_id })
             const result: Array<any> = await this._service.getAll(query)
-            return res.status(HttpStatus.OK).send(this.toJSONView(result))
+            const count: number =
+                await this._service.count(new Query().fromJSON(
+                    { filters: { health_professional_id: req.params.healthprofessional_id, type: EvaluationTypes.NUTRITION } }))
+            res.setHeader('X-Total-Count', count)
+            return res.status(HttpStatus.OK).send(this.toJSONViewList(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
@@ -31,11 +38,10 @@ export class HealthNutritionalEvaluationController {
         }
     }
 
-    private toJSONView(evaluations: Array<any>): object {
-        return evaluations.map(evaluation => {
-            evaluation.health_professional_id = undefined
-            evaluation.pilotstudy_id = undefined
-            return evaluation.toJSON()
+    private toJSONViewList(item: Array<NutritionEvaluation>): object {
+        return item.map(evaluation => {
+            const itemNew: NutritionEvaluationList = new NutritionEvaluationList().fromModel(evaluation)
+            return itemNew.toJSON()
         })
     }
 }

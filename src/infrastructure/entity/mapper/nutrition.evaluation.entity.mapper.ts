@@ -4,19 +4,17 @@ import { NutritionEvaluation } from '../../../application/domain/model/nutrition
 import { NutritionEvaluationEntity } from '../nutrition.evaluation.entity'
 import { NutritionStatus } from '../../../application/domain/model/nutrition.status'
 import { OverweightIndicator } from '../../../application/domain/model/overweight.indicator'
-import { HeartRate } from '../../../application/domain/model/heart.rate'
 import { BloodGlucose } from '../../../application/domain/model/blood.glucose'
 import { BloodPressure } from '../../../application/domain/model/blood.pressure'
 import { Counseling } from '../../../application/domain/model/counseling'
 import { MeasurementTypes } from '../../../application/domain/utils/measurement.types'
 import { HeightMeasurement } from '../../../application/domain/model/height.measurement'
-import { HeartRateMeasurement } from '../../../application/domain/model/heart.rate.measurement'
 import { BloodPressureMeasurement } from '../../../application/domain/model/blood.pressure.measurement'
 import { WeightMeasurement } from '../../../application/domain/model/weight.measurement'
 import { BloodGlucoseMeasurement } from '../../../application/domain/model/blood.glucose.measurement'
 import { BodyTemperatureMeasurement } from '../../../application/domain/model/body.temperature.measurement'
 import { WaistCircumferenceMeasurement } from '../../../application/domain/model/waist.circumference.measurement'
-import { FatMeasurement } from '../../../application/domain/model/fat.measurement'
+import { BodyFatMeasurement } from '../../../application/domain/model/body.fat.measurement'
 import { PhysicalActivityHabits } from '../../../application/domain/model/physical.activity.habits'
 import { FeedingHabitsRecord } from '../../../application/domain/model/feeding.habits.record'
 import { MedicalRecord } from '../../../application/domain/model/medical.record'
@@ -42,7 +40,6 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (json.overweight_indicator !== undefined)
             result.overweight_indicator = new OverweightIndicator().fromJSON(json.overweight_indicator)
         if (json.taylor_cut_point) result.taylor_cut_point = new TaylorCutPoint().fromJSON(json.taylor_cut_point)
-        if (json.heart_rate !== undefined) result.heart_rate = new HeartRate().fromJSON(json.heart_rate)
         if (json.blood_glucose !== undefined) result.blood_glucose = new BloodGlucose().fromJSON(json.blood_glucose)
         if (json.blood_pressure !== undefined) result.blood_pressure = new BloodPressure().fromJSON(json.blood_pressure)
         if (json.counseling !== undefined) result.counseling = new Counseling().fromJSON(json.counseling)
@@ -74,7 +71,6 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
         if (item.nutritional_status !== undefined) result.nutritional_status = item.nutritional_status.toJSON()
         if (item.overweight_indicator !== undefined) result.overweight_indicator = item.overweight_indicator.toJSON()
         if (item.taylor_cut_point !== undefined) result.taylor_cut_point = item.taylor_cut_point.toJSON()
-        if (item.heart_rate !== undefined) result.heart_rate = item.heart_rate.toJSON()
         if (item.blood_glucose !== undefined) result.blood_glucose = item.blood_glucose.toJSON()
         if (item.blood_pressure !== undefined) result.blood_pressure = item.blood_pressure.toJSON()
         if (item.counseling !== undefined) result.counseling = item.counseling.toJSON()
@@ -97,21 +93,9 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
             switch (item.type) {
                 case MeasurementTypes.HEIGHT:
                     return new HeightMeasurement().fromJSON(item)
-                case MeasurementTypes.HEART_RATE:
-                    return new HeartRateMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_PRESSURE:
                     return new BloodPressureMeasurement().fromJSON(item)
                 case MeasurementTypes.WEIGHT:
-                    if (item.fat !== undefined) {
-                        item.fat = {
-                            ...item.fat,
-                            ...{
-                                device_id: item.device_id,
-                                timestamp: item.timestamp,
-                                user_id: item.user_id
-                            }
-                        }
-                    }
                     return new WeightMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_GLUCOSE:
                     return new BloodGlucoseMeasurement().fromJSON(item)
@@ -119,8 +103,8 @@ export class NutritionEvaluationEntityMapper implements IEntityMapper<NutritionE
                     return new BodyTemperatureMeasurement().fromJSON(item)
                 case MeasurementTypes.WAIST_CIRCUMFERENCE:
                     return new WaistCircumferenceMeasurement().fromJSON(item)
-                case MeasurementTypes.FAT:
-                    return new FatMeasurement().fromJSON(item)
+                case MeasurementTypes.BODY_FAT:
+                    return new BodyFatMeasurement().fromJSON(item)
                 default:
                     return item
             }

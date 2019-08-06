@@ -8,13 +8,12 @@ import { JsonUtils } from '../utils/json.utils'
 import { SleepHabit } from './sleep.habit'
 import { MeasurementTypes } from '../utils/measurement.types'
 import { HeightMeasurement } from './height.measurement'
-import { HeartRateMeasurement } from './heart.rate.measurement'
 import { BloodPressureMeasurement } from './blood.pressure.measurement'
 import { WeightMeasurement } from './weight.measurement'
 import { BloodGlucoseMeasurement } from './blood.glucose.measurement'
 import { BodyTemperatureMeasurement } from './body.temperature.measurement'
 import { WaistCircumferenceMeasurement } from './waist.circumference.measurement'
-import { FatMeasurement } from './fat.measurement'
+import { BodyFatMeasurement } from './body.fat.measurement'
 
 export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeserializable<NutritionEvaluationRequest> {
     private _patient?: Patient
@@ -97,9 +96,8 @@ export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeser
         }
 
         if (json.patient !== undefined) this.patient = new Patient().fromJSON(json.patient)
-        if (json.measurements !== undefined && json.measurements instanceof Array) {
+        if (json.measurements !== undefined && json.measurements instanceof Array)
             this.measurements = json.measurements.map(item => this.jsonToModel(item))
-        }
         if (json.physical_activity_habits !== undefined)
             this.physical_activity_habits = new PhysicalActivityHabits().fromJSON(json.physical_activity_habits)
         if (json.feeding_habits_record !== undefined)
@@ -129,21 +127,9 @@ export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeser
             switch (item.type) {
                 case MeasurementTypes.HEIGHT:
                     return new HeightMeasurement().fromJSON(item)
-                case MeasurementTypes.HEART_RATE:
-                    return new HeartRateMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_PRESSURE:
                     return new BloodPressureMeasurement().fromJSON(item)
                 case MeasurementTypes.WEIGHT:
-                    if (item.fat !== undefined) {
-                        item.fat = {
-                            ...item.fat,
-                            ...{
-                                device_id: item.device_id,
-                                timestamp: item.timestamp,
-                                user_id: item.user_id
-                            }
-                        }
-                    }
                     return new WeightMeasurement().fromJSON(item)
                 case MeasurementTypes.BLOOD_GLUCOSE:
                     return new BloodGlucoseMeasurement().fromJSON(item)
@@ -151,8 +137,8 @@ export class NutritionEvaluationRequest implements IJSONSerializable, IJSONDeser
                     return new BodyTemperatureMeasurement().fromJSON(item)
                 case MeasurementTypes.WAIST_CIRCUMFERENCE:
                     return new WaistCircumferenceMeasurement().fromJSON(item)
-                case MeasurementTypes.FAT:
-                    return new FatMeasurement().fromJSON(item)
+                case MeasurementTypes.BODY_FAT:
+                    return new BodyFatMeasurement().fromJSON(item)
                 default:
                     return item
             }

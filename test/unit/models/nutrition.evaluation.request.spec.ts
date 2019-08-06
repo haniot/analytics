@@ -82,13 +82,27 @@ describe('Models: NutritionEvaluationRequest', () => {
                 result, 'health_professional_id', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.health_professional_id)
             assert.deepPropertyVal(result, 'pilotstudy_id', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.pilotstudy_id)
             assert.deepPropertyVal(result, 'patient', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.patient)
-            // assert.deepPropertyVal(result, 'measurements', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.measurements)
-            // assert.deepPropertyVal(result, 'medical_record', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.medical_record)
-            // assert.deepPropertyVal(
-            //     result, 'feeding_habits_record', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.feeding_habits_record)
-            // assert.deepPropertyVal(
-            //     result, 'physical_activity_habits', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.physical_activity_habits)
-            // assert.deepPropertyVal(result, 'sleep_habit', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.sleep_habit)
+            assert.deepPropertyVal(result, 'measurements', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.measurements)
+            assert.deepPropertyVal(result, 'medical_record', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.medical_record)
+            assert.deepPropertyVal(
+                result, 'feeding_habits_record', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.feeding_habits_record)
+            assert.deepPropertyVal(
+                result, 'physical_activity_habits', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.physical_activity_habits)
+            assert.deepPropertyVal(result, 'sleep_habit', DefaultEntityMock.NUTRITION_EVALUATION_REQUEST.sleep_habit)
+        })
+
+        context('when the parameters are undefined', () => {
+            it('should return a json with undefined parameters', () => {
+                const result = new NutritionEvaluationRequest().toJSON()
+                assert.deepPropertyVal(result, 'measurements', undefined)
+                assert.deepPropertyVal(result, 'patient', undefined)
+                assert.deepPropertyVal(result, 'medical_record', undefined)
+                assert.deepPropertyVal(result, 'feeding_habits_record', undefined)
+                assert.deepPropertyVal(result, 'physical_activity_habits', undefined)
+                assert.deepPropertyVal(result, 'sleep_habit', undefined)
+                assert.deepPropertyVal(result, 'health_professional_id', undefined)
+                assert.deepPropertyVal(result, 'pilotstudy_id', undefined)
+            })
         })
     })
 })

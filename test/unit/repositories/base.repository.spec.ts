@@ -30,8 +30,6 @@ describe('Repositories: BaseRepository', () => {
         new CustomLoggerMock()
     )
 
-    // const fakeObject: any = { name: 'any' }
-
     afterEach(() => {
         sinon.restore()
     })
@@ -75,12 +73,11 @@ describe('Repositories: BaseRepository', () => {
             it('should reject a error', () => {
                 sinon
                     .mock(modelFake)
-                    .expects('countDocuments')
+                    .expects('create')
                     .withArgs({})
-                    .chain('exec')
                     .rejects({ name: 'MongoError', code: 11000 })
 
-                return repo.count(new Query())
+                return repo.create({})
                     .catch(err => {
                         assert.propertyVal(err, 'message', 'A registration with the same unique data already exists!')
                     })
@@ -92,12 +89,12 @@ describe('Repositories: BaseRepository', () => {
                 it('should reject a error', () => {
                     sinon
                         .mock(modelFake)
-                        .expects('countDocuments')
-                        .withArgs({})
+                        .expects('findOne')
+                        .withArgs({ _id:  '123' })
                         .chain('exec')
                         .rejects({ name: 'ObjectParameterError' })
 
-                    return repo.count(new Query())
+                    return repo.findOne(new Query())
                         .catch(err => {
                             assert.propertyVal(err, 'message', 'Invalid query parameters!')
                         })

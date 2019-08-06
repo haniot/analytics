@@ -2,6 +2,7 @@ import { INutritionEvaluationRepository } from '../../../src/application/port/nu
 import { IQuery } from '../../../src/application/port/query.interface'
 import { NutritionEvaluation } from '../../../src/application/domain/model/nutrition.evaluation'
 import { DefaultEntityMock } from '../models/default.entity.mock'
+import { NutritionCouncil } from '../../../src/application/domain/model/nutrition.council'
 
 const evaluation: NutritionEvaluation = new NutritionEvaluation().fromJSON(DefaultEntityMock.NUTRITION_EVALUATION)
 evaluation.id = DefaultEntityMock.NUTRITION_EVALUATION.id
@@ -29,6 +30,11 @@ export class NutritionEvaluationRepositoryMock implements INutritionEvaluationRe
     }
 
     public update(item: NutritionEvaluation): Promise<NutritionEvaluation> {
+        return Promise.resolve(evaluation)
+    }
+
+    public updateNutritionalCounseling(patientId: string, evaluationId: string, counseling: NutritionCouncil):
+        Promise<NutritionEvaluation> {
         return Promise.resolve(evaluation)
     }
 

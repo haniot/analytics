@@ -18,20 +18,18 @@ import { NutritionEvaluationEntityMapper } from '../infrastructure/entity/mapper
 import { NutritionEvaluationRepoModel } from '../infrastructure/database/schema/nutrition.evaluation.schema'
 import { NutritionEvaluationService } from '../application/service/nutrition.evaluation.service'
 import { INutritionEvaluationService } from '../application/port/nutrition.evaluation.service.interface'
-import { EvaluationController } from '../ui/controllers/evaluation.controller'
-import { NutritionalEvaluationController } from '../ui/controllers/nutritional.evaluation.controller'
-import { PatientNutritionalEvaluationController } from '../ui/controllers/patient.nutritional.evaluation.controller'
-import { PilotStudyNutritionalEvaluationController } from '../ui/controllers/pilot.study.nutritional.evaluation.controller'
+import { PatientsNutritionalEvaluationsController } from '../ui/controllers/patients.nutritional.evaluations.controller'
+import { PilotStudiesNutritionalEvaluationsController } from '../ui/controllers/pilot.studies.nutritional.evaluations.controller'
 import { HealthNutritionalEvaluationController } from '../ui/controllers/health.nutritional.evaluation.controller'
-import { OdontologicEvaluationRepoModel } from '../infrastructure/database/schema/odontologic.evaluation.schema'
-import { OdontologicEvaluation } from '../application/domain/model/odontologic.evaluation'
-import { OdontologicEvaluationEntity } from '../infrastructure/entity/odontologic.evaluation.entity'
-import { OdontologicEvaluationEntityMapper } from '../infrastructure/entity/mapper/odontologic.evaluation.entity.mapper'
-import { IOdontologicEvaluationRepository } from '../application/port/odontologic.evaluation.repository.interface'
-import { OdontologicEvaluationRepository } from '../infrastructure/repository/odontologic.evaluation.repository'
-import { IOdontologicEvaluationService } from '../application/port/odontologic.evaluation.service.interface'
-import { OdontologicEvaluationService } from '../application/service/odontologic.evaluation.service'
-import { PilotStudyOdontologicalEvaluationController } from '../ui/controllers/pilot.study.odontological.evaluation.controller'
+import { DataRepoModel } from '../infrastructure/database/schema/data.schema'
+import { Data } from '../application/domain/model/data'
+import { DataEntity } from '../infrastructure/entity/data.entity'
+import { DataEntityMapper } from '../infrastructure/entity/mapper/data.entity.mapper'
+import { IDataRepository } from '../application/port/data.repository.interface'
+import { DataRepository } from '../infrastructure/repository/data.repository'
+import { IDataService } from '../application/port/data.service.interface'
+import { DataService } from '../application/service/data.service'
+import { PilotStudiesDataController } from '../ui/controllers/pilot.studies.data.controller'
 import { IEvaluationFilesManagerRepository } from '../application/port/evaluation.files.manager.repository.interface'
 import { AwsFilesRepository } from '../infrastructure/repository/aws.files.repository'
 import { EvaluationFile } from '../application/domain/model/evaluation.file'
@@ -44,6 +42,8 @@ import { BmiPerAge } from '../application/domain/model/bmi.per.age'
 import { BmiPerAgeRepository } from '../infrastructure/repository/bmi.per.age.repository'
 import { NutritionCounselingRepository } from '../infrastructure/repository/nutrition.counseling.repository'
 import { NutritionCounseling } from '../application/domain/model/nutrition.counseling'
+// tslint:disable-next-line:max-line-length
+import { PatientsNutritionalEvaluationsCounselingsController } from '../ui/controllers/patients.nutritional.evaluations.counselings.controller'
 
 export class DI {
     private static instance: DI
@@ -91,30 +91,29 @@ export class DI {
         // Controllers
         this.container.bind<HomeController>(Identifier.HOME_CONTROLLER)
             .to(HomeController).inSingletonScope()
-        this.container.bind<EvaluationController>(Identifier.EVALUATION_CONTROLLER)
-            .to(EvaluationController).inSingletonScope()
-        this.container.bind<PilotStudyNutritionalEvaluationController>(Identifier.PILOT_STUDY_NUTRITIONAL_EVALUATION_CONTROLLER)
-            .to(PilotStudyNutritionalEvaluationController).inSingletonScope()
-        this.container.bind<HealthNutritionalEvaluationController>(Identifier.HEALTH_NUTRITIONAL_EVALUATION_CONTROLLER)
+        this.container.bind<PilotStudiesNutritionalEvaluationsController>(Identifier.PILOT_STUDIES_NUTRITIONAL_EVALUATIONS_CONTROLLER)
+            .to(PilotStudiesNutritionalEvaluationsController).inSingletonScope()
+        this.container.bind<HealthNutritionalEvaluationController>(Identifier.HEALTH_NUTRITIONAL_EVALUATIONS_CONTROLLER)
             .to(HealthNutritionalEvaluationController).inSingletonScope()
-        this.container.bind<NutritionalEvaluationController>(Identifier.NUTRITIONAL_EVALUATION_CONTROLLER)
-            .to(NutritionalEvaluationController).inSingletonScope()
-        this.container.bind<PatientNutritionalEvaluationController>(Identifier.PATIENT_NUTRITIONAL_EVALUATION_CONTROLLER)
-            .to(PatientNutritionalEvaluationController).inSingletonScope()
-        this.container.bind<PilotStudyOdontologicalEvaluationController>(Identifier.PATIENT_ODONTOLOGIC_EVALUATION_CONTROLLER)
-            .to(PilotStudyOdontologicalEvaluationController).inSingletonScope()
+        this.container.bind<PatientsNutritionalEvaluationsController>(Identifier.PATIENTS_NUTRITIONAL_EVALUATIONS_CONTROLLER)
+            .to(PatientsNutritionalEvaluationsController).inSingletonScope()
+        this.container.bind<PatientsNutritionalEvaluationsCounselingsController>
+        (Identifier.PATIENTS_NUTRITIONAL_EVALUATIONS_COUNSELINGS_CONTROLLER)
+            .to(PatientsNutritionalEvaluationsCounselingsController).inSingletonScope()
+        this.container.bind<PilotStudiesDataController>(Identifier.PILOT_STUDIES_DATA_CONTROLLER)
+            .to(PilotStudiesDataController).inSingletonScope()
 
         // Services
         this.container.bind<INutritionEvaluationService>
         (Identifier.NUTRITION_EVALUATION_SERVICE).to(NutritionEvaluationService).inSingletonScope()
-        this.container.bind<IOdontologicEvaluationService>
-        (Identifier.ODONTOLOGIC_EVALUATION_SERVICE).to(OdontologicEvaluationService).inSingletonScope()
+        this.container.bind<IDataService>
+        (Identifier.DATA_SERVICE).to(DataService).inSingletonScope()
 
         // Repositories
         this.container.bind<INutritionEvaluationRepository>(Identifier.NUTRITION_EVALUATION_REPOSITORY)
             .to(NutritionEvaluationRepository).inSingletonScope()
-        this.container.bind<IOdontologicEvaluationRepository>(Identifier.ODONTOLOGIC_EVALUATION_REPOSITORY)
-            .to(OdontologicEvaluationRepository).inSingletonScope()
+        this.container.bind<IDataRepository>(Identifier.DATA_REPOSITORY)
+            .to(DataRepository).inSingletonScope()
         this.container.bind<IEvaluationFilesManagerRepository<EvaluationFile>>(Identifier.AWS_FILES_REPOSITORY)
             .to(AwsFilesRepository).inSingletonScope()
         this.container.bind<IFileRepository<BloodPressurePerAgeHeight>>(Identifier.BLOOD_PRESSURE_PER_AGE_HEIGHT_REPOSITORY)
@@ -128,16 +127,14 @@ export class DI {
 
         // Models
         this.container.bind(Identifier.NUTRITION_EVALUATION_REPO_MODEL).toConstantValue(NutritionEvaluationRepoModel)
-        this.container.bind(Identifier.ODONTOLOGIC_EVALUATION_REPO_MODEL).toConstantValue(OdontologicEvaluationRepoModel)
+        this.container.bind(Identifier.DATA_REPO_MODEL).toConstantValue(DataRepoModel)
 
         // Mappers
         this.container
             .bind<IEntityMapper<NutritionEvaluation, NutritionEvaluationEntity>>(Identifier.NUTRITION_EVALUATION_ENTITY_MAPPER)
             .to(NutritionEvaluationEntityMapper).inSingletonScope()
-        this.container
-            .bind<IEntityMapper<OdontologicEvaluation, OdontologicEvaluationEntity>>
-            (Identifier.ODONTOLOGIC_EVALUATION_ENTITY_MAPPER)
-            .to(OdontologicEvaluationEntityMapper).inSingletonScope()
+        this.container.bind<IEntityMapper<Data, DataEntity>>(Identifier.DATA_ENTITY_MAPPER)
+            .to(DataEntityMapper).inSingletonScope()
 
         // Background Services
         this.container

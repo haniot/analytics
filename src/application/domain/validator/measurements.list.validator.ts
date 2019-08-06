@@ -3,11 +3,10 @@ import { MeasurementTypes } from '../utils/measurement.types'
 import { BloodGlucoseMeasurementValidator } from './blood.glucose.measurement.validator'
 import { BloodPressureMeasurementValidator } from './blood.pressure.measurement.validator'
 import { BodyTemperatureMeasurementValidator } from './body.temperature.measurement.validator'
-import { HeartRateMeasurementValidator } from './heart.rate.measurement.validator'
 import { HeightMeasurementValidator } from './height.measurement.validator'
 import { WaistCircumferenceMeasurementValidator } from './waist.circumference.measurement.validator'
 import { WeightMeasurementValidator } from './weight.measurement.validator'
-import { FatMeasurementValidator } from './fat.measurement.validator'
+import { BodyFatMeasurementValidator } from './body.fat.measurement.validator'
 import { Strings } from '../../../utils/strings'
 
 export class MeasurementsListValidator {
@@ -23,9 +22,6 @@ export class MeasurementsListValidator {
                 case(MeasurementTypes.BODY_TEMPERATURE):
                     BodyTemperatureMeasurementValidator.validate(measurement)
                     break
-                case(MeasurementTypes.HEART_RATE):
-                    HeartRateMeasurementValidator.validate(measurement)
-                    break
                 case(MeasurementTypes.HEIGHT):
                     HeightMeasurementValidator.validate(measurement)
                     break
@@ -35,8 +31,8 @@ export class MeasurementsListValidator {
                 case(MeasurementTypes.WEIGHT):
                     WeightMeasurementValidator.validate(measurement)
                     break
-                case(MeasurementTypes.FAT):
-                    FatMeasurementValidator.validate(measurement)
+                case(MeasurementTypes.BODY_FAT):
+                    BodyFatMeasurementValidator.validate(measurement)
                     break
                 default:
                     throw new ValidationException(

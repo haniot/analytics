@@ -33,9 +33,6 @@ export class NutritionEvaluationRequestValidator {
             if (!item.measurements.filter(measurement => measurement.type === MeasurementTypes.WEIGHT).length) {
                 fields.push('measurements.weight')
             }
-            if (!item.measurements.filter(measurement => measurement.type === MeasurementTypes.HEART_RATE).length) {
-                fields.push('measurements.heart_rate')
-            }
             if (!item.measurements.filter(measurement => measurement.type === MeasurementTypes.WAIST_CIRCUMFERENCE).length) {
                 fields.push('measurements.waist_circumference')
             }

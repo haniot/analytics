@@ -1,4 +1,4 @@
-import { OdontologicEvaluationRequest } from '../model/odontologic.evaluation.request'
+import { DataRequestParameters } from '../model/data.request.parameters'
 import { PatientValidator } from './patient.validator'
 import { MeasurementsListValidator } from './measurements.list.validator'
 import { MeasurementTypes } from '../utils/measurement.types'
@@ -11,7 +11,7 @@ import { FamilyCohesionRecordValidator } from './family.cohesion.record.validato
 import { OralHealthRecordValidator } from './oral.health.record.validator'
 
 export class OdontologicEvaluationRequestValidator {
-    public static validate(item: OdontologicEvaluationRequest) {
+    public static validate(item: DataRequestParameters) {
         const fields: Array<string> = []
 
         if (!item.patient) fields.push('patient')

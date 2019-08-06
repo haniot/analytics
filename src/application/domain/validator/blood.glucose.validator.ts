@@ -12,7 +12,6 @@ export class BloodGlucoseValidator {
         else MealTypesValidator.validate(item.meal)
         if (!item.classification) fields.push('blood_glucose.classification')
         else BloodGlucoseClassificationTypesValidator.validate(item.classification)
-        if (!item.zones) fields.push('blood_glucose.zones')
         if (fields.length) {
             throw new ValidationException('Required fields were not provided...',
                 'Blood Glucose validation: '.concat(fields.join(', ')).concat(' required!'))

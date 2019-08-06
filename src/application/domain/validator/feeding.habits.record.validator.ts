@@ -23,12 +23,11 @@ export class FeedingHabitsRecordValidator {
         })
         if (!item.breakfast_daily_frequency) fields.push('breakfast_daily_frequency')
         else DailyFeedingFrequencyTypesValidator.validate(item.breakfast_daily_frequency)
-        if (!item.created_at) fields.push('created_at')
 
         fields = [...new Set(fields)]
         if (fields.length > 0) {
             throw new ValidationException('Required fields were not provided...',
-                'Feeding Habits Measurement validation: '.concat(fields.join(', ')).concat(' is required!'))
+                'Feeding Habits Record validation: '.concat(fields.join(', ')).concat(' is required!'))
         }
     }
 }

@@ -14,7 +14,6 @@ describe('Models: Measurement', () => {
             it('should return a incomplete model for not pass all parameters', () => {
                 const result: Measurement = new Measurement().fromJSON({})
                 assert.propertyVal(result, 'unit', undefined)
-                assert.propertyVal(result, 'user_id', undefined)
                 assert.propertyVal(result, 'device_id', undefined)
             })
         })
@@ -29,14 +28,12 @@ describe('Models: Measurement', () => {
             it('should return a incomplete model for not pass all parameters', () => {
                 const result: Measurement = new Measurement().fromJSON('')
                 assert.propertyVal(result, 'unit', undefined)
-                assert.propertyVal(result, 'user_id', undefined)
                 assert.propertyVal(result, 'device_id', undefined)
             })
 
             it('should return a incomplete model for pass invalid json string', () => {
                 const result: Measurement = new Measurement().fromJSON('')
                 assert.propertyVal(result, 'unit', undefined)
-                assert.propertyVal(result, 'user_id', undefined)
                 assert.propertyVal(result, 'device_id', undefined)
             })
         })

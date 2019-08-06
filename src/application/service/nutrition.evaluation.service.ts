@@ -9,7 +9,6 @@ import { NutritionEvaluationRequest } from '../domain/model/nutrition.evaluation
 import { CreateNutritionEvaluationValidator } from '../domain/validator/create.nutrition.evaluation.validator'
 import { NutritionCouncil } from '../domain/model/nutrition.council'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
-import { Query } from '../../infrastructure/repository/query/query'
 import { NutritionEvaluationStatusTypes } from '../domain/utils/nutrition.evaluation.status.types'
 import { OverweightClassificationTypes } from '../domain/utils/overweight.classification.types'
 import { BmiPerAgeClassificationTypes } from '../domain/utils/bmi.per.age.classification.types'
@@ -21,9 +20,7 @@ import { MeasurementTypes } from '../domain/utils/measurement.types'
 import { DateUtils } from '../domain/utils/date.utils'
 import { NutritionStatus } from '../domain/model/nutrition.status'
 import { OverweightIndicator } from '../domain/model/overweight.indicator'
-import { HeartRate } from '../domain/model/heart.rate'
 import { BloodGlucose } from '../domain/model/blood.glucose'
-import { Zone } from '../domain/model/zone'
 import { Counseling } from '../domain/model/counseling'
 import { NutritionCounseling } from '../domain/model/nutrition.counseling'
 import { BloodPressurePercentileClassificationTypes } from '../domain/utils/blood.pressure.percentile.classification.types'
@@ -70,7 +67,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             if (pilotId) ObjectIdValidator.validate(pilotId)
             const patientId = query.toJSON().filters.patient_id
             if (patientId) ObjectIdValidator.validate(patientId)
-            const healthProfessionalId = query.toJSON().filters.healthprofessional_id
+            const healthProfessionalId = query.toJSON().filters.health_professional_id
             if (healthProfessionalId) ObjectIdValidator.validate(healthProfessionalId)
         } catch (err) {
             return Promise.reject(err)
@@ -84,8 +81,6 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             ObjectIdValidator.validate(id)
             const patientId = query.toJSON().filters.patient_id
             if (patientId) ObjectIdValidator.validate(patientId)
-            const pilotId = query.toJSON().filters.pilotstudy_id
-            if (pilotId) ObjectIdValidator.validate(pilotId)
             ObjectIdValidator.validate(id)
         } catch (err) {
             return Promise.reject(err)
@@ -100,6 +95,10 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
 
     public update(item: NutritionEvaluation): Promise<NutritionEvaluation> {
         throw Error('Not implemented!')
+    }
+
+    public count(query: IQuery): Promise<number> {
+        return this._nutritionEvaluationRepo.count(query)
     }
 
     public async addEvaluation(item: NutritionEvaluationRequest): Promise<NutritionEvaluation> {
@@ -117,15 +116,10 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         try {
             ObjectIdValidator.validate(patientId)
             ObjectIdValidator.validate(evaluationId)
-            const nutritionEvaluation: NutritionEvaluation =
-                await this.getById(evaluationId, new Query().fromJSON({ filters: { 'patient.id': patientId } }))
-            if (!nutritionEvaluation) return Promise.resolve(undefined!)
-            nutritionEvaluation.counseling!.definitive = counseling
-            nutritionEvaluation.status = NutritionEvaluationStatusTypes.COMPLETE
-            return await this._nutritionEvaluationRepo.update(nutritionEvaluation)
         } catch (err) {
             return Promise.reject(err)
         }
+        return await this._nutritionEvaluationRepo.updateNutritionalCounseling(patientId, evaluationId, counseling)
     }
 
     public async removeEvaluation(patientId: string, evaluationId: string): Promise<boolean> {
@@ -170,9 +164,6 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             result.taylor_cut_point =
                 this.getTaylorCutPoint(info.patient.age.value, info.patient.gender, info.measurements.waist_circumference)
 
-            // Set Heart Rate
-            result.heart_rate = this.getHeartRate(info.measurements.heart_rate)
-
             // Set Blood Glucose
             result.blood_glucose =
                 this.getBloodGlucose(info.measurements.blood_glucose.value, info.measurements.blood_glucose.meal)
@@ -209,8 +200,6 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                 .filter(item => item.type === MeasurementTypes.HEIGHT)[0].toJSON()
             const weight = request.measurements!
                 .filter(item => item.type === MeasurementTypes.WEIGHT)[0].toJSON()
-            const heart_rate = request.measurements!
-                .filter(item => item.type === MeasurementTypes.HEART_RATE)[0].toJSON()
             const blood_glucose = request.measurements!
                 .filter(item => item.type === MeasurementTypes.BLOOD_GLUCOSE)[0].toJSON()
             const blood_pressure = request.measurements!
@@ -231,7 +220,6 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
                 measurements: {
                     height: height.value,
                     weight: weight.value,
-                    heart_rate: heart_rate.dataset,
                     blood_glucose: {
                         value: blood_glucose.value,
                         meal: blood_glucose.meal
@@ -253,7 +241,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     // Bmi Functions
-    public async getNutritionalStatus(age: string, gender: string, height: number, weight: number): Promise<NutritionStatus> {
+    private async getNutritionalStatus(age: string, gender: string, height: number, weight: number): Promise<NutritionStatus> {
         const result: NutritionStatus = new NutritionStatus()
         try {
             result.height = height
@@ -340,26 +328,12 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         })
     }
 
-    // Heart Rate Functions
-    private getHeartRate(dataSet: Array<any>): HeartRate {
-        return new HeartRate().fromJSON({
-            min: dataSet.reduce((min, item) => Math.min(min, item.value), dataSet[0].value),
-            max: dataSet.reduce((max, item) => Math.max(max, item.value), dataSet[0].value),
-            average: Math.round(
-                dataSet
-                    .map(item => item.value)
-                    .reduce((prev, curr) => prev + curr) / dataSet.length),
-            dataset: dataSet
-        })
-    }
-
     // Blood Glucose Functions
     private getBloodGlucose(value: number, meal: string): BloodGlucose {
         const result: BloodGlucose = new BloodGlucose()
         result.value = value
         result.meal = meal
         result.classification = this.getBloodGlucoseClassification(value, meal)
-        result.zones = [new Zone().fromJSON(BloodGlucoseZones.zones)]
         return result
     }
 
@@ -555,4 +529,5 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     private betweenTwoNumbers(value: number, greatEqual: number, less: number): boolean {
         return greatEqual <= value && value < less
     }
+
 }

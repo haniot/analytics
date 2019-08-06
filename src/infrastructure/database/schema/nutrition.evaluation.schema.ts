@@ -11,25 +11,10 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
         },
         created_at: { type: Date },
         patient: {
-            id: {
-                type: Schema.Types.ObjectId
-            },
-            email: { /* Common parameter between admin, patient and health professional. */
-                type: String
-            }, /* Health Professional parameters*/
-            name: {
-                type: String
-            },
-            gender: {
-                type: String
-            },
-            birth_date: {
-                type: String
-            },
-            pilotstudy_id: {
-                type: Schema.Types.ObjectId,
-                ref: 'PilotStudy'
-            }
+            id: { type: Schema.Types.ObjectId },
+            name: { type: String },
+            gender: { type: String },
+            birth_date: { type: String }
         },
         pilotstudy_id: {
             type: Schema.Types.ObjectId,
@@ -89,30 +74,6 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
                 required: 'Classification of taylor cut point is required!'
             }
         },
-        heart_rate: {
-            min: {
-                type: Number,
-                required: 'Min value of heart rate is required!'
-            },
-            max: {
-                type: Number,
-                required: 'Max value of heart rate is required!'
-            },
-            average: {
-                type: Number,
-                required: 'Average value of heart rate is required!'
-            },
-            dataset: [{
-                value: {
-                    type: Number,
-                    required: 'Value of heart rate measurement is required!'
-                },
-                timestamp: {
-                    type: Date,
-                    required: 'Timestamp of heart rate measurement is required!'
-                }
-            }]
-        },
         blood_glucose: {
             value: {
                 type: Number,
@@ -125,97 +86,7 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
             classification: {
                 type: String,
                 required: 'Classification of blood glucose is required!'
-            },
-            zones: [{
-                preprandial: {
-                    good: {
-                        min: {
-                            type: Number,
-                            required: 'Min value for good preprandial meal is required!'
-                        },
-                        max: {
-                            type: Number,
-                            required: 'Max value for good preprandial meal is required!'
-                        }
-                    },
-                    great: {
-                        min: {
-                            type: Number,
-                            required: 'Min value for great preprandial meal is required!'
-                        },
-                        max: {
-                            type: Number,
-                            required: 'Max value for great preprandial meal is required!'
-                        }
-                    }
-                },
-                postprandial: {
-                    good: {
-                        min: {
-                            type: Number,
-                            required: 'Min value for good postprandial meal is required!'
-                        },
-                        max: {
-                            type: Number,
-                            required: 'Max value for good postprandial meal is required!'
-                        }
-                    },
-                    great: {
-                        min: {
-                            type: Number,
-                            required: 'Min value for great postprandial meal is required!'
-                        },
-                        max: {
-                            type: Number,
-                            required: 'Max value for great postprandial meal is required!'
-                        }
-                    }
-                },
-                bedtime: {
-                    good: {
-                        min: {
-                            type: Number,
-                            required: 'Min value for good bedtime is required!'
-                        },
-                        max: {
-                            type: Number,
-                            required: 'Max value for good bedtime is required!'
-                        }
-                    },
-                    great: {
-                        min: {
-                            type: Number,
-                            required: 'Min value for great bedtime is required!'
-                        },
-                        max: {
-                            type: Number,
-                            required: 'Max value for great bedtime is required!'
-                        }
-                    }
-                },
-                glycated_hemoglobin: {
-                    good: {
-                        min: {
-                            type: Number,
-                            required: 'Min value for good glycated hemoglobin is required!'
-                        },
-                        max: {
-                            type: Number,
-                            required: 'Max value for good glycated hemoglobin is required!'
-                        }
-                    },
-                    great: {
-                        min: {
-                            type: Number,
-                            required: 'Min value for glycated hemoglobin meal is required!'
-                        },
-                        max: {
-                            type: Number,
-                            required: 'Max value for glycated hemoglobin meal is required!'
-                        }
-                    }
-                }
-            }]
+            }
         },
         blood_pressure: {
             systolic: {
@@ -259,17 +130,10 @@ const nutritionEvaluationSchema = new Mongoose.Schema({
             device_id: { type: Schema.Types.ObjectId },
             user_id: { type: Schema.Types.ObjectId },
             meal: { type: String },
-            dataset: [{
-                value: { type: Number },
-                timestamp: { type: Date }
-            }],
             systolic: { type: Number },
             diastolic: { type: Number },
             pulse: { type: Number },
-            fat: {
-                value: { type: Number },
-                unit: { type: String }
-            }
+            body_fat: { type: Number }
         }],
         physical_activity_habits: {
             patient_id: { type: Schema.Types.ObjectId },
