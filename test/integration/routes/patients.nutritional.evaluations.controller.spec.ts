@@ -1,5 +1,3 @@
-import { Container } from 'inversify'
-import { DI } from '../../../src/di/di'
 import { Identifier } from '../../../src/di/identifiers'
 import { App } from '../../../src/app'
 import { IConnectionDB } from '../../../src/infrastructure/port/connection.db.interface'
@@ -9,10 +7,10 @@ import { expect } from 'chai'
 import { Strings } from '../../../src/utils/strings'
 import { NutritionEvaluation } from '../../../src/application/domain/model/nutrition.evaluation'
 import { ObjectId } from 'bson'
+import { DIContainer } from '../../../src/di/di'
 
-const container: Container = DI.getInstance().getContainer()
-const dbConnection: IConnectionDB = container.get(Identifier.MONGODB_CONNECTION)
-const app: App = container.get(Identifier.APP)
+const dbConnection: IConnectionDB = DIContainer.get(Identifier.MONGODB_CONNECTION)
+const app: App = DIContainer.get(Identifier.APP)
 const request = require('supertest')(app.getExpress())
 const evaluation: NutritionEvaluation = new NutritionEvaluation().fromJSON(DefaultEntityMock.NUTRITION_EVALUATION)
 
