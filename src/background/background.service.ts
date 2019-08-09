@@ -1,14 +1,12 @@
 import { inject, injectable } from 'inversify'
 import { Identifier } from '../di/identifiers'
 import { IConnectionDB } from '../infrastructure/port/connection.db.interface'
-import { IBackgroundTask } from '../application/port/background.task.interface'
 
 @injectable()
 export class BackgroundService {
 
     constructor(
-        @inject(Identifier.MONGODB_CONNECTION) private readonly _mongodb: IConnectionDB,
-        @inject(Identifier.RPC_CLIENT_EVENT_BUST_TASK) private readonly _rpcClient: IBackgroundTask,
+        @inject(Identifier.MONGODB_CONNECTION) private readonly _mongodb: IConnectionDB
     ) {
     }
 
@@ -20,8 +18,6 @@ export class BackgroundService {
              * Since the application depends on the database connection to work.
              */
             await this._mongodb.tryConnect(0, 1000)
-
-            await this._rpcClient.run()
         } catch (err) {
             return Promise.reject(new Error(`Error initializing services in background! ${err.message}`))
         }
