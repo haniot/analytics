@@ -8,8 +8,7 @@ export class BackgroundService {
 
     constructor(
         @inject(Identifier.MONGODB_CONNECTION) private readonly _mongodb: IConnectionDB,
-        @inject(Identifier.SUBSCRIBE_EVENT_BUS_TASK) private readonly _subscribeTask: IBackgroundTask,
-        @inject(Identifier.PUBLISH_EVENT_BUS_TASK) private readonly _publishTask: IBackgroundTask,
+        @inject(Identifier.RPC_CLIENT_EVENT_BUST_TASK) private readonly _rpcClient: IBackgroundTask,
     ) {
     }
 
@@ -22,8 +21,7 @@ export class BackgroundService {
              */
             await this._mongodb.tryConnect(0, 1000)
 
-            await this._subscribeTask.run()
-            await this._publishTask.run()
+            await this._rpcClient.run()
         } catch (err) {
             return Promise.reject(new Error(`Error initializing services in background! ${err.message}`))
         }

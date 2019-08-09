@@ -73,7 +73,7 @@ export class DataService implements IDataService {
             /**
              * For now, a mock is being generated with the values referring to the data request.
              */
-
+            await this._dataRepo.generateData(pilotId, item)
             const data: Data = new Data().fromJSON({
                 total_patients: item.patients && item.patients.length ? item.patients.length : 1,
                 file_csv: `ps-${pilotId}-${new Date().getTime()}.csv`,

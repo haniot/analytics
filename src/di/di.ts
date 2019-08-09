@@ -47,7 +47,6 @@ import { PatientsNutritionalEvaluationsCounselingsController } from '../ui/contr
 import { ConnectionFactoryRabbitMQ } from '../infrastructure/eventbus/rabbitmq/connection.factory.rabbitmq'
 import { PublishEventBusTask } from '../background/task/publish.event.bus.task'
 import { IBackgroundTask } from '../application/port/background.task.interface'
-import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
 import { EventBusRabbitMQ } from '../infrastructure/eventbus/rabbitmq/eventbus.rabbitmq'
 import { IntegrationEventRepoModel } from '../infrastructure/database/schema/integration.event.schema'
 import { ConnectionRabbitMQ } from '../infrastructure/eventbus/rabbitmq/connection.rabbitmq'
@@ -55,6 +54,7 @@ import { IConnectionEventBus } from '../infrastructure/port/connection.event.bus
 import { IEventBus } from '../infrastructure/port/event.bus.interface'
 import { IntegrationEventRepository } from '../infrastructure/repository/integration.event.repository'
 import { IIntegrationEventRepository } from '../application/port/integration.event.repository.interface'
+import { RpcClientEventBusTask } from '../background/task/rpc.client.event.bus.task'
 
 export class IoC {
     private readonly _container: Container
@@ -160,12 +160,11 @@ export class IoC {
         this._container
             .bind<IBackgroundTask>(Identifier.PUBLISH_EVENT_BUS_TASK)
             .to(PublishEventBusTask).inSingletonScope()
-        this._container
-            .bind<IBackgroundTask>(Identifier.SUBSCRIBE_EVENT_BUS_TASK)
-            .to(SubscribeEventBusTask).inSingletonScope()
 
         // Tasks
-
+        this._container
+            .bind<IBackgroundTask>(Identifier.RPC_CLIENT_EVENT_BUST_TASK)
+            .to(RpcClientEventBusTask).inSingletonScope()
         // Log
         this._container.bind<ILogger>(Identifier.LOGGER).to(CustomLogger).inSingletonScope()
     }
