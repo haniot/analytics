@@ -54,7 +54,6 @@ import { IConnectionEventBus } from '../infrastructure/port/connection.event.bus
 import { IEventBus } from '../infrastructure/port/event.bus.interface'
 import { IntegrationEventRepository } from '../infrastructure/repository/integration.event.repository'
 import { IIntegrationEventRepository } from '../application/port/integration.event.repository.interface'
-import { RpcClientEventBusTask } from '../background/task/rpc.client.event.bus.task'
 
 export class IoC {
     private readonly _container: Container
@@ -162,9 +161,6 @@ export class IoC {
             .to(PublishEventBusTask).inSingletonScope()
 
         // Tasks
-        this._container
-            .bind<IBackgroundTask>(Identifier.RPC_CLIENT_EVENT_BUST_TASK)
-            .to(RpcClientEventBusTask).inSingletonScope()
         // Log
         this._container.bind<ILogger>(Identifier.LOGGER).to(CustomLogger).inSingletonScope()
     }
