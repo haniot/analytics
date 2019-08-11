@@ -13,9 +13,16 @@ import { DateUtils } from '../../application/domain/utils/date.utils'
 import { MeasurementTypes } from '../../application/domain/utils/measurement.types'
 import json2xls from 'json2xls'
 import { Parser } from 'json2csv'
-import fs, { readFileSync } from 'fs'
+import fs from 'fs'
 import { IEvaluationFilesManagerRepository } from '../../application/port/evaluation.files.manager.repository.interface'
 import { EvaluationFile } from '../../application/domain/model/evaluation.file'
+import { IIntegrationEventRepository } from '../../application/port/integration.event.repository.interface'
+import { RepositoryException } from '../../application/domain/exception/repository.exception'
+import jwt from 'jsonwebtoken'
+import { Email } from '../../application/domain/model/email'
+import { Default } from '../../utils/default'
+import { EmailPilotStudyDataEvent } from '../../application/integration-event/event/email.pilot.study.data.event'
+import { IntegrationEvent } from '../../application/integration-event/event/integration.event'
 
 @injectable()
 export class DataRepository extends BaseRepository<Data, DataEntity> implements IDataRepository {
@@ -25,14 +32,24 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
         @inject(Identifier.DATA_REPO_MODEL) readonly _model: any,
         @inject(Identifier.DATA_ENTITY_MAPPER) readonly _mapper: IEntityMapper<Data, DataEntity>,
         @inject(Identifier.RABBITMQ_EVENT_BUS) private readonly _eventBus: IEventBus,
+        @inject(Identifier.INTEGRATION_EVENT_REPOSITORY)
+        /*private*/ readonly _integrationEventRepo: IIntegrationEventRepository,
         @inject(Identifier.AWS_FILES_REPOSITORY)
-        /*private*/ readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>,
+        private readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>,
         @inject(Identifier.LOGGER) readonly _logger: ILogger
     ) {
         super(_model, _mapper, _logger)
     }
 
-    public async generateData(pilotId: string, dataRequest: DataRequestParameters): Promise<void> {
+    public removeDataFromPilotStudy(id: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            this.Model.deleteMany({ pilotstudy_id: id })
+                .then((result) => resolve(!!result))
+                .catch(err => reject(this.mongoDBErrorListener(err)))
+        })
+    }
+
+    public async generateData(pilotId: string, dataRequest: DataRequestParameters, token: string): Promise<void> {
         try {
             this._eventBus.connectionRpcClient
                 .open(0, 2000)
@@ -44,6 +61,8 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
                         const patientsList: Array<any> = dataRequest.patients && dataRequest.patients.length ?
                             pilotStudy.patients.filter(item => dataRequest.patients!.includes(item.id)) :
                             pilotStudy.patients
+                        if (!patientsList.length) throw new Error('There are no patients to make a data request.')
+
                         const dataList: Array<any> = []
                         for await (const patient of patientsList) {
                             dataList.push(await this.generatePatientData(patient, dataRequest.data_types!))
@@ -52,39 +71,67 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
                         await this.generateCsvEvaluation(dataList)
                         await this.generateXlsEvaluation(dataList)
 
-                        const csv_url: string = await this._awsFilesRepo.upload(new EvaluationFile().fromJSON({
+                        const evaluationCsv: EvaluationFile = new EvaluationFile().fromJSON({
                             name: `ps-${pilotStudy.id}-${new Date().getTime()}.csv`,
                             file: fs.readFileSync('./file.csv')
-                        }))
+                        })
 
-                        const xls_url: string = await this._awsFilesRepo.upload(new EvaluationFile().fromJSON({
+                        const evaluationXls: EvaluationFile = new EvaluationFile().fromJSON({
                             name: `ps-${pilotStudy.id}-${new Date().getTime()}.xls`,
-                            file: readFileSync('./file.xls')
-                        }))
+                            file: fs.readFileSync('./file.xls')
+                        })
+
+                        const csvUrl: string = await this._awsFilesRepo.upload(evaluationCsv)
+                        const xlsUrl: string = await this._awsFilesRepo.upload(evaluationXls)
+
+                        await this.removeLocalFiles()
 
                         const data: Data = new Data().fromJSON({
                             total_patients: dataList.length,
-                            file_csv: csv_url,
-                            file_xls: xls_url,
+                            file_csv: csvUrl,
+                            file_xls: xlsUrl,
                             pilotstudy_id: pilotStudy.id,
-                            patients: dataRequest.patients ? dataRequest.patients :
-                                patientsList.map(item => item.id),
+                            patients: patientsList.map(item => item.id),
                             data_types: dataRequest.data_types
                         })
+                        const result: Data = await this.create(data)
 
-                        await this.create(data)
+                        const user: any = await this.getUserFromToken(token)
+                        if (result && user && user.email) {
+                            const mail: Email = new Email().fromJSON({
+                                to: {
+                                    name: user.name,
+                                    email: user.email
+                                },
+                                attachments: [
+                                    {
+                                        filename: evaluationCsv.name,
+                                        path: csvUrl,
+                                        content_type: 'text/csv'
+                                    },
+                                    {
+                                        filename: evaluationXls.name,
+                                        path: xlsUrl,
+                                        content_type: 'application/vnd.ms-excel'
+                                    }
+                                ],
+                                pilot_study: pilotStudy.name,
+                                request_date: result.created_at,
+                                action_url: process.env.DASHBOARD_HOST || Default.DASHBOARD_HOST,
+                                lang: pilotStudy.language
+                            })
+                            await this.publishEvent(
+                                new EmailPilotStudyDataEvent(new Date(), mail), 'emails.pilotstudies.data')
+                        }
                         this.closeConnection()
                     } catch (err) {
-                        throw new Error(`Error trying to generate data: ${err.message}`)
-                    } finally {
-                        fs.unlinkSync('./file.csv')
-                        fs.unlinkSync('./file.xls')
+                        throw new Error(err.message)
                     }
                 }).catch(err => {
-                throw new Error(`Error trying to get connection to Event Bus for RPC Client. ${err.message}`)
+                throw new Error(err.message)
             })
         } catch (err) {
-            this._logger.error(err.message)
+            this._logger.error(`RPC Client - Error at generate data: ${err.message}`)
         }
     }
 
@@ -118,19 +165,29 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
         }
     }
 
-    private async getPilotStudy(pilotId: string): Promise<any> {
+    private async getPilotStudy(id: string): Promise<any> {
         try {
             const result: any =
-                await this._eventBus.executeResource(
-                    'account.rpc',
-                    'pilotstudies.findone',
-                    pilotId)
+                await this._eventBus.executeResource('account.rpc', 'pilotstudies.findone', id)
             this.validatePilotStudy(result)
             return Promise.resolve(result)
         } catch (err) {
             return Promise.reject(err)
         }
+    }
 
+    private async getUserFromToken(token: string): Promise<any> {
+        try {
+            const payload: any = await this.getTokenPayload(token)
+            const result: any =
+                await this._eventBus.executeResource(
+                    'account.rpc',
+                    'users.find',
+                    `?_id=${payload.sub}`)
+            return Promise.resolve(result[0])
+        } catch (err) {
+            return Promise.reject(err)
+        }
     }
 
     private validatePilotStudy(pilot: any): void | ValidationException {
@@ -184,7 +241,18 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
     }
 
     private getMeasurementData(measurements: Array<any>, dataTypes: Array<string>): any {
-        const result: any = {}
+        const result: any = {
+            height: '',
+            waist_circumference: '',
+            weight: '',
+            blood_glucose_value: '',
+            blood_glucose_meal: '',
+            blood_pressure_systolic: '',
+            blood_pressure_diastolic: '',
+            blood_pressure_pulse: '',
+            body_temperature: '',
+            body_fat: ''
+        }
         const height: any = measurements.filter(item => item.type === MeasurementTypes.HEIGHT)[0]
         if (height && dataTypes.includes('height')) result.height = height.value
         const waist: any = measurements.filter(item => item.type === MeasurementTypes.WAIST_CIRCUMFERENCE)[0]
@@ -213,7 +281,27 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
     }
 
     private getOdontologicalData(questionnaire: any, dataTypes: Array<string>): any {
-        const result: any = {}
+        const result: any = {
+            color_race: '',
+            mother_scholarity: '',
+            people_in_home: '',
+            family_mutual_aid_freq: '',
+            friendship_approval_freq: '',
+            family_only_task_freq: '',
+            family_only_preference_freq: '',
+            free_time_together_freq: '',
+            family_proximity_perception_freq: '',
+            all_family_tasks_freq: '',
+            family_tasks_opportunity_freq: '',
+            family_decision_support_freq: '',
+            family_union_relevance_freq: '',
+            family_cohesion_result: '',
+            teeth_brushing_freq: '',
+            teeth_cavitated_lesion_deciduous_tooth: '',
+            teeth_cavitated_lesion_permanent_tooth: '',
+            teeth_white_spot_lesion_deciduous_tooth: '',
+            teeth_white_spot_lesion_permanent_tooth: ''
+        }
         if (!Object.keys(questionnaire).length) return result
         if (dataTypes.includes('sociodemographic_record')) {
             result.color_race =
@@ -272,7 +360,54 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
     }
 
     private getNutritionalData(questionnaire: any, dataTypes: Array<string>): any {
-        const result: any = {}
+        const result: any = {
+            fish_chicken_meat_consumption_frequency: '',
+            soda_consumption_frequency: '',
+            salad_vegetable_consumption_frequency: '',
+            fried_salt_food_consumption_frequency: '',
+            milk_consumption_frequency: '',
+            bean_consumption_frequency: '',
+            fruits_consumption_frequency: '',
+            candy_sugar_cookie_consumption_frequency: '',
+            burger_sausage_consumption_frequency: '',
+            daily_water_glasses: '',
+            six_month_breast_feeding: '',
+            gluten_allergy_intolerance: '',
+            aplv_allergy_intolerance: '',
+            lactose_allergy_intolerance: '',
+            dye_allergy_intolerance: '',
+            egg_allergy_intolerance: '',
+            peanut_allergy_intolerance: '',
+            other_allergy_intolerance: '',
+            undefined_allergy_intolerance: '',
+            breakfast_daily_frequency: '',
+            daily_sleep_time: '',
+            school_ativity_freq: '',
+            weekly_none_activity: '',
+            weekly_football_practice: '',
+            weekly_futsal_practice: '',
+            weekly_handball_practice: '',
+            weekly_basketball_practice: '',
+            weekly_roller_skate_practice: '',
+            weekly_athletics_practice: '',
+            weekly_swimming_practice: '',
+            weekly_olympic_rhythmic_gymnastics_practice: '',
+            weekly_fight_practice: '',
+            weekly_dance_practice: '',
+            weekly_run_practice: '',
+            weekly_bike_practice: '',
+            weekly_exercise_walking_practice: '',
+            weekly_locomotion_walking_practice: '',
+            weekly_volleyball_practice: '',
+            weekly_bodybuilding_practice: '',
+            weekly_abdominal_practice: '',
+            weekly_tennis_practice: '',
+            weekly_dog_walk_practice: '',
+            weekly_gym_exercise_practice: '',
+            hypertension_history: '',
+            diabetes_history: '',
+            blood_fat_history: ''
+        }
         if (!Object.keys(questionnaire).length) return result
         const freq: Array<string> =
             ['never', 'no_day', 'one_two_days', 'three_four_days', 'five_six_days', 'all_days', 'undefined']
@@ -415,6 +550,48 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
             fs.writeFileSync('./file.xls', xls, 'binary')
         } catch (err) {
             return Promise.reject(err)
+        }
+    }
+
+    private async removeLocalFiles(): Promise<void> {
+        try {
+            fs.unlinkSync('./file.csv')
+            fs.unlinkSync('./file.xls')
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    private async publishEvent(event: IntegrationEvent<Data>, routingKey: string): Promise<void> {
+        try {
+            const successPublish = await this._eventBus.publish(event, routingKey)
+            if (!successPublish) throw new Error('')
+            this._logger.info(`Data from pilot study: ${event.toJSON().email.pilot_study} ` +
+                `has been saved and published on event bus to be sended to: ${event.toJSON().email.to.email}`)
+        } catch (err) {
+            const saveEvent: any = event.toJSON()
+            this._integrationEventRepo.create({
+                ...saveEvent,
+                __routing_key: routingKey,
+                __operation: 'publish'
+            })
+                .then(() => {
+                    this._logger.warn(`Could not publish the event named ${event.event_name}.`
+                        .concat(` The event was saved in the database for a possible recovery.`))
+                })
+                .catch(err => {
+                    this._logger.error(`There was an error trying to save the name event: ${event.event_name}.`
+                        .concat(`Error: ${err.message}. Event: ${JSON.stringify(saveEvent)}...`))
+                })
+        }
+    }
+
+    private getTokenPayload(token: string): Promise<any> {
+        try {
+            return Promise.resolve(jwt.decode(token))
+        } catch (err) {
+            return Promise.reject(new RepositoryException('Could not get the token payloadt. ' +
+                'Please try again later.'))
         }
     }
 }

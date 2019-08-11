@@ -56,13 +56,13 @@ export class DataService implements IDataService {
         return this._dataRepo.count(query)
     }
 
-    public requestData(pilotId: string, item: DataRequestParameters): Promise<any> {
+    public requestData(pilotId: string, item: DataRequestParameters, token: string): Promise<any> {
         try {
             ObjectIdValidator.validate(pilotId)
             if (!item.data_types || !item.data_types.length) {
                 throw new ValidationException('You must select at least one data type to request data from a pilot study.')
             }
-            this._dataRepo.generateData(pilotId, item)
+            this._dataRepo.generateData(pilotId, item, token)
         } catch (err) {
             return Promise.reject(err)
         }

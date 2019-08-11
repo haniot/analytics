@@ -6,6 +6,8 @@ import { IBackgroundTask } from '../../application/port/background.task.interfac
 import { Query } from '../../infrastructure/repository/query/query'
 import { IIntegrationEventRepository } from '../../application/port/integration.event.repository.interface'
 import { IntegrationEvent } from '../../application/integration-event/event/integration.event'
+import { Email } from '../../application/domain/model/email'
+import { EmailPilotStudyDataEvent } from '../../application/integration-event/event/email.pilot.study.data.event'
 
 @injectable()
 export class PublishEventBusTask implements IBackgroundTask {
@@ -27,6 +29,7 @@ export class PublishEventBusTask implements IBackgroundTask {
             .open(0, 2000)
             .then((conn) => {
                 conn.on('re_established_connection', () => this.internalPublishSavedEvents())
+                this._logger.info('Connection with publish event opened successful!')
             })
             .catch(err => {
                 this._logger.error(`Error trying to get connection to Event Bus for event publishing. ${err.message}`)
@@ -73,6 +76,13 @@ export class PublishEventBusTask implements IBackgroundTask {
     }
 
     private _publishEvent(event: any): Promise<boolean> {
+        if (event.event_name === 'EmailPilotStudyDataEvent') {
+            const userDeleteEvent: EmailPilotStudyDataEvent = new EmailPilotStudyDataEvent(
+                event.timestamp,
+                new Email().fromJSON(event.email)
+            )
+            return this._eventBus.publish(userDeleteEvent, event.__routing_key)
+        }
         return Promise.resolve(false)
     }
 }

@@ -3,5 +3,7 @@ import { Data } from '../domain/model/data'
 import { DataRequestParameters } from '../domain/model/data.request.parameters'
 
 export interface IDataRepository extends IRepository<Data> {
-    generateData(pilotId: string, dataRequest: DataRequestParameters): void
+    removeDataFromPilotStudy(id: string): Promise<boolean>
+
+    generateData(pilotId: string, dataRequest: DataRequestParameters, token: string): Promise<void>
 }

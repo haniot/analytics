@@ -31,8 +31,12 @@ export class DataRepositoryMock implements IDataRepository {
         return Promise.resolve(data)
     }
 
-    public generateData(pilotId: string, dataRequest: DataRequestParameters): Promise<Data> {
-        return Promise.resolve(data)
+    public removeDataFromPilotStudy(id: string): Promise<boolean> {
+        return Promise.resolve(true)
+    }
+
+    public generateData(pilotId: string, dataRequest: DataRequestParameters, token: string): Promise<void> {
+        return Promise.resolve()
     }
 
 }

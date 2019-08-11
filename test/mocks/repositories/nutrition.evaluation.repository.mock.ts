@@ -38,4 +38,8 @@ export class NutritionEvaluationRepositoryMock implements INutritionEvaluationRe
         return Promise.resolve(evaluation)
     }
 
+    public removeNutritionaLEvaluationFromPatient(id: string): Promise<boolean> {
+        return Promise.resolve(true)
+    }
+
 }

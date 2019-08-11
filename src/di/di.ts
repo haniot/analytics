@@ -54,6 +54,7 @@ import { IConnectionEventBus } from '../infrastructure/port/connection.event.bus
 import { IEventBus } from '../infrastructure/port/event.bus.interface'
 import { IntegrationEventRepository } from '../infrastructure/repository/integration.event.repository'
 import { IIntegrationEventRepository } from '../application/port/integration.event.repository.interface'
+import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
 
 export class IoC {
     private readonly _container: Container
@@ -156,13 +157,18 @@ export class IoC {
         this._container
             .bind(Identifier.BACKGROUND_SERVICE)
             .to(BackgroundService).inSingletonScope()
+
+        // Tasks
         this._container
             .bind<IBackgroundTask>(Identifier.PUBLISH_EVENT_BUS_TASK)
             .to(PublishEventBusTask).inSingletonScope()
+        this._container
+            .bind<IBackgroundTask>(Identifier.SUBSCRIBE_EVENT_BUS_TASK)
+            .to(SubscribeEventBusTask).inSingletonScope()
 
-        // Tasks
         // Log
         this._container.bind<ILogger>(Identifier.LOGGER).to(CustomLogger).inSingletonScope()
     }
 }
+
 export const DIContainer = new IoC().container
