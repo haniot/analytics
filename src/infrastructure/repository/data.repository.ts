@@ -13,7 +13,6 @@ import { DateUtils } from '../../application/domain/utils/date.utils'
 import { MeasurementTypes } from '../../application/domain/utils/measurement.types'
 import json2xls from 'json2xls'
 import { Parser } from 'json2csv'
-import fs from 'fs'
 import { IEvaluationFilesManagerRepository } from '../../application/port/evaluation.files.manager.repository.interface'
 import { EvaluationFile } from '../../application/domain/model/evaluation.file'
 import { IIntegrationEventRepository } from '../../application/port/integration.event.repository.interface'
@@ -32,10 +31,8 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
         @inject(Identifier.DATA_REPO_MODEL) readonly _model: any,
         @inject(Identifier.DATA_ENTITY_MAPPER) readonly _mapper: IEntityMapper<Data, DataEntity>,
         @inject(Identifier.RABBITMQ_EVENT_BUS) private readonly _eventBus: IEventBus,
-        @inject(Identifier.INTEGRATION_EVENT_REPOSITORY)
-        /*private*/ readonly _integrationEventRepo: IIntegrationEventRepository,
-        @inject(Identifier.AWS_FILES_REPOSITORY)
-        private readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>,
+        @inject(Identifier.INTEGRATION_EVENT_REPOSITORY) private readonly _integrationEventRepo: IIntegrationEventRepository,
+        @inject(Identifier.AWS_FILES_REPOSITORY) private readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>,
         @inject(Identifier.LOGGER) readonly _logger: ILogger
     ) {
         super(_model, _mapper, _logger)
@@ -68,23 +65,21 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
                             dataList.push(await this.generatePatientData(patient, dataRequest.data_types!))
                         }
 
-                        await this.generateCsvEvaluation(dataList)
-                        await this.generateXlsEvaluation(dataList)
+                        const bufferCsv: Buffer = await this.generateCsvEvaluation(dataList)
+                        const bufferXls: Buffer = await this.generateXlsEvaluation(dataList)
 
                         const evaluationCsv: EvaluationFile = new EvaluationFile().fromJSON({
-                            name: `ps-${pilotStudy.id}-${new Date().getTime()}.csv`,
-                            file: fs.readFileSync('./file.csv')
+                            name: `ps_${pilotStudy.id}_${new Date().toISOString()}.csv`,
+                            file: bufferCsv
                         })
 
                         const evaluationXls: EvaluationFile = new EvaluationFile().fromJSON({
-                            name: `ps-${pilotStudy.id}-${new Date().getTime()}.xls`,
-                            file: fs.readFileSync('./file.xls')
+                            name: `ps_${pilotStudy.id}_${new Date().toISOString()}.xls`,
+                            file: bufferXls
                         })
 
                         const csvUrl: string = await this._awsFilesRepo.upload(evaluationCsv)
                         const xlsUrl: string = await this._awsFilesRepo.upload(evaluationXls)
-
-                        await this.removeLocalFiles()
 
                         const data: Data = new Data().fromJSON({
                             total_patients: dataList.length,
@@ -94,34 +89,14 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
                             patients: patientsList.map(item => item.id),
                             data_types: dataRequest.data_types
                         })
-                        const result: Data = await this.create(data)
 
+                        const result: Data = await this.create(data)
                         const user: any = await this.getUserFromToken(token)
+
                         if (result && user && user.email) {
-                            const mail: Email = new Email().fromJSON({
-                                to: {
-                                    name: user.name,
-                                    email: user.email
-                                },
-                                attachments: [
-                                    {
-                                        filename: evaluationCsv.name,
-                                        path: csvUrl,
-                                        content_type: 'text/csv'
-                                    },
-                                    {
-                                        filename: evaluationXls.name,
-                                        path: xlsUrl,
-                                        content_type: 'application/vnd.ms-excel'
-                                    }
-                                ],
-                                pilot_study: pilotStudy.name,
-                                request_date: result.created_at,
-                                action_url: process.env.DASHBOARD_HOST || Default.DASHBOARD_HOST,
-                                lang: pilotStudy.language
-                            })
-                            await this.publishEvent(
-                                new EmailPilotStudyDataEvent(new Date(), mail), 'emails.pilotstudies.data')
+                            const mail: Email =
+                                await this.buildEmail(pilotStudy, user, result, evaluationCsv.name!, evaluationXls.name!)
+                            await this.sendMail(mail)
                         }
                         this.closeConnection()
                     } catch (err) {
@@ -132,6 +107,44 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
             })
         } catch (err) {
             this._logger.error(`RPC Client - Error at generate data: ${err.message}`)
+        }
+    }
+
+    private async buildEmail(pilotStudy: any, user: any, data: Data, csvName: string, xlsName: string): Promise<Email> {
+        try {
+            const mail: Email = new Email().fromJSON({
+                to: {
+                    name: user.name,
+                    email: user.email
+                },
+                attachments: [
+                    {
+                        filename: csvName,
+                        path: data.file_csv,
+                        content_type: 'text/csv'
+                    },
+                    {
+                        filename: xlsName,
+                        path: data.file_xls,
+                        content_type: 'application/vnd.ms-excel'
+                    }
+                ],
+                pilot_study: pilotStudy.name,
+                request_date: data.created_at,
+                action_url: process.env.DASHBOARD_HOST || Default.DASHBOARD_HOST,
+                lang: pilotStudy.language
+            })
+            return Promise.resolve(mail)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    private async sendMail(mail: Email): Promise<void> {
+        try {
+            await this.publishEvent(new EmailPilotStudyDataEvent(new Date(), mail), 'emails.pilotstudies.data')
+        } catch (err) {
+            return Promise.reject(err)
         }
     }
 
@@ -532,31 +545,24 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
         return result
     }
 
-    private async generateCsvEvaluation(evaluation: any): Promise<void> {
+    private async generateCsvEvaluation(evaluation: any): Promise<Buffer> {
         const fields = Object.keys(evaluation[0])
         const opts = { fields }
         try {
             const parser = new Parser(opts)
             const csv = parser.parse(evaluation)
-            fs.writeFileSync('./file.csv', csv)
+            return Promise.resolve(Buffer.from(csv))
+            // fs.writeFileSync('./file.csv', csv)
         } catch (err) {
             return Promise.reject(err)
         }
     }
 
-    private async generateXlsEvaluation(evaluation: any): Promise<void> {
+    private async generateXlsEvaluation(evaluation: any): Promise<Buffer> {
         try {
             const xls = json2xls(evaluation)
-            fs.writeFileSync('./file.xls', xls, 'binary')
-        } catch (err) {
-            return Promise.reject(err)
-        }
-    }
-
-    private async removeLocalFiles(): Promise<void> {
-        try {
-            fs.unlinkSync('./file.csv')
-            fs.unlinkSync('./file.xls')
+            return Promise.resolve(Buffer.from(xls, 'binary'))
+            // fs.writeFileSync('./file.xls', xls, 'binary')
         } catch (err) {
             return Promise.reject(err)
         }
@@ -590,7 +596,7 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
         try {
             return Promise.resolve(jwt.decode(token))
         } catch (err) {
-            return Promise.reject(new RepositoryException('Could not get the token payloadt. ' +
+            return Promise.reject(new RepositoryException('Could not get the token payload. ' +
                 'Please try again later.'))
         }
     }
