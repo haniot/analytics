@@ -1,6 +1,6 @@
 import Mongoose, { Schema } from 'mongoose'
 
-interface IOdontologicEvaluation extends Mongoose.Document {
+interface IData extends Mongoose.Document {
 }
 
 const dataSchema = new Mongoose.Schema({
@@ -39,4 +39,4 @@ const dataSchema = new Mongoose.Schema({
 )
 
 export const DataRepoModel =
-    Mongoose.model<IOdontologicEvaluation>('Data', dataSchema, 'data')
+    Mongoose.model<IData>('Data', dataSchema, 'data')

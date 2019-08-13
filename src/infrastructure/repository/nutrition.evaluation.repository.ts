@@ -26,12 +26,25 @@ export class NutritionEvaluationRepository extends BaseRepository<NutritionEvalu
         return new Promise<NutritionEvaluation>((resolve, reject) => {
             return this.Model.findOneAndUpdate(
                 { _id: evaluationId },
-                { $set: { 'counseling.definitive': counseling.toJSON(), 'status': NutritionEvaluationStatusTypes.COMPLETE } },
+                {
+                    $set: {
+                        'counseling.definitive': counseling.toJSON(),
+                        'status': NutritionEvaluationStatusTypes.COMPLETE
+                    }
+                },
                 { new: true })
                 .then(result => {
                     if (!result) return resolve(undefined)
                     return resolve(this._mapper.transform(result))
                 })
+                .catch(err => reject(this.mongoDBErrorListener(err)))
+        })
+    }
+
+    public removeNutritionaLEvaluationFromPatient(id: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            this.Model.deleteMany({ 'patient.id': id })
+                .then((result) => resolve(!!result))
                 .catch(err => reject(this.mongoDBErrorListener(err)))
         })
     }

@@ -1,5 +1,3 @@
-import { Container } from 'inversify'
-import { DI } from '../../../src/di/di'
 import { Identifier } from '../../../src/di/identifiers'
 import { App } from '../../../src/app'
 import { expect } from 'chai'
@@ -8,10 +6,10 @@ import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
 // import { ObjectId } from 'bson'
 import { Strings } from '../../../src/utils/strings'
 import { DataRepoModel } from '../../../src/infrastructure/database/schema/data.schema'
+import { DIContainer } from '../../../src/di/di'
 
-const container: Container = DI.getInstance().getContainer()
-const dbConnection: IConnectionDB = container.get(Identifier.MONGODB_CONNECTION)
-const app: App = container.get(Identifier.APP)
+const dbConnection: IConnectionDB = DIContainer.get(Identifier.MONGODB_CONNECTION)
+const app: App = DIContainer.get(Identifier.APP)
 const request = require('supertest')(app.getExpress())
 
 describe('Routes: PilotStudiesData', () => {

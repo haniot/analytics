@@ -56,41 +56,18 @@ export class DataService implements IDataService {
         return this._dataRepo.count(query)
     }
 
-    public async requestData(pilotId: string, item: DataRequestParameters): Promise<any> {
+    public requestData(pilotId: string, item: DataRequestParameters, token: string): Promise<any> {
         try {
             ObjectIdValidator.validate(pilotId)
             if (!item.data_types || !item.data_types.length) {
                 throw new ValidationException('You must select at least one data type to request data from a pilot study.')
             }
-
-            /**
-             * Generate a task for request the data object by communication channel
-             * Before get the necessary data, generate the data object and submit it to external service (AWS)
-             * After that, save the information in database.
-             *
-             */
-
-            /**
-             * For now, a mock is being generated with the values referring to the data request.
-             */
-
-            const data: Data = new Data().fromJSON({
-                total_patients: item.patients && item.patients.length ? item.patients.length : 1,
-                file_csv: `ps-${pilotId}-${new Date().getTime()}.csv`,
-                file_xls: `ps-${pilotId}-${new Date().getTime()}.xls`,
-                pilotstudy_id: pilotId,
-                patients: item.patients ? item.patients : undefined,
-                data_types: item.data_types ? item.data_types : undefined
-            })
-            await this.add(data)
+            this._dataRepo.generateData(pilotId, item, token)
         } catch (err) {
             return Promise.reject(err)
         }
         const estimate = new Date()
         estimate.setMinutes(estimate.getMinutes() + 5) // Five minutes estimated to generate data.
-        return Promise.resolve({
-            status: 'pending',
-            completion_estimate: estimate
-        })
+        return Promise.resolve({ status: 'pending', completion_estimate: estimate })
     }
 }

@@ -24,6 +24,9 @@ export abstract class Default {
     public static readonly MONGODB_CON_RETRY_COUNT: number = 0 // infinite
     public static readonly MONGODB_CON_RETRY_INTERVAL: number = 1000 // 1s
 
+    // RabbitMQ
+    public static readonly RABBITMQ_URI: string = 'amqp://guest:guest@127.0.0.1:5672'
+
     // Log
     public static readonly LOG_DIR: string = 'logs'
 
@@ -32,4 +35,7 @@ export abstract class Default {
     public static readonly SSL_KEY_PATH: string = '.certs/server.key'
     public static readonly SSL_CERT_PATH: string = '.certs/server.crt'
     public static readonly HOST_WHITELIST: Array<string> = ['*']
+
+    // Dashboard Host
+    public static readonly DASHBOARD_HOST: string = 'https://localhost:443'
 }

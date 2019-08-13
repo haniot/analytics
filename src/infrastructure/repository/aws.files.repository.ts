@@ -28,8 +28,7 @@ export class AwsFilesRepository implements IEvaluationFilesManagerRepository<Eva
 
             this.sdk.upload(params, (err, data) => {
                 if (err) return reject({
-                    message: 'Could not save odontologic evaluation file. Please try again later....',
-                    description: err.message ? err.message : ''
+                    message: 'Could not save data file. Please try again later....'
                 })
                 return resolve(data.Location)
             })
@@ -46,8 +45,7 @@ export class AwsFilesRepository implements IEvaluationFilesManagerRepository<Eva
 
             this.sdk.deleteObject(params, (err, data) => {
                 if (err) return reject({
-                    message: 'Could not delete odontologic evaluation file. Please try again later....',
-                    description: err.message ? err.message : ''
+                    message: 'Could not delete data file. Please try again later....'
                 })
                 return resolve(true)
             })

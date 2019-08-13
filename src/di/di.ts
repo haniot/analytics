@@ -44,30 +44,29 @@ import { NutritionCounselingRepository } from '../infrastructure/repository/nutr
 import { NutritionCounseling } from '../application/domain/model/nutrition.counseling'
 // tslint:disable-next-line:max-line-length
 import { PatientsNutritionalEvaluationsCounselingsController } from '../ui/controllers/patients.nutritional.evaluations.counselings.controller'
+import { ConnectionFactoryRabbitMQ } from '../infrastructure/eventbus/rabbitmq/connection.factory.rabbitmq'
+import { PublishEventBusTask } from '../background/task/publish.event.bus.task'
+import { IBackgroundTask } from '../application/port/background.task.interface'
+import { EventBusRabbitMQ } from '../infrastructure/eventbus/rabbitmq/eventbus.rabbitmq'
+import { IntegrationEventRepoModel } from '../infrastructure/database/schema/integration.event.schema'
+import { ConnectionRabbitMQ } from '../infrastructure/eventbus/rabbitmq/connection.rabbitmq'
+import { IConnectionEventBus } from '../infrastructure/port/connection.event.bus.interface'
+import { IEventBus } from '../infrastructure/port/event.bus.interface'
+import { IntegrationEventRepository } from '../infrastructure/repository/integration.event.repository'
+import { IIntegrationEventRepository } from '../application/port/integration.event.repository.interface'
+import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
 
-export class DI {
-    private static instance: DI
-    private readonly container: Container
+export class IoC {
+    private readonly _container: Container
 
     /**
      * Creates an instance of DI.
      *
      * @private
      */
-    private constructor() {
-        this.container = new Container()
+    constructor() {
+        this._container = new Container()
         this.initDependencies()
-    }
-
-    /**
-     * Recover single instance of class.
-     *
-     * @static
-     * @return {App}
-     */
-    public static getInstance(): DI {
-        if (!this.instance) this.instance = new DI()
-        return this.instance
     }
 
     /**
@@ -75,8 +74,8 @@ export class DI {
      *
      * @returns {Container}
      */
-    public getContainer(): Container {
-        return this.container
+    get container(): Container {
+        return this._container
     }
 
     /**
@@ -86,70 +85,90 @@ export class DI {
      * @return void
      */
     private initDependencies(): void {
-        this.container.bind(Identifier.APP).to(App).inSingletonScope()
+        this._container.bind(Identifier.APP).to(App).inSingletonScope()
 
         // Controllers
-        this.container.bind<HomeController>(Identifier.HOME_CONTROLLER)
+        this._container.bind<HomeController>(Identifier.HOME_CONTROLLER)
             .to(HomeController).inSingletonScope()
-        this.container.bind<PilotStudiesNutritionalEvaluationsController>(Identifier.PILOT_STUDIES_NUTRITIONAL_EVALUATIONS_CONTROLLER)
+        this._container.bind<PilotStudiesNutritionalEvaluationsController>(Identifier.PILOT_STUDIES_NUTRITIONAL_EVALUATIONS_CONTROLLER)
             .to(PilotStudiesNutritionalEvaluationsController).inSingletonScope()
-        this.container.bind<HealthNutritionalEvaluationController>(Identifier.HEALTH_NUTRITIONAL_EVALUATIONS_CONTROLLER)
+        this._container.bind<HealthNutritionalEvaluationController>(Identifier.HEALTH_NUTRITIONAL_EVALUATIONS_CONTROLLER)
             .to(HealthNutritionalEvaluationController).inSingletonScope()
-        this.container.bind<PatientsNutritionalEvaluationsController>(Identifier.PATIENTS_NUTRITIONAL_EVALUATIONS_CONTROLLER)
+        this._container.bind<PatientsNutritionalEvaluationsController>(Identifier.PATIENTS_NUTRITIONAL_EVALUATIONS_CONTROLLER)
             .to(PatientsNutritionalEvaluationsController).inSingletonScope()
-        this.container.bind<PatientsNutritionalEvaluationsCounselingsController>
+        this._container.bind<PatientsNutritionalEvaluationsCounselingsController>
         (Identifier.PATIENTS_NUTRITIONAL_EVALUATIONS_COUNSELINGS_CONTROLLER)
             .to(PatientsNutritionalEvaluationsCounselingsController).inSingletonScope()
-        this.container.bind<PilotStudiesDataController>(Identifier.PILOT_STUDIES_DATA_CONTROLLER)
+        this._container.bind<PilotStudiesDataController>(Identifier.PILOT_STUDIES_DATA_CONTROLLER)
             .to(PilotStudiesDataController).inSingletonScope()
 
         // Services
-        this.container.bind<INutritionEvaluationService>
+        this._container.bind<INutritionEvaluationService>
         (Identifier.NUTRITION_EVALUATION_SERVICE).to(NutritionEvaluationService).inSingletonScope()
-        this.container.bind<IDataService>
+        this._container.bind<IDataService>
         (Identifier.DATA_SERVICE).to(DataService).inSingletonScope()
 
         // Repositories
-        this.container.bind<INutritionEvaluationRepository>(Identifier.NUTRITION_EVALUATION_REPOSITORY)
+        this._container.bind<INutritionEvaluationRepository>(Identifier.NUTRITION_EVALUATION_REPOSITORY)
             .to(NutritionEvaluationRepository).inSingletonScope()
-        this.container.bind<IDataRepository>(Identifier.DATA_REPOSITORY)
+        this._container.bind<IDataRepository>(Identifier.DATA_REPOSITORY)
             .to(DataRepository).inSingletonScope()
-        this.container.bind<IEvaluationFilesManagerRepository<EvaluationFile>>(Identifier.AWS_FILES_REPOSITORY)
+        this._container.bind<IEvaluationFilesManagerRepository<EvaluationFile>>(Identifier.AWS_FILES_REPOSITORY)
             .to(AwsFilesRepository).inSingletonScope()
-        this.container.bind<IFileRepository<BloodPressurePerAgeHeight>>(Identifier.BLOOD_PRESSURE_PER_AGE_HEIGHT_REPOSITORY)
+        this._container.bind<IFileRepository<BloodPressurePerAgeHeight>>(Identifier.BLOOD_PRESSURE_PER_AGE_HEIGHT_REPOSITORY)
             .to(BloodPressurePerAgeHeightRepository).inSingletonScope()
-        this.container.bind<IFileRepository<BloodPressurePerSysDias>>(Identifier.BLOOD_PRESSURE_PER_SYS_DIAS_REPOSITORY)
+        this._container.bind<IFileRepository<BloodPressurePerSysDias>>(Identifier.BLOOD_PRESSURE_PER_SYS_DIAS_REPOSITORY)
             .to(BloodPressurePerSysDiasRepository).inSingletonScope()
-        this.container.bind<IFileRepository<BmiPerAge>>(Identifier.BMI_PER_AGE_REPOSITORY)
+        this._container.bind<IFileRepository<BmiPerAge>>(Identifier.BMI_PER_AGE_REPOSITORY)
             .to(BmiPerAgeRepository).inSingletonScope()
-        this.container.bind<IFileRepository<NutritionCounseling>>(Identifier.NUTRITION_COUNSELING_REPOSITORY)
+        this._container.bind<IFileRepository<NutritionCounseling>>(Identifier.NUTRITION_COUNSELING_REPOSITORY)
             .to(NutritionCounselingRepository).inSingletonScope()
+        this._container.bind<IIntegrationEventRepository>(Identifier.INTEGRATION_EVENT_REPOSITORY)
+            .to(IntegrationEventRepository).inSingletonScope()
 
         // Models
-        this.container.bind(Identifier.NUTRITION_EVALUATION_REPO_MODEL).toConstantValue(NutritionEvaluationRepoModel)
-        this.container.bind(Identifier.DATA_REPO_MODEL).toConstantValue(DataRepoModel)
+        this._container.bind(Identifier.NUTRITION_EVALUATION_REPO_MODEL).toConstantValue(NutritionEvaluationRepoModel)
+        this._container.bind(Identifier.DATA_REPO_MODEL).toConstantValue(DataRepoModel)
+        this._container.bind(Identifier.INTEGRATION_EVENT_REPO_MODEL).toConstantValue(IntegrationEventRepoModel)
 
         // Mappers
-        this.container
+        this._container
             .bind<IEntityMapper<NutritionEvaluation, NutritionEvaluationEntity>>(Identifier.NUTRITION_EVALUATION_ENTITY_MAPPER)
             .to(NutritionEvaluationEntityMapper).inSingletonScope()
-        this.container.bind<IEntityMapper<Data, DataEntity>>(Identifier.DATA_ENTITY_MAPPER)
+        this._container.bind<IEntityMapper<Data, DataEntity>>(Identifier.DATA_ENTITY_MAPPER)
             .to(DataEntityMapper).inSingletonScope()
 
         // Background Services
-        this.container
+        this._container
             .bind<IConnectionFactory>(Identifier.MONGODB_CONNECTION_FACTORY)
             .to(ConnectionFactoryMongodb).inSingletonScope()
-        this.container
+        this._container
             .bind<IConnectionDB>(Identifier.MONGODB_CONNECTION)
             .to(ConnectionMongodb).inSingletonScope()
-        this.container
+        this._container
+            .bind<IConnectionFactory>(Identifier.RABBITMQ_CONNECTION_FACTORY)
+            .to(ConnectionFactoryRabbitMQ).inSingletonScope()
+        this._container
+            .bind<IConnectionEventBus>(Identifier.RABBITMQ_CONNECTION)
+            .to(ConnectionRabbitMQ)
+        this._container
+            .bind<IEventBus>(Identifier.RABBITMQ_EVENT_BUS)
+            .to(EventBusRabbitMQ).inSingletonScope()
+        this._container
             .bind(Identifier.BACKGROUND_SERVICE)
             .to(BackgroundService).inSingletonScope()
 
         // Tasks
+        this._container
+            .bind<IBackgroundTask>(Identifier.PUBLISH_EVENT_BUS_TASK)
+            .to(PublishEventBusTask).inSingletonScope()
+        this._container
+            .bind<IBackgroundTask>(Identifier.SUBSCRIBE_EVENT_BUS_TASK)
+            .to(SubscribeEventBusTask).inSingletonScope()
 
         // Log
-        this.container.bind<ILogger>(Identifier.LOGGER).to(CustomLogger).inSingletonScope()
+        this._container.bind<ILogger>(Identifier.LOGGER).to(CustomLogger).inSingletonScope()
     }
 }
+
+export const DIContainer = new IoC().container

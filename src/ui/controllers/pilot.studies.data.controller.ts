@@ -20,7 +20,8 @@ export class PilotStudiesDataController {
     public async requestPilotStudyData(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
             const result: Data = await this._service.requestData(req.params.pilotstudy_id,
-                new DataRequestParameters().fromJSON(req.body))
+                new DataRequestParameters().fromJSON(req.body),
+                req.headers.authorization ? req.headers.authorization.split(' ')[1] : '')
             return res.status(HttpStatus.ACCEPTED).send(result)
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)

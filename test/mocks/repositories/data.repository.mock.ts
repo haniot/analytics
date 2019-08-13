@@ -2,6 +2,7 @@ import { IDataRepository } from '../../../src/application/port/data.repository.i
 import { IQuery } from '../../../src/application/port/query.interface'
 import { Data } from '../../../src/application/domain/model/data'
 import { DefaultEntityMock } from '../models/default.entity.mock'
+import { DataRequestParameters } from '../../../src/application/domain/model/data.request.parameters'
 
 const data: Data = new Data().fromJSON(DefaultEntityMock.DATA)
 
@@ -28,6 +29,14 @@ export class DataRepositoryMock implements IDataRepository {
 
     public update(item: Data): Promise<Data> {
         return Promise.resolve(data)
+    }
+
+    public removeDataFromPilotStudy(id: string): Promise<boolean> {
+        return Promise.resolve(true)
+    }
+
+    public generateData(pilotId: string, dataRequest: DataRequestParameters, token: string): Promise<void> {
+        return Promise.resolve()
     }
 
 }
