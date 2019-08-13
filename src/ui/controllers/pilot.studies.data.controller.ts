@@ -33,7 +33,7 @@ export class PilotStudiesDataController {
     @httpGet('/')
     public async getAllEvaluationDataFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
-            const query: Query = new Query().fromJSON({ ...req.query, filters: {} })
+            const query: Query = new Query().fromJSON(req.query)
             query.addFilter({ pilotstudy_id: req.params.pilotstudy_id })
             const result: Array<Data> = await this._service.getAll(query)
             const count: number =

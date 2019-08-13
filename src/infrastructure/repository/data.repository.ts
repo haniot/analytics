@@ -552,7 +552,6 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
             const parser = new Parser(opts)
             const csv = parser.parse(evaluation)
             return Promise.resolve(Buffer.from(csv))
-            // fs.writeFileSync('./file.csv', csv)
         } catch (err) {
             return Promise.reject(err)
         }
@@ -562,7 +561,6 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
         try {
             const xls = json2xls(evaluation)
             return Promise.resolve(Buffer.from(xls, 'binary'))
-            // fs.writeFileSync('./file.xls', xls, 'binary')
         } catch (err) {
             return Promise.reject(err)
         }
