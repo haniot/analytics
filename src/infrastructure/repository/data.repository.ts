@@ -131,7 +131,7 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
                 ],
                 pilot_study: pilotStudy.name,
                 request_date: data.created_at,
-                action_url: process.env.DASHBOARD_HOST || Default.DASHBOARD_HOST,
+                action_url: `${process.env.DASHBOARD_HOST || Default.DASHBOARD_HOST}/app/pilotstudies/${pilotStudy.id}/details`,
                 lang: pilotStudy.language
             })
             return Promise.resolve(mail)
