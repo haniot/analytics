@@ -12,7 +12,7 @@ import { EventBusException } from '../../../application/domain/exception/eventbu
 export class EventBusRabbitMQ implements IEventBus, IDisposable {
     private readonly RABBITMQ_QUEUE_NAME: string = 'analytics'
     private readonly RABBITMQ_RPC_QUEUE_NAME: string = 'analytics.rpc'
-    private readonly RABBITMQ_RPC_EXCHANGE_NAME: string = 'analytics.service'
+    private readonly RABBITMQ_RPC_EXCHANGE_NAME: string = 'analytics.rpc'
     private _receiveFromYourself: boolean
     private _event_handlers: Map<string, IIntegrationEventHandler<IntegrationEvent<any>>>
     private _rpcServer!: any
