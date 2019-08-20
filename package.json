@@ -1,7 +1,7 @@
 {
   "name": "haniot-analytics-service",
-  "version": "1.0.0",
-  "description": "Microservice responsible to perform the analysis of nutritional data in order to generate nutritional assessments.",
+  "version": "2.0.0",
+  "description": "Microservice used to perform health data analysis and provide simple results upon analysis and a possible intervention plan.",
   "main": "dist/server.js",
   "scripts": {
     "build": "gulp build",
@@ -9,16 +9,20 @@
     "start": "node dist/server.js",
     "start:dev": "gulp dev",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "test": "nyc --clean --all --reporter=text mocha --opts test/mocha.opts test/**/*.spec.ts",
-    "test:integration": "mocha --opts test/mocha.opts test/integration/**/*.spec.ts",
-    "test:unit": "mocha --opts test/mocha.opts test/unit/**/*.spec.ts",
+    "test": "nyc --clean --reporter=text-summary mocha --opts test/mocha.opts test/**/*.spec.ts",
+    "test:unit": "nyc --clean --all --reporter=text-summary mocha --opts test/mocha.opts test/unit/**/*.spec.ts",
+    "test:integration": "nyc --clean --all --reporter=text-summary mocha --opts test/mocha.opts test/integration/**/*.spec.ts",
     "test:single": "mocha --opts test/mocha.opts",
     "test:cov": "nyc --clean --all --reporter=html --reporter=text mocha --opts test/mocha.opts test/**/*.spec.ts"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nutes-uepb/haniot-analytics-service.git"
+    "url": "https://github.com/haniot/analytics.git"
   },
+  "bugs": {
+    "url": "https://github.com/haniot/analytics/issues"
+  },
+  "homepage": "https://github.com/haniot/analytics#readme",
   "keywords": [
     "microservice",
     "nodejs",
@@ -73,7 +77,7 @@
     "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.7",
     "@types/express": "^4.16.1",
-    "@types/helmet": "^0.0.43",
+    "@types/helmet": "^0.0.44",
     "@types/mocha": "^5.2.6",
     "@types/mongoose": "^5.5.0",
     "@types/morgan": "^1.7.35",
