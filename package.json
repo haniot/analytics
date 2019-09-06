@@ -52,7 +52,7 @@
     "all": true
   },
   "dependencies": {
-    "amqp-client-node": "^1.0.3",
+    "amqp-client-node": "^1.0.7",
     "aws-sdk": "^2.467.0",
     "body-parser": "^1.19.0",
     "csvtojson": "^2.0.8",
@@ -95,6 +95,6 @@
     "ts-node": "^8.2.0",
     "tslint": "^5.17.0",
     "typedoc": "^0.15.0",
-    "typescript": "^3.5.1"
+    "typescript": "3.5.1"
   }
 }
