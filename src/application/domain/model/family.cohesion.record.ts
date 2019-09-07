@@ -3,19 +3,20 @@ import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { QuestionnaireTypes } from '../utils/questionnaire.types'
 import { JsonUtils } from '../utils/json.utils'
+import { FamilyCohesionFrequencyTypes } from '../utils/family.cohesion.frequency.types'
 
 export class FamilyCohesionRecord extends QuestionnaireRecord
     implements IJSONSerializable, IJSONDeserializable<FamilyCohesionRecord> {
-    private _family_mutual_aid_freq?: string
-    private _friendship_approval_freq?: string
-    private _family_only_task_freq?: string
-    private _family_only_preference_freq?: string
-    private _free_time_together_freq?: string
-    private _family_proximity_perception_freq?: string
-    private _all_family_tasks_freq?: string
-    private _family_tasks_opportunity_freq?: string
-    private _family_decision_support_freq?: string
-    private _family_union_relevance_freq?: string
+    private _family_mutual_aid_freq?: FamilyCohesionFrequencyTypes
+    private _friendship_approval_freq?: FamilyCohesionFrequencyTypes
+    private _family_only_task_freq?: FamilyCohesionFrequencyTypes
+    private _family_only_preference_freq?: FamilyCohesionFrequencyTypes
+    private _free_time_together_freq?: FamilyCohesionFrequencyTypes
+    private _family_proximity_perception_freq?: FamilyCohesionFrequencyTypes
+    private _all_family_tasks_freq?: FamilyCohesionFrequencyTypes
+    private _family_tasks_opportunity_freq?: FamilyCohesionFrequencyTypes
+    private _family_decision_support_freq?: FamilyCohesionFrequencyTypes
+    private _family_union_relevance_freq?: FamilyCohesionFrequencyTypes
     private _family_cohesion_result?: number
 
     constructor() {
@@ -23,83 +24,83 @@ export class FamilyCohesionRecord extends QuestionnaireRecord
         super.type = QuestionnaireTypes.FAMILY_COHESION_RECORD
     }
 
-    get family_mutual_aid_freq(): string | undefined {
+    get family_mutual_aid_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._family_mutual_aid_freq
     }
 
-    set family_mutual_aid_freq(value: string | undefined) {
+    set family_mutual_aid_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._family_mutual_aid_freq = value
     }
 
-    get friendship_approval_freq(): string | undefined {
+    get friendship_approval_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._friendship_approval_freq
     }
 
-    set friendship_approval_freq(value: string | undefined) {
+    set friendship_approval_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._friendship_approval_freq = value
     }
 
-    get family_only_task_freq(): string | undefined {
+    get family_only_task_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._family_only_task_freq
     }
 
-    set family_only_task_freq(value: string | undefined) {
+    set family_only_task_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._family_only_task_freq = value
     }
 
-    get family_only_preference_freq(): string | undefined {
+    get family_only_preference_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._family_only_preference_freq
     }
 
-    set family_only_preference_freq(value: string | undefined) {
+    set family_only_preference_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._family_only_preference_freq = value
     }
 
-    get free_time_together_freq(): string | undefined {
+    get free_time_together_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._free_time_together_freq
     }
 
-    set free_time_together_freq(value: string | undefined) {
+    set free_time_together_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._free_time_together_freq = value
     }
 
-    get family_proximity_perception_freq(): string | undefined {
+    get family_proximity_perception_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._family_proximity_perception_freq
     }
 
-    set family_proximity_perception_freq(value: string | undefined) {
+    set family_proximity_perception_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._family_proximity_perception_freq = value
     }
 
-    get all_family_tasks_freq(): string | undefined {
+    get all_family_tasks_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._all_family_tasks_freq
     }
 
-    set all_family_tasks_freq(value: string | undefined) {
+    set all_family_tasks_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._all_family_tasks_freq = value
     }
 
-    get family_tasks_opportunity_freq(): string | undefined {
+    get family_tasks_opportunity_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._family_tasks_opportunity_freq
     }
 
-    set family_tasks_opportunity_freq(value: string | undefined) {
+    set family_tasks_opportunity_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._family_tasks_opportunity_freq = value
     }
 
-    get family_decision_support_freq(): string | undefined {
+    get family_decision_support_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._family_decision_support_freq
     }
 
-    set family_decision_support_freq(value: string | undefined) {
+    set family_decision_support_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._family_decision_support_freq = value
     }
 
-    get family_union_relevance_freq(): string | undefined {
+    get family_union_relevance_freq(): FamilyCohesionFrequencyTypes | undefined {
         return this._family_union_relevance_freq
     }
 
-    set family_union_relevance_freq(value: string | undefined) {
+    set family_union_relevance_freq(value: FamilyCohesionFrequencyTypes | undefined) {
         this._family_union_relevance_freq = value
     }
 

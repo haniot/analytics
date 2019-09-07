@@ -1,10 +1,11 @@
 import { JsonUtils } from '../utils/json.utils'
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
+import { MeasurementTypes } from '../utils/measurement.types'
 
 export class Measurement implements IJSONSerializable, IJSONDeserializable<Measurement> {
     private _unit?: string
-    private _type?: string
+    private _type?: MeasurementTypes
     private _device_id?: string
 
     get unit(): string | undefined {
@@ -15,11 +16,11 @@ export class Measurement implements IJSONSerializable, IJSONDeserializable<Measu
         this._unit = value
     }
 
-    get type(): string | undefined {
+    get type(): MeasurementTypes | undefined {
         return this._type
     }
 
-    set type(value: string | undefined) {
+    set type(value: MeasurementTypes | undefined) {
         this._type = value
     }
 

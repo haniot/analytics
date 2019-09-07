@@ -3,7 +3,7 @@ import { Strings } from '../../../utils/strings'
 import { OneDayFeedingAmountTypes } from '../utils/one.day.feeding.amount.types'
 
 export class OneDayFeedingAmountTypesValidator {
-    public static validate(value: string): void | ValidationException {
+    public static validate(value: OneDayFeedingAmountTypes): void | ValidationException {
         if (!Object.values(OneDayFeedingAmountTypes).includes(value)) {
             throw new ValidationException(
                 Strings.ENUM_VALIDATOR.NOT_MAPPED.concat(`daily_water_glasses: ${value}`),

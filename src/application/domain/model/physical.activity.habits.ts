@@ -3,11 +3,12 @@ import { QuestionnaireTypes } from '../utils/questionnaire.types'
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { QuestionnaireRecord } from './questionnaire.record'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
+import { SchoolActivityFrequencyTypes } from '../utils/school.activity.frequency.types'
 
 export class PhysicalActivityHabits
     extends QuestionnaireRecord implements IJSONSerializable, IJSONDeserializable<PhysicalActivityHabits> {
 
-    private _school_activity_freq?: string
+    private _school_activity_freq?: SchoolActivityFrequencyTypes
     private _weekly_activities?: Array<string>
 
     constructor() {
@@ -15,11 +16,11 @@ export class PhysicalActivityHabits
         super.type = QuestionnaireTypes.PHYSICAL_ACTIVITY_HABITS
     }
 
-    get school_activity_freq(): string | undefined {
+    get school_activity_freq(): SchoolActivityFrequencyTypes | undefined {
         return this._school_activity_freq
     }
 
-    set school_activity_freq(value: string | undefined) {
+    set school_activity_freq(value: SchoolActivityFrequencyTypes | undefined) {
         this._school_activity_freq = value
     }
 

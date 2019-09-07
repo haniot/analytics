@@ -3,7 +3,7 @@ import { Strings } from '../../../utils/strings'
 import { BmiPerAgeClassificationTypes } from '../utils/bmi.per.age.classification.types'
 
 export class BmiPerAgeClassificationTypesValidator {
-    public static validate(value: string): void | ValidationException {
+    public static validate(value: BmiPerAgeClassificationTypes): void | ValidationException {
         if (!Object.values(BmiPerAgeClassificationTypes).includes(value)) {
             throw new ValidationException(
                 Strings.ENUM_VALIDATOR.NOT_MAPPED.concat(`nutritional_status.classification: ${value}`),
