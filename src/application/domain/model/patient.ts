@@ -2,10 +2,11 @@ import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { Entity } from './entity'
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { JsonUtils } from '../utils/json.utils'
+import { GenderTypes } from '../utils/gender.types'
 
 export class Patient extends Entity implements IJSONSerializable, IJSONDeserializable<Patient> {
     private _name?: string
-    private _gender?: string
+    private _gender?: GenderTypes
     private _birth_date?: string
 
     constructor() {
@@ -20,11 +21,11 @@ export class Patient extends Entity implements IJSONSerializable, IJSONDeseriali
         this._name = value
     }
 
-    get gender(): string | undefined {
+    get gender(): GenderTypes | undefined {
         return this._gender
     }
 
-    set gender(value: string | undefined) {
+    set gender(value: GenderTypes | undefined) {
         this._gender = value
     }
 

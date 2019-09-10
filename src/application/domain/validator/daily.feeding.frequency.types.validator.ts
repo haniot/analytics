@@ -3,7 +3,7 @@ import { Strings } from '../../../utils/strings'
 import { DailyFeedingFrequencyTypes } from '../utils/daily.feeding.frequency.types'
 
 export class DailyFeedingFrequencyTypesValidator {
-    public static validate(value: string): void | ValidationException {
+    public static validate(value: DailyFeedingFrequencyTypes): void | ValidationException {
         if (!Object.values(DailyFeedingFrequencyTypes).includes(value)) {
             throw new ValidationException(
                 Strings.ENUM_VALIDATOR.NOT_MAPPED.concat(`breakfast_daily_frequency: ${value}`),

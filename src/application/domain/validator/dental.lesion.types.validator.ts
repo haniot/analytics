@@ -3,7 +3,7 @@ import { Strings } from '../../../utils/strings'
 import { DentalLesionTypes } from '../utils/dental.lesion.types'
 
 export class DentalLesionTypesValidator {
-    public static validate(value: string): void | ValidationException {
+    public static validate(value: DentalLesionTypes): void | ValidationException {
         if (!Object.values(DentalLesionTypes).includes(value)) {
             throw new ValidationException(
                 Strings.ENUM_VALIDATOR.NOT_MAPPED.concat(`lesion_type: ${value}`),

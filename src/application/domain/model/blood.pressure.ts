@@ -1,13 +1,16 @@
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { JsonUtils } from '../utils/json.utils'
+import { BloodPressureSystolicPercentileTypes } from '../utils/blood.pressure.systolic.percentile.types'
+import { BloodPressureDiastolicPercentileTypes } from '../utils/blood.pressure.diastolic.percentile.types'
+import { BloodPressurePercentileClassificationTypes } from '../utils/blood.pressure.percentile.classification.types'
 
 export class BloodPressure implements IJSONSerializable, IJSONDeserializable<BloodPressure> {
     private _systolic?: number
     private _diastolic?: number
-    private _systolic_percentile?: string
-    private _diastolic_percentile?: string
-    private _classification?: string
+    private _systolic_percentile?: BloodPressureSystolicPercentileTypes
+    private _diastolic_percentile?: BloodPressureDiastolicPercentileTypes
+    private _classification?: BloodPressurePercentileClassificationTypes
 
     get systolic(): number | undefined {
         return this._systolic
@@ -25,27 +28,27 @@ export class BloodPressure implements IJSONSerializable, IJSONDeserializable<Blo
         this._diastolic = value
     }
 
-    get systolic_percentile(): string | undefined {
+    get systolic_percentile(): BloodPressureSystolicPercentileTypes | undefined {
         return this._systolic_percentile
     }
 
-    set systolic_percentile(value: string | undefined) {
+    set systolic_percentile(value: BloodPressureSystolicPercentileTypes | undefined) {
         this._systolic_percentile = value
     }
 
-    get diastolic_percentile(): string | undefined {
+    get diastolic_percentile(): BloodPressureDiastolicPercentileTypes | undefined {
         return this._diastolic_percentile
     }
 
-    set diastolic_percentile(value: string | undefined) {
+    set diastolic_percentile(value: BloodPressureDiastolicPercentileTypes | undefined) {
         this._diastolic_percentile = value
     }
 
-    get classification(): string | undefined {
+    get classification(): BloodPressurePercentileClassificationTypes | undefined {
         return this._classification
     }
 
-    set classification(value: string | undefined) {
+    set classification(value: BloodPressurePercentileClassificationTypes | undefined) {
         this._classification = value
     }
 

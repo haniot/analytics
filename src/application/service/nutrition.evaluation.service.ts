@@ -9,7 +9,6 @@ import { NutritionEvaluationRequest } from '../domain/model/nutrition.evaluation
 import { CreateNutritionEvaluationValidator } from '../domain/validator/create.nutrition.evaluation.validator'
 import { NutritionCouncil } from '../domain/model/nutrition.council'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
-import { NutritionEvaluationStatusTypes } from '../domain/utils/nutrition.evaluation.status.types'
 import { OverweightClassificationTypes } from '../domain/utils/overweight.classification.types'
 import { BmiPerAgeClassificationTypes } from '../domain/utils/bmi.per.age.classification.types'
 import { BmiPerAge } from '../domain/model/bmi.per.age'
@@ -35,6 +34,8 @@ import { NutritionEvaluationRequestValidator } from '../domain/validator/nutriti
 import { TaylorCutPointValues } from '../domain/utils/taylor.cut.point.values'
 import { TaylorCutPointClassificationTypes } from '../domain/utils/taylor.cut.point.classification.types'
 import { TaylorCutPoint } from '../domain/model/taylor.cut.point'
+import { EvaluationStatusTypes } from '../domain/utils/evaluation.status.types'
+import { MealTypes } from '../domain/utils/meal.types'
 
 @injectable()
 export class NutritionEvaluationService implements INutritionEvaluationService {
@@ -139,7 +140,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             const info = await this.getNutritionalEvaluationInformation(item)
 
             // Set General Information
-            result.status = NutritionEvaluationStatusTypes.INCOMPLETE
+            result.status = EvaluationStatusTypes.INCOMPLETE
             result.patient = item.patient
             result.pilotstudy_id = info.pilotstudy_id
             result.health_professional_id = info.health_professional_id
@@ -329,7 +330,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
     }
 
     // Blood Glucose Functions
-    private getBloodGlucose(value: number, meal: string): BloodGlucose {
+    private getBloodGlucose(value: number, meal: MealTypes): BloodGlucose {
         const result: BloodGlucose = new BloodGlucose()
         result.value = value
         result.meal = meal
@@ -337,7 +338,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         return result
     }
 
-    private getBloodGlucoseClassification(value: number, meal: string): string {
+    private getBloodGlucoseClassification(value: number, meal: string): BloodGlucoseClassificationTypes {
         const bloodGlucoseLevels = BloodGlucoseZones.zones[meal]
         if (!bloodGlucoseLevels) return BloodGlucoseClassificationTypes.UNDEFINED
         if (bloodGlucoseLevels.good.min < value && value < bloodGlucoseLevels.good.max) {
@@ -369,7 +370,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
             result.diastolic_percentile = ageHeightPercentile.diastolic_percentile
 
             if (!ageHeightPercentile.percentile) {
-                result.classification = 'undefined'
+                result.classification = BloodPressurePercentileClassificationTypes.UNDEFINED
                 return Promise.resolve(result)
             }
             result.classification = this.getBloodPressurePercentileClassification(ageHeightPercentile)
@@ -485,7 +486,7 @@ export class NutritionEvaluationService implements INutritionEvaluationService {
         }
     }
 
-    private getBloodPressurePercentileClassification(ageHeightPercentile: any): string {
+    private getBloodPressurePercentileClassification(ageHeightPercentile: any): BloodPressurePercentileClassificationTypes {
         if (ageHeightPercentile.percentile! < 90) return BloodPressurePercentileClassificationTypes.NORMAL
         else if (90 <= ageHeightPercentile.percentile! && ageHeightPercentile.percentile! < 95)
             return BloodPressurePercentileClassificationTypes.BORDERLINE

@@ -1,24 +1,26 @@
 import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { JsonUtils } from '../utils/json.utils'
+import { DentalLesionTypes } from '../utils/dental.lesion.types'
+import { ToothTypes } from '../utils/tooth.types'
 
 export class ToothLesion implements IJSONSerializable, IJSONDeserializable<ToothLesion> {
-    private _tooth_type?: string
-    private _lesion_type?: string
+    private _tooth_type?: ToothTypes
+    private _lesion_type?: DentalLesionTypes
 
-    get tooth_type(): string | undefined {
+    get tooth_type(): ToothTypes | undefined {
         return this._tooth_type
     }
 
-    set tooth_type(value: string | undefined) {
+    set tooth_type(value: ToothTypes | undefined) {
         this._tooth_type = value
     }
 
-    get lesion_type(): string | undefined {
+    get lesion_type(): DentalLesionTypes | undefined {
         return this._lesion_type
     }
 
-    set lesion_type(value: string | undefined) {
+    set lesion_type(value: DentalLesionTypes | undefined) {
         this._lesion_type = value
     }
 

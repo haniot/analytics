@@ -3,10 +3,11 @@ import { IJSONSerializable } from '../utils/json.serializable.interface'
 import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { JsonUtils } from '../utils/json.utils'
 import { DatetimeValidator } from '../validator/date.time.validator'
+import { EvaluationStatusTypes } from '../utils/evaluation.status.types'
 
 export class Evaluation extends Entity implements IJSONSerializable, IJSONDeserializable<Evaluation> {
     private _type?: string
-    private _status?: string
+    private _status?: EvaluationStatusTypes
     private _created_at?: Date
     private _pilotstudy_id?: string
     private _health_professional_id?: string
@@ -23,11 +24,11 @@ export class Evaluation extends Entity implements IJSONSerializable, IJSONDeseri
         this._type = value
     }
 
-    get status(): string | undefined {
+    get status(): EvaluationStatusTypes | undefined {
         return this._status
     }
 
-    set status(value: string | undefined) {
+    set status(value: EvaluationStatusTypes | undefined) {
         this._status = value
     }
 

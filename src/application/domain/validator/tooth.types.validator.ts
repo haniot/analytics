@@ -3,7 +3,7 @@ import { Strings } from '../../../utils/strings'
 import { ToothTypes } from '../utils/tooth.types'
 
 export class ToothTypesValidator {
-    public static validate(value: string): void | ValidationException {
+    public static validate(value: ToothTypes): void | ValidationException {
         if (!Object.values(ToothTypes).includes(value)) {
             throw new ValidationException(
                 Strings.ENUM_VALIDATOR.NOT_MAPPED.concat(`tooth_type: ${value}`),
