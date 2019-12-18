@@ -21,6 +21,7 @@ import { Email } from '../../application/domain/model/email'
 import { Default } from '../../utils/default'
 import { EmailPilotStudyDataEvent } from '../../application/integration-event/event/email.pilot.study.data.event'
 import { IntegrationEvent } from '../../application/integration-event/event/integration.event'
+import fs from 'fs'
 
 @injectable()
 export class DataRepository extends BaseRepository<Data, DataEntity> implements IDataRepository {
@@ -46,8 +47,14 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
     }
 
     public async generateData(pilotId: string, dataRequest: DataRequestParameters, token: string): Promise<void> {
+        // To use SSL/TLS, simply mount the uri with the amqps protocol and pass the CA.
+        const rabbitUri = process.env.RABBITMQ_URI || Default.RABBITMQ_URI
+        const rabbitOptions: any = { sslOptions: { ca: [] } }
+        if (rabbitUri.indexOf('amqps') === 0) {
+            rabbitOptions.sslOptions.ca = [fs.readFileSync(process.env.RABBITMQ_CA_PATH || Default.RABBITMQ_CA_PATH)]
+        }
         this._eventBus.connectionRpcClient
-            .open(0, 2000)
+            .open(rabbitUri, rabbitOptions)
             .then(async (conn) => {
                 this._conn = conn
                 this._logger.info('Connection with RPC Client opened successful!')

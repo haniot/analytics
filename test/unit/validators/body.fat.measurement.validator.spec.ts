@@ -46,19 +46,24 @@ describe('Validators: BodyFatMeasurementValidator', () => {
             }
         })
         it('should throw an error for does pass invalid type', () => {
-            measurement.type = 'invalid'
+            const wrongMeasurement: BodyFatMeasurement = new BodyFatMeasurement().fromJSON({
+                value: 20,
+                unit: '%',
+                type: 'invalid',
+                timestamp: '2018-11-17T14:40:00Z',
+                device_id: '5ca790f77aefffa37a17b605'
+            })
             try {
-                BodyFatMeasurementValidator.validate(measurement)
+                BodyFatMeasurementValidator.validate(wrongMeasurement)
             } catch (err) {
                 assert.propertyVal(err, 'message', Strings.ENUM_VALIDATOR.NOT_MAPPED.concat('type: invalid'))
                 assert.propertyVal(err, 'description',
                     Strings.ENUM_VALIDATOR.NOT_MAPPED_DESC.concat(Object.values(MeasurementTypes).join(', ').concat('.')))
-            } finally {
-                measurement.type = DefaultEntityMock.BODY_FAT_MEASUREMENT.type
             }
         })
         it('should throw an error for does not pass timestamp', () => {
             measurement.timestamp = undefined
+            measurement.type = MeasurementTypes.BODY_FAT
             try {
                 BodyFatMeasurementValidator.validate(measurement)
             } catch (err) {

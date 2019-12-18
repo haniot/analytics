@@ -8,6 +8,7 @@ import { Strings } from '../../../src/utils/strings'
 import { NutritionEvaluation } from '../../../src/application/domain/model/nutrition.evaluation'
 import { ObjectId } from 'bson'
 import { DIContainer } from '../../../src/di/di'
+import { Default } from '../../../src/utils/default'
 
 const dbConnection: IConnectionDB = DIContainer.get(Identifier.MONGODB_CONNECTION)
 const app: App = DIContainer.get(Identifier.APP)
@@ -17,7 +18,7 @@ const evaluation: NutritionEvaluation = new NutritionEvaluation().fromJSON(Defau
 describe('Routes:PatientsNutritionalEvaluation', () => {
     before(async () => {
             try {
-                await dbConnection.tryConnect(0, 500)
+                await dbConnection.tryConnect(process.env.MONGODB_URI_TEST || Default.MONGODB_URI_TEST)
                 await deleteAllNutritionalEvaluations()
             } catch (err) {
                 throw new Error('Failure on PatientsNutritionalEvaluation test: ' + err.message)

@@ -8,6 +8,7 @@ import { expect } from 'chai'
 import { ObjectId } from 'bson'
 import { Strings } from '../../../src/utils/strings'
 import { DIContainer } from '../../../src/di/di'
+import { Default } from '../../../src/utils/default'
 
 const dbConnection: IConnectionDB = DIContainer.get(Identifier.MONGODB_CONNECTION)
 const app: App = DIContainer.get(Identifier.APP)
@@ -17,7 +18,7 @@ const evaluation: NutritionEvaluation = new NutritionEvaluation().fromJSON(Defau
 describe('Routes: PatientsNutritionalEvaluationsCounseling', () => {
     before(async () => {
             try {
-                await dbConnection.tryConnect(0, 500)
+                await dbConnection.tryConnect(process.env.MONGODB_URI_TEST || Default.MONGODB_URI_TEST)
                 await deleteAllNutritionalEvaluations()
                 await createNutritionalEvaluation().then(res => evaluation.id = res.id)
             } catch (err) {

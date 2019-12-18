@@ -7,6 +7,7 @@ import { NutritionEvaluationRepoModel } from '../../../src/infrastructure/databa
 import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
 import { ObjectId } from 'bson'
 import { Strings } from '../../../src/utils/strings'
+import { Default } from '../../../src/utils/default'
 
 const dbConnection: IConnectionDB = DIContainer.get(Identifier.MONGODB_CONNECTION)
 const app: App = DIContainer.get(Identifier.APP)
@@ -15,7 +16,7 @@ const request = require('supertest')(app.getExpress())
 describe('Routes: HealthProfessionalsNutritionalEvaluation', () => {
     before(async () => {
             try {
-                await dbConnection.tryConnect(0, 500)
+                await dbConnection.tryConnect(process.env.MONGODB_URI_TEST || Default.MONGODB_URI_TEST)
                 await deleteAllNutritionalEvaluations()
                 await createNutritionalEvaluation().then()
             } catch (err) {
