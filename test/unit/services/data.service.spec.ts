@@ -113,7 +113,7 @@ describe('Services: DataService', () => {
             it('should return status and estimate for finish request', () => {
                 return service.requestData(
                     data.pilotstudy_id!,
-                    new DataRequestParameters().fromJSON({ data_types: ['all'], patients: 'any' }))
+                    new DataRequestParameters().fromJSON({ data_types: ['all'], patients: 'any' }), '')
                     .then(res => {
                         assert.propertyVal(res, 'status', 'pending')
                         assert.property(res, 'completion_estimate')
@@ -123,7 +123,7 @@ describe('Services: DataService', () => {
 
         context('when there are validation errors', () => {
             it('should reject an error for does pass incomplete data request params', () => {
-                return service.requestData(data.pilotstudy_id!, new DataRequestParameters())
+                return service.requestData(data.pilotstudy_id!, new DataRequestParameters(), '')
                     .catch(err => {
                         assert.propertyVal(err, 'message', 'You must select at least one data type to request data ' +
                             'from a pilot study.')

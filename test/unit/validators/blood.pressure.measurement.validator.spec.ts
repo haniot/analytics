@@ -57,19 +57,26 @@ describe('Validators: BloodPressureMeasurementValidator', () => {
             }
         })
         it('should throw an error for does pass invalid type', () => {
-            measurement.type = 'invalid'
+            const wrongMeasurement: BloodPressureMeasurement = new BloodPressureMeasurement().fromJSON({
+                systolic: 121,
+                diastolic: 78,
+                pulse: 80,
+                unit: 'mmHg',
+                type: 'invalid',
+                timestamp: '2018-11-19T14:40:00Z',
+                device_id: '5ca790f77aefffa37a17b605'
+            })
             try {
-                BloodPressureMeasurementValidator.validate(measurement)
+                BloodPressureMeasurementValidator.validate(wrongMeasurement)
             } catch (err) {
                 assert.propertyVal(err, 'message', Strings.ENUM_VALIDATOR.NOT_MAPPED.concat('type: invalid'))
                 assert.propertyVal(err, 'description',
                     Strings.ENUM_VALIDATOR.NOT_MAPPED_DESC.concat(Object.values(MeasurementTypes).join(', ').concat('.')))
-            } finally {
-                measurement.type = DefaultEntityMock.BLOOD_PRESSURE_MEASUREMENT.type
             }
         })
         it('should throw an error for does not pass timestamp', () => {
             measurement.timestamp = undefined
+            measurement.type = MeasurementTypes.BLOOD_PRESSURE
             try {
                 BloodPressureMeasurementValidator.validate(measurement)
             } catch (err) {

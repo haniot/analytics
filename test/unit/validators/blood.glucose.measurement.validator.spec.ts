@@ -48,18 +48,24 @@ describe('Validators: BloodGlucoseMeasurementValidator', () => {
             }
         })
         it('should throw an error for does pass invalid meal', () => {
-            measurement.meal = 'invalid'
+            const wrongMeasurement: BloodGlucoseMeasurement = new BloodGlucoseMeasurement().fromJSON({
+                value: 146,
+                unit: 'mg/dl',
+                meal: 'invalid',
+                type: 'blood_glucose',
+                timestamp: '2018-11-19T14:40:00Z',
+                device_id: '5ca790f77aefffa37a17b605'
+            })
             try {
-                BloodGlucoseMeasurementValidator.validate(measurement)
+                BloodGlucoseMeasurementValidator.validate(wrongMeasurement)
             } catch (err) {
                 assert.propertyVal(err, 'message', Strings.ENUM_VALIDATOR.NOT_MAPPED.concat('meal: invalid'))
                 assert.propertyVal(err, 'description',
                     Strings.ENUM_VALIDATOR.NOT_MAPPED_DESC.concat(Object.values(MealTypes).join(', ').concat('.')))
-            } finally {
-                measurement.meal = DefaultEntityMock.BLOOD_GLUCOSE_MEASUREMENT.meal
             }
         })
         it('should throw an error for does not pass type', () => {
+            measurement.meal = MealTypes.PREPRANDIAL
             measurement.type = undefined
             try {
                 BloodGlucoseMeasurementValidator.validate(measurement)
@@ -69,19 +75,25 @@ describe('Validators: BloodGlucoseMeasurementValidator', () => {
             }
         })
         it('should throw an error for does pass invalid type', () => {
-            measurement.type = 'invalid'
+            const wrongMeasurement: BloodGlucoseMeasurement = new BloodGlucoseMeasurement().fromJSON({
+                value: 146,
+                unit: 'mg/dl',
+                meal: 'preprandial',
+                type: 'invalid',
+                timestamp: '2018-11-19T14:40:00Z',
+                device_id: '5ca790f77aefffa37a17b605'
+            })
             try {
-                BloodGlucoseMeasurementValidator.validate(measurement)
+                BloodGlucoseMeasurementValidator.validate(wrongMeasurement)
             } catch (err) {
                 assert.propertyVal(err, 'message', Strings.ENUM_VALIDATOR.NOT_MAPPED.concat('type: invalid'))
                 assert.propertyVal(err, 'description',
                     Strings.ENUM_VALIDATOR.NOT_MAPPED_DESC.concat(Object.values(MeasurementTypes).join(', ').concat('.')))
-            } finally {
-                measurement.type = DefaultEntityMock.BLOOD_GLUCOSE_MEASUREMENT.type
             }
         })
         it('should throw an error for does not pass timestamp', () => {
             measurement.timestamp = undefined
+            measurement.type = MeasurementTypes.BLOOD_GLUCOSE
             try {
                 BloodGlucoseMeasurementValidator.validate(measurement)
             } catch (err) {

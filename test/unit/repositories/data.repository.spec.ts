@@ -1,18 +1,22 @@
 import { DataRepoModel } from '../../../src/infrastructure/database/schema/data.schema'
-import { DataRepository } from '../../../src/infrastructure/repository/data.repository'
-import { EntityMapperMock } from '../../mocks/models/entity.mapper.mock'
-import { CustomLoggerMock } from '../../mocks/custom.logger.mock'
 import { Data } from '../../../src/application/domain/model/data'
 import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
 import { assert } from 'chai'
 import sinon from 'sinon'
 import { Query } from '../../../src/infrastructure/repository/query/query'
+import { DataRepository } from '../../../src/infrastructure/repository/data.repository'
+import { EntityMapperMock } from '../../mocks/models/entity.mapper.mock'
+import { CustomLoggerMock } from '../../mocks/custom.logger.mock'
+import { EventBusRabbitMQMock } from '../../mocks/eventbus/eventbus.rabbitmq.mock'
+import { AwsFilesRepositoryMock } from '../../mocks/repositories/aws.files.repository.mock'
+import { IntegrationEventRepositoryMock } from '../../mocks/repositories/integration.event.repository.mock'
 
 require('sinon-mongoose')
 
 describe('Repositories: OdontologicRepository', () => {
     const modelFake: any = DataRepoModel
-    const repo = new DataRepository(modelFake, new EntityMapperMock(), new CustomLoggerMock())
+    const repo = new DataRepository(modelFake, new EntityMapperMock(), new EventBusRabbitMQMock(),
+        new IntegrationEventRepositoryMock(), new AwsFilesRepositoryMock(), new CustomLoggerMock())
     const data: Data = new Data().fromJSON(DefaultEntityMock.DATA)
     data.id = DefaultEntityMock.DATA.id
 
@@ -116,7 +120,7 @@ describe('Repositories: OdontologicRepository', () => {
                     .chain('exec')
                     .resolves([])
 
-                return repo.find(new Query())
+                return repo.find(new Query().fromJSON({ filters: { _id: data.id } }))
                     .then(res => {
                         assert.isArray(res)
                         assert.lengthOf(res, 0)
