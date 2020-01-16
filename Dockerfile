@@ -1,4 +1,4 @@
-FROM node:10.16.3
+FROM node:12.13.1
 
 # create and set app directory
 RUN mkdir -p /usr/src/analytics
@@ -10,10 +10,6 @@ RUN npm install
 
 # Bundle app source
 COPY . /usr/src/analytics
-
-# Create self-signed certificates
-RUN chmod +x ./create-self-signed-certs.sh
-RUN ./create-self-signed-certs.sh
 
 # Build app
 RUN npm run build

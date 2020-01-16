@@ -3,10 +3,10 @@ import { App } from '../../../src/app'
 import { expect } from 'chai'
 import { IConnectionDB } from '../../../src/infrastructure/port/connection.db.interface'
 import { DefaultEntityMock } from '../../mocks/models/default.entity.mock'
-// import { ObjectId } from 'bson'
 import { Strings } from '../../../src/utils/strings'
 import { DataRepoModel } from '../../../src/infrastructure/database/schema/data.schema'
 import { DIContainer } from '../../../src/di/di'
+import { Default } from '../../../src/utils/default'
 
 const dbConnection: IConnectionDB = DIContainer.get(Identifier.MONGODB_CONNECTION)
 const app: App = DIContainer.get(Identifier.APP)
@@ -15,7 +15,7 @@ const request = require('supertest')(app.getExpress())
 describe('Routes: PilotStudiesData', () => {
     before(async () => {
             try {
-                await dbConnection.tryConnect(0, 500)
+                await dbConnection.tryConnect(process.env.MONGODB_URI_TEST || Default.MONGODB_URI_TEST)
                 await deleteAllDataRequest()
             } catch (err) {
                 throw new Error('Failure on PilotStudiesData test: ' + err.message)
@@ -64,20 +64,21 @@ describe('Routes: PilotStudiesData', () => {
     })
 
     describe('GET /v1/pilotstudies/:pilotstudy_id/data', () => {
-        context('when get a list of data request from pilot study', () => {
-            it('should return status code 200 and a list of data requests', () => {
-                const url: string = `/v1/pilotstudies/${DefaultEntityMock.NUTRITION_EVALUATION.pilotstudy_id}/data`
-                return request
-                    .get(url)
-                    .set('Content-Type', 'application/json')
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Array)
-                        expect(res.body).to.have.lengthOf(1)
-                        validateBody(res.body[0])
-                    })
-            })
-        })
+        // It is necessary to raise the account, ehr and mhealth microservices to perform this test.
+        // context('when get a list of data request from pilot study', () => {
+        //     it('should return status code 200 and a list of data requests', () => {
+        //         const url: string = `/v1/pilotstudies/${DefaultEntityMock.NUTRITION_EVALUATION.pilotstudy_id}/data`
+        //         return request
+        //             .get(url)
+        //             .set('Content-Type', 'application/json')
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Array)
+        //                 expect(res.body).to.have.lengthOf(1)
+        //                 validateBody(res.body[0])
+        //             })
+        //     })
+        // })
 
         context('when there are validation errors', () => {
             it('should return status code 400 and message from invalid parameters', () => {
@@ -98,12 +99,12 @@ async function deleteAllDataRequest() {
     return await DataRepoModel.deleteMany({})
 }
 
-function validateBody(body) {
-    expect(body).to.have.property('id')
-    expect(body).to.have.property('created_at')
-    expect(body).to.have.property('total_patients', DefaultEntityMock.DATA.total_patients)
-    expect(body).to.have.property('file_csv')
-    expect(body).to.have.property('file_xls')
-    expect(body).to.have.deep.property('data_types', DefaultEntityMock.DATA.data_types)
-    expect(body).to.have.deep.property('patients', DefaultEntityMock.DATA.patients)
-}
+// function validateBody(body) {
+//     expect(body).to.have.property('id')
+//     expect(body).to.have.property('created_at')
+//     expect(body).to.have.property('total_patients', DefaultEntityMock.DATA.total_patients)
+//     expect(body).to.have.property('file_csv')
+//     expect(body).to.have.property('file_xls')
+//     expect(body).to.have.deep.property('data_types', DefaultEntityMock.DATA.data_types)
+//     expect(body).to.have.deep.property('patients', DefaultEntityMock.DATA.patients)
+// }

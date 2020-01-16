@@ -47,19 +47,24 @@ describe('Validators: BodyTemperatureMeasurementValidator', () => {
             }
         })
         it('should throw an error for does pass invalid type', () => {
-            measurement.type = 'invalid'
+            const wrongMeasurement: BodyTemperatureMeasurement = new BodyTemperatureMeasurement().fromJSON({
+                value: 36,
+                unit: '°C',
+                type: 'invalid',
+                timestamp: '2018-11-19T14:40:00Z',
+                device_id: '5ca790f77aefffa37a17b605'
+            })
             try {
-                BodyTemperatureMeasurementValidator.validate(measurement)
+                BodyTemperatureMeasurementValidator.validate(wrongMeasurement)
             } catch (err) {
                 assert.propertyVal(err, 'message', Strings.ENUM_VALIDATOR.NOT_MAPPED.concat('type: invalid'))
                 assert.propertyVal(err, 'description',
                     Strings.ENUM_VALIDATOR.NOT_MAPPED_DESC.concat(Object.values(MeasurementTypes).join(', ').concat('.')))
-            } finally {
-                measurement.type = DefaultEntityMock.BODY_TEMPERATURE_MEASUREMENT.type
             }
         })
         it('should throw an error for does not pass timestamp', () => {
             measurement.timestamp = undefined
+            measurement.type = MeasurementTypes.BODY_TEMPERATURE
             try {
                 BodyTemperatureMeasurementValidator.validate(measurement)
             } catch (err) {
