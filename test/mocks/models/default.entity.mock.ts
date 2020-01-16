@@ -226,8 +226,8 @@ export abstract class DefaultEntityMock {
         blood_pressure: {
             systolic: 121,
             diastolic: 78,
-            systolic_percentile: 'pas95',
-            diastolic_percentile: 'pad95',
+            systolic_percentile: 'pas75',
+            diastolic_percentile: 'pad75',
             classification: 'borderline'
         },
         counseling: {
