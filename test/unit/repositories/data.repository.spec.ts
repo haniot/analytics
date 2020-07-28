@@ -9,14 +9,14 @@ import { EntityMapperMock } from '../../mocks/models/entity.mapper.mock'
 import { CustomLoggerMock } from '../../mocks/custom.logger.mock'
 import { EventBusRabbitMQMock } from '../../mocks/eventbus/eventbus.rabbitmq.mock'
 import { AwsFilesRepositoryMock } from '../../mocks/repositories/aws.files.repository.mock'
-import { IntegrationEventRepositoryMock } from '../../mocks/repositories/integration.event.repository.mock'
 
 require('sinon-mongoose')
 
 describe('Repositories: OdontologicRepository', () => {
     const modelFake: any = DataRepoModel
-    const repo = new DataRepository(modelFake, new EntityMapperMock(), new EventBusRabbitMQMock(),
-        new IntegrationEventRepositoryMock(), new AwsFilesRepositoryMock(), new CustomLoggerMock())
+    const repo = new DataRepository(modelFake, new EntityMapperMock(),
+        new EventBusRabbitMQMock(), new AwsFilesRepositoryMock(), new CustomLoggerMock())
+
     const data: Data = new Data().fromJSON(DefaultEntityMock.DATA)
     data.id = DefaultEntityMock.DATA.id
 
@@ -85,7 +85,7 @@ describe('Repositories: OdontologicRepository', () => {
                     .mock(modelFake)
                     .expects('find')
                     .chain('sort')
-                    .withArgs({ created_at: 'desc' })
+                    .withArgs({ created_at: -1 })
                     .chain('skip')
                     .withArgs(0)
                     .chain('limit')
@@ -112,7 +112,7 @@ describe('Repositories: OdontologicRepository', () => {
                     .mock(modelFake)
                     .expects('find')
                     .chain('sort')
-                    .withArgs({ created_at: 'desc' })
+                    .withArgs({ created_at: -1 })
                     .chain('skip')
                     .withArgs(0)
                     .chain('limit')
@@ -134,7 +134,7 @@ describe('Repositories: OdontologicRepository', () => {
                     .mock(modelFake)
                     .expects('find')
                     .chain('sort')
-                    .withArgs({ created_at: 'desc' })
+                    .withArgs({ created_at: -1 })
                     .chain('skip')
                     .withArgs(0)
                     .chain('limit')

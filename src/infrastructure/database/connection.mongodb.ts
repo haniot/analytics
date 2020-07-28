@@ -16,7 +16,7 @@ import { EventEmitter } from 'events'
 @injectable()
 export class ConnectionMongodb implements IConnectionDB {
     private _connection?: Connection
-    private _eventConnection: EventEmitter
+    private readonly _eventConnection: EventEmitter
 
     constructor(
         @inject(Identifier.MONGODB_CONNECTION_FACTORY) private readonly _connectionFactory: IConnectionFactory,

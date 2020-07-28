@@ -8,6 +8,7 @@
  * @abstract
  */
 export abstract class Default {
+    public static readonly APP_ID: string = 'analytics.app'
     public static readonly APP_TITLE: string = 'HANIoT Analytics Service'
     public static readonly APP_DESCRIPTION: string = 'Microservice responsible to perform the analysis of nutritional data in ' +
         'order to generate nutritional assessments.'

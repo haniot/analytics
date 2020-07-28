@@ -33,7 +33,7 @@ export class PatientsNutritionalEvaluationsController {
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
-                .send(handlerError.toJson())
+                .send(handlerError.toJSON())
         } finally {
             req.query = {}
         }
@@ -57,7 +57,7 @@ export class PatientsNutritionalEvaluationsController {
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
-                .send(handlerError.toJson())
+                .send(handlerError.toJSON())
         } finally {
             req.query = {}
         }
@@ -74,7 +74,7 @@ export class PatientsNutritionalEvaluationsController {
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
-                .send(handlerError.toJson())
+                .send(handlerError.toJSON())
         } finally {
             req.query = {}
         }
@@ -88,7 +88,7 @@ export class PatientsNutritionalEvaluationsController {
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
-                .send(handlerError.toJson())
+                .send(handlerError.toJSON())
         }
     }
 
@@ -110,6 +110,6 @@ export class PatientsNutritionalEvaluationsController {
             HttpStatus.NOT_FOUND,
             Strings.NUTRITION_EVALUATION.NOT_FOUND,
             Strings.NUTRITION_EVALUATION.NOT_FOUND_DESCRIPTION
-        ).toJson()
+        ).toJSON()
     }
 }

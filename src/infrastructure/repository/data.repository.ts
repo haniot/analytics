@@ -14,13 +14,11 @@ import json2xls from 'json2xls'
 import { Parser } from 'json2csv'
 import { IEvaluationFilesManagerRepository } from '../../application/port/evaluation.files.manager.repository.interface'
 import { EvaluationFile } from '../../application/domain/model/evaluation.file'
-import { IIntegrationEventRepository } from '../../application/port/integration.event.repository.interface'
 import { RepositoryException } from '../../application/domain/exception/repository.exception'
 import jwt from 'jsonwebtoken'
 import { Email } from '../../application/domain/model/email'
 import { Default } from '../../utils/default'
 import { EmailPilotStudyDataEvent } from '../../application/integration-event/event/email.pilot.study.data.event'
-import { IntegrationEvent } from '../../application/integration-event/event/integration.event'
 import fs from 'fs'
 
 @injectable()
@@ -31,7 +29,6 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
         @inject(Identifier.DATA_REPO_MODEL) readonly _model: any,
         @inject(Identifier.DATA_ENTITY_MAPPER) readonly _mapper: IEntityMapper<Data, DataEntity>,
         @inject(Identifier.RABBITMQ_EVENT_BUS) private readonly _eventBus: IEventBus,
-        @inject(Identifier.INTEGRATION_EVENT_REPOSITORY) private readonly _integrationEventRepo: IIntegrationEventRepository,
         @inject(Identifier.AWS_FILES_REPOSITORY) private readonly _awsFilesRepo: IEvaluationFilesManagerRepository<EvaluationFile>,
         @inject(Identifier.LOGGER) readonly _logger: ILogger
     ) {
@@ -145,11 +142,20 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
     }
 
     private async sendMail(mail: Email): Promise<void> {
-        try {
-            await this.publishEvent(new EmailPilotStudyDataEvent(new Date(), mail), 'emails.pilotstudies.data')
-        } catch (err) {
-            return Promise.reject(err)
-        }
+        return new Promise((resolve, reject) => {
+            const event = new EmailPilotStudyDataEvent(new Date(), mail)
+            this._eventBus.publish(event, EmailPilotStudyDataEvent.ROUTING_KEY)
+                .then(() => {
+                    this._logger.info(`Data from pilot study: ${event.toJSON().email.pilot_study} ` +
+                        `has been saved and published on event bus to be sended to: ${event.toJSON().email.to.email}`)
+                    return resolve()
+                })
+                .catch(err => {
+                    this._logger.error(`There was an error publish event: ${event.event_name}.`
+                        .concat(`Error: ${err.message}. Event: ${JSON.stringify(event)}`))
+                    return reject(err)
+                })
+        })
     }
 
     private async generatePatientData(patient: any, dataTypes: Array<string>): Promise<any> {
@@ -630,30 +636,6 @@ export class DataRepository extends BaseRepository<Data, DataEntity> implements 
             return Promise.resolve(Buffer.from(xls, 'binary'))
         } catch (err) {
             return Promise.reject(err)
-        }
-    }
-
-    private async publishEvent(event: IntegrationEvent<Data>, routingKey: string): Promise<void> {
-        try {
-            const successPublish = await this._eventBus.publish(event, routingKey)
-            if (!successPublish) throw new Error('')
-            this._logger.info(`Data from pilot study: ${event.toJSON().email.pilot_study} ` +
-                `has been saved and published on event bus to be sended to: ${event.toJSON().email.to.email}`)
-        } catch (err) {
-            const saveEvent: any = event.toJSON()
-            this._integrationEventRepo.create({
-                ...saveEvent,
-                __routing_key: routingKey,
-                __operation: 'publish'
-            })
-                .then(() => {
-                    this._logger.warn(`Could not publish the event named ${event.event_name}.`
-                        .concat(` The event was saved in the database for a possible recovery.`))
-                })
-                .catch(err => {
-                    this._logger.error(`There was an error trying to save the name event: ${event.event_name}.`
-                        .concat(`Error: ${err.message}. Event: ${JSON.stringify(saveEvent)}...`))
-                })
         }
     }
 
