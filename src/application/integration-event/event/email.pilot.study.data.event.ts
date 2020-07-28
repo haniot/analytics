@@ -2,8 +2,11 @@ import { EventType, IntegrationEvent } from './integration.event'
 import { Email } from '../../domain/model/email'
 
 export class EmailPilotStudyDataEvent extends IntegrationEvent<Email> {
+    public static readonly NAME: string = 'EmailPilotStudyDataEvent'
+    public static readonly ROUTING_KEY: string = 'emails.pilotstudies.data'
+
     constructor(public timestamp?: Date, public email?: Email) {
-        super('EmailPilotStudyDataEvent', EventType.EMAIL, timestamp)
+        super(EmailPilotStudyDataEvent.NAME, EventType.EMAIL, timestamp)
     }
 
     public toJSON(): any {

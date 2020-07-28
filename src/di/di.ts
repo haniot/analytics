@@ -45,15 +45,11 @@ import { NutritionCounseling } from '../application/domain/model/nutrition.couns
 // tslint:disable-next-line:max-line-length
 import { PatientsNutritionalEvaluationsCounselingsController } from '../ui/controllers/patients.nutritional.evaluations.counselings.controller'
 import { ConnectionFactoryRabbitMQ } from '../infrastructure/eventbus/rabbitmq/connection.factory.rabbitmq'
-import { PublishEventBusTask } from '../background/task/publish.event.bus.task'
 import { IBackgroundTask } from '../application/port/background.task.interface'
 import { EventBusRabbitMQ } from '../infrastructure/eventbus/rabbitmq/eventbus.rabbitmq'
-import { IntegrationEventRepoModel } from '../infrastructure/database/schema/integration.event.schema'
 import { ConnectionRabbitMQ } from '../infrastructure/eventbus/rabbitmq/connection.rabbitmq'
 import { IConnectionEventBus } from '../infrastructure/port/connection.event.bus.interface'
 import { IEventBus } from '../infrastructure/port/event.bus.interface'
-import { IntegrationEventRepository } from '../infrastructure/repository/integration.event.repository'
-import { IIntegrationEventRepository } from '../application/port/integration.event.repository.interface'
 import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
 
 export class IoC {
@@ -123,13 +119,10 @@ export class IoC {
             .to(BmiPerAgeRepository).inSingletonScope()
         this._container.bind<IFileRepository<NutritionCounseling>>(Identifier.NUTRITION_COUNSELING_REPOSITORY)
             .to(NutritionCounselingRepository).inSingletonScope()
-        this._container.bind<IIntegrationEventRepository>(Identifier.INTEGRATION_EVENT_REPOSITORY)
-            .to(IntegrationEventRepository).inSingletonScope()
 
         // Models
         this._container.bind(Identifier.NUTRITION_EVALUATION_REPO_MODEL).toConstantValue(NutritionEvaluationRepoModel)
         this._container.bind(Identifier.DATA_REPO_MODEL).toConstantValue(DataRepoModel)
-        this._container.bind(Identifier.INTEGRATION_EVENT_REPO_MODEL).toConstantValue(IntegrationEventRepoModel)
 
         // Mappers
         this._container
@@ -159,9 +152,6 @@ export class IoC {
             .to(BackgroundService).inSingletonScope()
 
         // Tasks
-        this._container
-            .bind<IBackgroundTask>(Identifier.PUBLISH_EVENT_BUS_TASK)
-            .to(PublishEventBusTask).inSingletonScope()
         this._container
             .bind<IBackgroundTask>(Identifier.SUBSCRIBE_EVENT_BUS_TASK)
             .to(SubscribeEventBusTask).inSingletonScope()

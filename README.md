@@ -11,8 +11,8 @@ Microservice used to perform health data analysis and provide simple results upo
  See the [documentation](https://github.com/haniot/analytics/wiki) for more information.
 
 ## Prerequisites
-- [Node 8.0.0+](https://nodejs.org/en/download/)
-- [MongoDB Server 3.0.0+](https://www.mongodb.com/download-center/community)
+- [Node 12.0.0+](https://nodejs.org/en/download/)
+- [MongoDB Server 4.0.0+](https://www.mongodb.com/download-center/community)
 - [RabbitMQ 3.7.0+](https://www.rabbitmq.com/download.html)
 
 ---
@@ -27,10 +27,15 @@ Application settings are defined by environment variables.. To define the settin
 | `PORT_HTTPS` | Port used to listen for HTTPS requests. Do not forget to provide the private key and the SSL/TLS certificate. See the topic [generate certificates](#generate-certificates). | `6001` |
 | `SSL_KEY_PATH` | SSL/TLS certificate private key. | `.certs/server.key` |
 | `SSL_CERT_PATH` | SSL/TLS certificate. | `.certs/server.crt` |
-| `RABBITMQ_URI` | URI containing the parameters for connection to the message channel RabbitMQ. The [URI specifications ](https://www.rabbitmq.com/uri-spec.html) defined by RabbitMQ are accepted. For example: `amqp://user:pass@host:port/vhost`. | `amqp://guest:guest`<br/>`@127.0.0.1:5672` |
-| `RABBITMQ_CA_PATH` | RabbitMQ SSL certificate path. | `.certs/ca.crt` |
 | `MONGODB_URI` | Database connection URI used if the application is running in development or production environment. The [URI specifications ](https://docs.mongodb.com/manual/reference/connection-string) defined by MongoDB are accepted. For example: `mongodb://user:pass@host:port/database?options`. | `mongodb://127.0.0.1:27017`<br/>`/analytics-service` |
 | `MONGODB_URI_TEST` | Database connection URI used if the application is running in test environment. The [URI specifications ](https://docs.mongodb.com/manual/reference/connection-string) defined by MongoDB are accepted. For example: `mongodb://user:pass@host:port/database?options`. | `mongodb://127.0.0.1:27017`<br/>`/analytics-service-test` |
+| `MONGODB_ENABLE_TLS` | Enables/Disables connection to TLS. When TLS is used for connection, client certificates are required (`MONGODB_KEY_PATH`, `MONGODB_CA_PATH`). | `false` |
+| `MONGODB_KEY_PATH` | Client certificate and key in .pem format to connect to MongoDB | `.certs/mongodb/client.pem` |
+| `MONGODB_CA_PATH` | MongoDB Certificate of the Authentication entity (CA) | `.certs/mongodb/ca.pem` |
+| `RABBITMQ_URI` | URI for connection to RabbitMQ. The [URI specifications ](https://www.rabbitmq.com/uri-spec.html). For example: `amqp://user:pass@host:port/vhost`. When TLS is used for conection the protocol is amqps and client certificates are required (`RABBITMQ_CERT_PATH`, `RABBITMQ_KEY_PATH`, `RABBITMQ_CA_PATH`) | `amqp://guest:guest`<br/>`@127.0.0.1:5672` |
+| `RABBITMQ_CERT_PATH` | RabbitMQ Certificate | `.certs/rabbitmq/cert.pem` |
+| `RABBITMQ_KEY_PATH` | RabbitMQ Key | `.certs/rabbitmq/key.pem` |
+| `RABBITMQ_CA_PATH` | RabbitMQ Certificate of the Authentication entity (CA). | `.certs/rabbitmq/ca.pem` |
 | `DASHBOARD_HOST` | Dashboard URL. This url is shared with other microservices as needed through the message bus.  | `https://localhost` |
 | `AWS_ACCESS_KEY_ID` | Access Key ID for AWS IAM user with permission to manage S3 service.  | `YOUR_ACCESS_KEY_ID` |
 | `AWS_SECRET_ACCESS_KEY` | Access Secret Key for AWS IAM user with permission to manage S3 service.  | `YOUR_SECRET_ACCESS_KEY` |
@@ -114,10 +119,12 @@ You can also create the container by passing the settings that are desired by th
 docker run --rm \
   -e PORT_HTTP=8080 \
   -e PORT_HTTPS=8081 \
-  -e SSL_KEY_PATH=.certs/server.key \
-  -e SSL_CERT_PATH=.certs/server.crt \
-  -e RABBITMQ_URI="amqp://guest:guest@192.168.0.1:5672/haniot" \
-  -e MONGODB_URI="mongodb://192.168.0.2:27017/haniot-analytics" \
+  -v $(pwd)/.certs:/etc \  
+  -e SSL_KEY_PATH=/etc/server.key \
+  -e SSL_CERT_PATH=/etc/server.crt \
+  -e MONGODB_ENABLE_TLS=false \
+  -e MONGODB_URI="mongodb://HOSTNAME:27017/haniot-analytics" \
+  -e RABBITMQ_URI="amqp://guest:guest@HOSTNAME:5672" \
   -e DASHBOARD_HOST="https://localhost" \
   -e AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE" \
   -e AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY" \  
@@ -129,9 +136,7 @@ If the MongoDB or RabbitMQ instance is in the host local, add the `--net=host` s
 ```sh
 docker run --rm \
   --net=host \
-  -e RABBITMQ_URI="amqp://guest:guest@localhost:5672/haniot" \
-  -e MONGODB_URI="mongodb://localhost:27017/haniot-analytics" \
-  haniot/analytics-service
+  ...
 ```
 To generate your own docker image, run the following command:
 ```sh
@@ -141,10 +146,10 @@ docker build -t image_name:tag .
 [//]: # (These are reference links used in the body of this note.)
 [license-image]: https://img.shields.io/badge/license-Apache%202-blue.svg
 [license-url]: https://github.com/haniot/analytics/blob/master/LICENSE
-[node-image]: https://img.shields.io/badge/node-%3E%3D%208.0.0-brightgreen.svg
+[node-image]: https://img.shields.io/badge/node-%3E%3D%212.0.0-brightgreen.svg
 [node-url]: https://nodejs.org
-[travis-image]: https://travis-ci.org/haniot/analytics.svg?branch=master
-[travis-url]: https://travis-ci.org/haniot/analytics
+[travis-image]: https://travis-ci.com/haniot/analytics.svg?branch=master
+[travis-url]: https://travis-ci.com/haniot/analytics
 [coverage-image]: https://coveralls.io/repos/github/haniot/analytics/badge.svg
 [coverage-url]: https://coveralls.io/github/haniot/analytics?branch=master
 [known-vulnerabilities-image]: https://snyk.io/test/github/haniot/analytics/badge.svg

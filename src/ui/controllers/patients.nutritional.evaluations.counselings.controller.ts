@@ -30,7 +30,7 @@ export class PatientsNutritionalEvaluationsCounselingsController {
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
-                .send(handlerError.toJson())
+                .send(handlerError.toJSON())
         } finally {
             req.query = {}
         }
@@ -47,6 +47,6 @@ export class PatientsNutritionalEvaluationsCounselingsController {
             HttpStatus.NOT_FOUND,
             Strings.NUTRITION_EVALUATION.NOT_FOUND,
             Strings.NUTRITION_EVALUATION.NOT_FOUND_DESCRIPTION
-        ).toJson()
+        ).toJSON()
     }
 }
