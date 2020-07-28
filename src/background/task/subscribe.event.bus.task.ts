@@ -8,8 +8,6 @@ import { UserDeleteEventHandler } from '../../application/integration-event/hand
 import { DIContainer } from '../../di/di'
 import { PilotStudyDeleteEvent } from '../../application/integration-event/event/pilot.study.delete.event'
 import { PilotStudyDeleteEventHandler } from '../../application/integration-event/handler/pilot.study.delete.event.handler'
-import { Default } from '../../utils/default'
-import fs from 'fs'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -20,26 +18,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
     }
 
     public run(): void {
-        // To use SSL/TLS, simply mount the uri with the amqps protocol and pass the CA.
-        const rabbitUri = process.env.RABBITMQ_URI || Default.RABBITMQ_URI
-        const rabbitOptions: any = { sslOptions: { ca: [] } }
-        if (rabbitUri.indexOf('amqps') === 0) {
-            rabbitOptions.sslOptions.ca = [fs.readFileSync(process.env.RABBITMQ_CA_PATH || Default.RABBITMQ_CA_PATH)]
-        }
-        // Before performing the subscribe is trying to connect to the bus.
-        // If there is no connection, infinite attempts will be made until
-        // the connection is established successfully. Once you have the
-        // connection, event registration is performed.
-        this._eventBus
-            .connectionSub
-            .open(rabbitUri, rabbitOptions)
-            .then(() => {
-                this._logger.info('Subscribe connection initialized successfully')
-                this.initializeSubscribe()
-            })
-            .catch(err => {
-                this._logger.error(`Could not open connection to subscribe to message bus, ${err.message}`)
-            })
+        this.initializeSubscribe()
     }
 
     public async stop(): Promise<void> {
@@ -53,22 +32,37 @@ export class SubscribeEventBusTask implements IBackgroundTask {
     /**
      * Subscribe for all events.
      */
-    private async initializeSubscribe(): Promise<void> {
-        try {
-            await this._eventBus.subscribe(
-                new UserDeleteEvent(new Date()),
+    private initializeSubscribe(): void {
+        /**
+         * Subscribe in UserDeleteEvent
+         */
+        this._eventBus
+            .subscribe(
+                new UserDeleteEvent(),
                 new UserDeleteEventHandler(DIContainer.get(Identifier.NUTRITION_EVALUATION_REPOSITORY), this._logger),
-                'users.delete'
+                UserDeleteEvent.ROUTING_KEY
             )
-            this._logger.info('Subscribe in UserDeleteEvent successful!')
-            await this._eventBus.subscribe(
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in UserDeleteEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe UserDeleteEvent! ${err.message}`)
+            })
+
+        /**
+         * Subscribe in PilotStudyDeleteEvent
+         */
+        this._eventBus
+            .subscribe(
                 new PilotStudyDeleteEvent(new Date()),
                 new PilotStudyDeleteEventHandler(DIContainer.get(Identifier.DATA_REPOSITORY), this._logger),
-                'pilotstudies.delete'
+                PilotStudyDeleteEvent.ROUTING_KEY
             )
-            this._logger.info('Subscribe in PilotStudyDeleteEvent successful!')
-        } catch (err) {
-            this._logger.error(`An error occurred while subscribing to events. ${err.message}`)
-        }
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in PilotStudyDeleteEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe PilotStudyDeleteEvent! ${err.message}`)
+            })
     }
 }

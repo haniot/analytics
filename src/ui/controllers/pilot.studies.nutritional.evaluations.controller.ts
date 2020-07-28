@@ -35,7 +35,7 @@ export class PilotStudiesNutritionalEvaluationsController {
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
-                .send(handlerError.toJson())
+                .send(handlerError.toJSON())
         } finally {
             req.query = {}
         }

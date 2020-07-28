@@ -26,7 +26,7 @@ export class PilotStudiesDataController {
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
-                .send(handlerError.toJson())
+                .send(handlerError.toJSON())
         }
     }
 
@@ -43,7 +43,7 @@ export class PilotStudiesDataController {
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code)
-                .send(handlerError.toJson())
+                .send(handlerError.toJSON())
         } finally {
             req.query = {}
         }
