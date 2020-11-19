@@ -205,8 +205,8 @@ export abstract class DefaultEntityMock {
             height: 155,
             weight: 50,
             bmi: 20.8,
-            percentile: 'p97',
-            classification: 'overweight'
+            percentile: 'p999',
+            classification: 'severe_obesity'
         },
         overweight_indicator: {
             waist_circumference: 70,
@@ -389,7 +389,7 @@ export abstract class DefaultEntityMock {
             gender: 'male',
             birth_date: '2008-01-08'
         },
-        nutritional_status: 'overweight',
+        nutritional_status: 'severe_obesity',
         overweight_indicator: 'normal',
         taylor_cut_point: 'normal',
         blood_glucose: 'undefined',
